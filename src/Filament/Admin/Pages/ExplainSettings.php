@@ -33,6 +33,8 @@ final class ExplainSettings extends Page implements HasSchemas
 
     protected static string|BackedEnum|null $navigationIcon = 'tabler-message-question';
 
+    protected static ?int $navigationSort = 40;
+
     protected static ?string $slug = 'simplify-explain';
 
     protected string $view = 'simplify-explain::settings';
@@ -50,9 +52,10 @@ final class ExplainSettings extends Page implements HasSchemas
         return __('simplify-explain::settings.title');
     }
 
+    /** In the Simplify group of Pelican's menu, with the other Simplify add-ons (Simplify's ADDONS.md, "Admin menu"). */
     public static function getNavigationGroup(): ?string
     {
-        return trans('admin/dashboard.advanced');
+        return 'Simplify';
     }
 
     public function getTitle(): string
