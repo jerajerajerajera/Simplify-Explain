@@ -12,7 +12,7 @@ Simplify's add-on list.
 ## Setup
 
 1. Install the plugin from the Pelican Hub.
-2. Open **Admin → Advanced → Explain**.
+2. Open **Admin → Simplify → Explain**.
 3. Choose Claude, GPT or Gemini, paste your own API key and press **Test**.
 4. Choose who can use it: everyone who can see a console, or administrators only.
 
