@@ -3,6 +3,8 @@
 // Loads Simplify Explain inside a real Pelican panel and opens its pages, with a fake Wings and a fake Claude.
 // Run from the panel folder after `php artisan p:plugin:install simplify-explain`:
 // php plugins/simplify-explain/tests/panel/smoke.php
+use App\Filament\Admin\Pages\ListLogs;
+use App\Filament\Admin\Resources\Nodes\NodeResource;
 use App\Filament\Server\Pages\Console;
 use App\Models\Allocation;
 use App\Models\Egg;
@@ -25,6 +27,7 @@ use Livewire\Livewire;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
 
 define('LARAVEL_START', microtime(true));
@@ -56,6 +59,7 @@ function fakes(bool $found = true): void
             '[12:00:05 ERROR]: Could not load mod create: requires flywheel',
             '[12:00:06 INFO]: Player joined from 203.0.113.7',
         ]]),
+        '*/api/diagnostics*' => Http::response("Wings 1.12\n--- Latest Wings Logs ---\nERROR: smoke wings failure\n"),
         'api.anthropic.com/*' => Http::response(['stop_reason' => 'end_turn', 'content' => [[
             'type' => 'text',
             'text' => json_encode(['found' => $found, 'summary' => 'The Create mod needs Flywheel.', 'issues' => [
@@ -182,6 +186,30 @@ step('someone without access to the server gets no explanation', function () use
         ->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $server->id])
         ->call('check')
         ->assertSet('result.ok', false);
+});
+step('root admins can explain the panel log from the log list', function () use ($admin) {
+    $url = ListLogs::getUrl(panel: 'admin');
+    $response = visit($admin, $url);
+    expectStatus($response, $url);
+    must(str_contains($response->getContent(), __('simplify-explain::explain.panel_button')), 'no Explain button on the log list');
+    $disk = Storage::disk('local');
+    $disk->put('simplify-explain-smoke/laravel.log', "[2026-10-28 10:00:00] production.ERROR: smoke panel error from someone@example.com\n#0 frame");
+    PanelLog::$files = $disk->path('simplify-explain-smoke').'/*.log';
+    Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'panel'])->call('check')->assertSet('result.ok', true);
+    Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke panel error') && ! str_contains($request->body(), 'someone@example.com'));
+    $disk->deleteDirectory('simplify-explain-smoke');
+});
+step('root admins can explain the Wings log of a node', function () use ($admin, $server) {
+    $url = NodeResource::getUrl('edit', ['record' => $server->node], panel: 'admin');
+    $response = visit($admin, $url);
+    expectStatus($response, $url);
+    must(str_contains($response->getContent(), __('simplify-explain::explain.wings_button')), 'no Explain button on the node');
+    Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'wings', 'nodeId' => $server->node_id])->call('check')->assertSet('result.ok', true);
+    Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke wings failure'));
+});
+step('other users cannot explain the panel or Wings log', function () use ($player, $server) {
+    Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'panel'])->call('check')->assertSet('result.ok', false);
+    Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'wings', 'nodeId' => $server->node_id])->call('check')->assertSet('result.ok', false);
 });
 step('settings and keys from PelicanSimplify are taken over', function () {
     DB::table(Settings::TABLE)->delete();
