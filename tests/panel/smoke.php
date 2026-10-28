@@ -170,6 +170,7 @@ step('the console shows the Explain button once a key is saved', function () use
 });
 step('Explain reads the console, hides the address and shows the answer', function () use ($admin, $server) {
     Filament::setCurrentPanel(Filament::getPanel('server'));
+    auth()->login($admin);
     Filament::setTenant($server);
     $html = Livewire::actingAs($admin)
         ->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $server->id])
