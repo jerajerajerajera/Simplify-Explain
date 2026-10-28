@@ -19,6 +19,7 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Client\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -27,6 +28,7 @@ use Livewire\Livewire;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Services\EmergencyAccess;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
 
@@ -210,6 +212,48 @@ step('root admins can explain the Wings log of a node', function () use ($admin,
 step('other users cannot explain the panel or Wings log', function () use ($player, $server) {
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'panel'])->call('check')->assertSet('result.ok', false);
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'wings', 'nodeId' => $server->node_id])->call('check')->assertSet('result.ok', false);
+});
+step('the emergency page opens for root admins only', function () use ($admin, $player) {
+    $url = route('simplify-explain.emergency');
+    $response = visit($admin, $url);
+    expectStatus($response, $url);
+    must(str_contains($response->getContent(), __('simplify-explain::emergency.check_panel')), 'no check button on the emergency page');
+    expectStatus(visit($player, $url), $url, 403);
+});
+step('a temporary address explains the panel log without signing in', function () {
+    $disk = Storage::disk('local');
+    $disk->put('simplify-explain-smoke/laravel.log', "[2026-10-28 10:00:00] production.ERROR: smoke emergency error\n#0 frame");
+    PanelLog::$files = $disk->path('simplify-explain-smoke').'/*.log';
+    $client = new class(app())
+    {
+        use MakesHttpRequests;
+
+        public function __construct(public $app) {}
+    };
+    $token = EmergencyAccess::issue();
+    $url = route('simplify-explain.emergency.access', ['token' => $token]);
+    $response = $client->post($url, ['source' => 'panel']);
+    expectStatus($response, $url);
+    must(str_contains($response->getContent(), 'Missing Flywheel'), 'the answer is not shown');
+    Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke emergency error'));
+    $wrong = route('simplify-explain.emergency.access', ['token' => str_repeat('0', 40)]);
+    expectStatus($client->get($wrong), $wrong, 403);
+    EmergencyAccess::issue();
+    expectStatus($client->get($url), $url, 403);
+    $disk->deleteDirectory('simplify-explain-smoke');
+});
+step('the terminal command explains the panel log and makes an address', function () {
+    $disk = Storage::disk('local');
+    $disk->put('simplify-explain-smoke/laravel.log', "[2026-10-28 10:00:00] production.ERROR: smoke terminal error\n#0 frame");
+    PanelLog::$files = $disk->path('simplify-explain-smoke').'/*.log';
+    // Artisan::output() empties its buffer, so it is read once per command.
+    $code = Artisan::call('simplify-explain:check', ['--source' => 'panel']);
+    $output = Artisan::output();
+    must($code === 0 && str_contains($output, 'Missing Flywheel'), 'the command did not print the answer: '.substr($output, 0, 300));
+    $code = Artisan::call('simplify-explain:check', ['--url' => true]);
+    $output = Artisan::output();
+    must($code === 0 && preg_match('#/simplify-explain/emergency/([0-9a-f]{40})#', $output, $m) === 1 && EmergencyAccess::valid($m[1]), 'the printed address does not work');
+    $disk->deleteDirectory('simplify-explain-smoke');
 });
 step('settings and keys from PelicanSimplify are taken over', function () {
     DB::table(Settings::TABLE)->delete();

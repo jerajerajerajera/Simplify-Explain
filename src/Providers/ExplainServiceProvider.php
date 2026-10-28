@@ -11,10 +11,12 @@ use App\Filament\Server\Pages\Console;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\ExplainAction;
+use Simplify\Explain\Http\Controllers\EmergencyController;
 use Simplify\Explain\Livewire\ExplainPanel;
 use Simplify\Explain\Livewire\PanelLogButton;
 use Simplify\Explain\Services\Explainer;
@@ -39,5 +41,14 @@ final class ExplainServiceProvider extends ServiceProvider
             fn () => Explainer::mayExplainLogs(user()) ? Blade::render('@livewire(\'simplify-explain-panel-log-button\')') : '',
             scopes: ListLogs::class,
         );
+
+        // The emergency page. The second address comes from `php artisan simplify-explain:check --url` and skips the
+        // web middleware, so it also works when sessions are broken.
+        Route::match(['get', 'post'], '/simplify-explain/emergency', [EmergencyController::class, 'session'])
+            ->middleware('web')
+            ->name('simplify-explain.emergency');
+        Route::match(['get', 'post'], '/simplify-explain/emergency/{token}', [EmergencyController::class, 'token'])
+            ->where('token', '[0-9a-f]{40}')
+            ->name('simplify-explain.emergency.access');
     }
 }

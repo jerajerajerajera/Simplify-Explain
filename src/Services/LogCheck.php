@@ -157,17 +157,19 @@ final class LogCheck
     }
 
     /**
-     * Checks the lines with the saved key. $personal is the rate-limit key of the person asking (null in the terminal),
-     * $context tells the service where the lines come from.
+     * Checks the lines with the saved key, or with $key when one is given (the terminal asks for a key when none can
+     * be read). $personal is the rate-limit key of the person asking (null in the terminal), $context tells the service
+     * where the lines come from.
      *
      * @param  iterable<mixed>  $lines
      * @return array<string, mixed> ['ok' => true, 'found', 'summary', 'issues', 'lines', 'model'] or ['ok' => false, 'error']
      */
-    public static function run(iterable $lines, string $context, ?string $personal, string $empty): array
+    public static function run(iterable $lines, string $context, ?string $personal, string $empty, ?string $key = null): array
     {
-        $settings = Settings::current();
-        $key = Settings::key();
-        if ($key === null) {
+        // A half-broken panel may not reach its database: then the default service is used with the given key.
+        $settings = self::guarded(fn () => Settings::current(), ['provider' => Providers::default(), 'model' => Providers::model(Providers::default(), null)]);
+        $key ??= self::guarded(fn () => Settings::key());
+        if ($key === null || $key === '') {
             return ['ok' => false, 'error' => __('simplify-explain::explain.not_set_up')];
         }
         $lines = self::sanitize($lines);
