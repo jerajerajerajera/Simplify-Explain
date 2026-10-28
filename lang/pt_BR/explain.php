@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => 'Explicar',
+    'heading' => 'Verificação do log',
+    'close' => 'Fechar',
+    'checking' => 'Lendo e verificando o log…',
+    'again' => 'Tentar de novo',
+    'found' => 'Algo precisa de atenção',
+    'fine' => 'Tudo parece em ordem',
+    'noticed' => 'Notou alguma coisa?',
+    'try' => 'Tente isto',
+    'checked_by' => 'Verificado por :model, com base em :lines linha.|Verificado por :model, com base em :lines linhas.',
+    'not_set_up' => 'O Explain ainda não está configurado neste painel.',
+    'not_allowed' => 'Você não pode pedir a explicação deste log.',
+    'console_unreadable' => 'Não foi possível ler o console pelo Wings. Tente de novo quando o node estiver acessível.',
+    'console_empty' => 'O console está vazio, então ainda não há nada para explicar.',
+    'too_many' => 'Você fez muitas perguntas em pouco tempo. Tente de novo em :minutes minuto.|Você fez muitas perguntas em pouco tempo. Tente de novo em :minutes minutos.',
+    'daily_limit' => 'Este painel atingiu o limite diário de :limit explicações. Tente amanhã.',
+    'no_answer' => 'O :model não conseguiu explicar estas linhas. Tente de novo quando o erro aparecer outra vez.',
+];

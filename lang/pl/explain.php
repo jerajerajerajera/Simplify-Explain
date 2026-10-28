@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => 'Wyjaśnij',
+    'heading' => 'Sprawdzenie logu',
+    'close' => 'Zamknij',
+    'checking' => 'Czytanie i sprawdzanie logu…',
+    'again' => 'Spróbuj ponownie',
+    'found' => 'Coś wymaga uwagi',
+    'fine' => 'Wszystko wygląda w porządku',
+    'noticed' => 'Zauważyłeś coś?',
+    'try' => 'Spróbuj tego',
+    'checked_by' => 'Sprawdzone przez :model na podstawie :lines linii.|Sprawdzone przez :model na podstawie :lines linii.|Sprawdzone przez :model na podstawie :lines linii.',
+    'not_set_up' => 'Explain nie jest jeszcze skonfigurowany w tym panelu.',
+    'not_allowed' => 'Nie możesz wyjaśniać tego logu.',
+    'console_unreadable' => 'Nie udało się odczytać konsoli przez Wings. Spróbuj ponownie, gdy node będzie dostępny.',
+    'console_empty' => 'Konsola jest pusta, więc nie ma jeszcze czego wyjaśniać.',
+    'too_many' => 'Zadałeś dużo pytań w krótkim czasie. Spróbuj ponownie za :minutes min.',
+    'daily_limit' => 'Ten panel osiągnął dzienny limit :limit wyjaśnień. Spróbuj jutro.',
+    'no_answer' => ':model nie potrafił wyjaśnić tych linii. Spróbuj ponownie, gdy błąd znów się pojawi.',
+];

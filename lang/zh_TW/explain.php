@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => '解釋',
+    'heading' => '日誌檢查',
+    'close' => '關閉',
+    'checking' => '正在讀取並檢查日誌…',
+    'again' => '重試',
+    'found' => '有問題需要處理',
+    'fine' => '一切看起來正常',
+    'noticed' => '注意到什麼了嗎？',
+    'try' => '試試這些',
+    'checked_by' => '由 :model 根據 :lines 行日誌檢查。',
+    'not_set_up' => '此面板尚未設定 Explain。',
+    'not_allowed' => '你無權解釋此日誌。',
+    'console_unreadable' => '無法透過 Wings 讀取主控台。請在節點可連線時重試。',
+    'console_empty' => '主控台是空的，暫時沒有可解釋的內容。',
+    'too_many' => '你在短時間內提問太多。請在 :minutes 分鐘後重試。',
+    'daily_limit' => '此面板已達每日 :limit 次解釋的上限。請明天再試。',
+    'no_answer' => ':model 無法解釋這些行。請在錯誤再次出現時重試。',
+];

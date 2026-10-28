@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => 'Explain',
+    'heading' => 'Log check',
+    'close' => 'Close',
+    'checking' => 'Reading the log and checking it…',
+    'again' => 'Try again',
+    'found' => 'Something needs attention',
+    'fine' => 'Everything seems in order',
+    'noticed' => 'Noticed something?',
+    'try' => 'Try this',
+    'checked_by' => 'Checked by :model, based on :lines line.|Checked by :model, based on :lines lines.',
+    'not_set_up' => 'Explain is not set up on this panel yet.',
+    'not_allowed' => 'You may not explain this log.',
+    'console_unreadable' => 'Could not read the console from Wings. Try again when the node is reachable.',
+    'console_empty' => 'The console is empty, so there is nothing to explain yet.',
+    'too_many' => 'You asked a lot of questions in a short time. Try again in :minutes minute.|You asked a lot of questions in a short time. Try again in :minutes minutes.',
+    'daily_limit' => 'This panel reached its daily limit of :limit explanations. Try again tomorrow.',
+    'no_answer' => ':model could not explain these lines. Try again after the error shows up again.',
+];

@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => 'Explicar',
+    'heading' => 'Revisión del registro',
+    'close' => 'Cerrar',
+    'checking' => 'Leyendo y revisando el registro…',
+    'again' => 'Intentar de nuevo',
+    'found' => 'Algo necesita atención',
+    'fine' => 'Todo parece en orden',
+    'noticed' => '¿Has notado algo?',
+    'try' => 'Prueba esto',
+    'checked_by' => 'Revisado por :model, a partir de :lines línea.|Revisado por :model, a partir de :lines líneas.',
+    'not_set_up' => 'Explain aún no está configurado en este panel.',
+    'not_allowed' => 'No puedes pedir que se explique este registro.',
+    'console_unreadable' => 'No se pudo leer la consola desde Wings. Inténtalo de nuevo cuando el nodo esté disponible.',
+    'console_empty' => 'La consola está vacía, así que todavía no hay nada que explicar.',
+    'too_many' => 'Has hecho muchas preguntas en poco tiempo. Inténtalo de nuevo en :minutes minuto.|Has hecho muchas preguntas en poco tiempo. Inténtalo de nuevo en :minutes minutos.',
+    'daily_limit' => 'Este panel ha alcanzado su límite diario de :limit explicaciones. Inténtalo mañana.',
+    'no_answer' => ':model no pudo explicar estas líneas. Inténtalo de nuevo cuando el error vuelva a aparecer.',
+];
