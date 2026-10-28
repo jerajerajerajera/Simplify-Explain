@@ -1,0 +1,17 @@
+{
+    "id": "simplify-explain",
+    "name": "Simplify Explain",
+    "author": "jera",
+    "version": "1.0.0-dev",
+    "description": "Explains a server's console, the panel log or the Wings log in plain words, with steps to fix it. Uses your own API key for Claude, GPT or Gemini.",
+    "category": "plugin",
+    "namespace": "Simplify\\Explain",
+    "class": "SimplifyExplainPlugin",
+    "panels": [
+        "admin",
+        "server"
+    ],
+    "panel_version": "^1.0.0-beta38",
+    "api_version": 1,
+    "update_url": "https://hub.pelican.dev/plugins/simplify-explain/update.json"
+}
