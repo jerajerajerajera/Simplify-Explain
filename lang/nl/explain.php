@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => 'Uitleggen',
+    'heading' => 'Logcheck',
+    'close' => 'Sluiten',
+    'checking' => 'Log lezen en controleren…',
+    'again' => 'Opnieuw proberen',
+    'found' => 'Er is iets dat aandacht nodig heeft',
+    'fine' => 'Alles lijkt in orde',
+    'noticed' => 'Iets gemerkt?',
+    'try' => 'Probeer dit',
+    'checked_by' => 'Gecontroleerd door :model, op basis van :lines regel.|Gecontroleerd door :model, op basis van :lines regels.',
+    'not_set_up' => 'Explain is nog niet ingesteld op dit paneel.',
+    'not_allowed' => 'Je mag dit log niet laten uitleggen.',
+    'console_unreadable' => 'Kon de console niet lezen via Wings. Probeer het opnieuw als de node bereikbaar is.',
+    'console_empty' => 'De console is leeg, dus er is nog niets uit te leggen.',
+    'too_many' => 'Je hebt in korte tijd veel vragen gesteld. Probeer het over :minutes minuut opnieuw.|Je hebt in korte tijd veel vragen gesteld. Probeer het over :minutes minuten opnieuw.',
+    'daily_limit' => 'Dit paneel heeft de daglimiet van :limit uitleggen bereikt. Probeer het morgen opnieuw.',
+    'no_answer' => ':model kon deze regels niet uitleggen. Probeer het opnieuw als de fout weer verschijnt.',
+];

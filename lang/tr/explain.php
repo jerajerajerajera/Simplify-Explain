@@ -1,0 +1,21 @@
+<?php
+
+return [
+    'button' => 'Açıkla',
+    'heading' => 'Günlük kontrolü',
+    'close' => 'Kapat',
+    'checking' => 'Günlük okunuyor ve kontrol ediliyor…',
+    'again' => 'Tekrar dene',
+    'found' => 'Dikkat gerektiren bir şey var',
+    'fine' => 'Her şey yolunda görünüyor',
+    'noticed' => 'Bir şey mi fark ettin?',
+    'try' => 'Bunu dene',
+    'checked_by' => ':model tarafından :lines satıra göre kontrol edildi.|:model tarafından :lines satıra göre kontrol edildi.',
+    'not_set_up' => 'Explain bu panelde henüz ayarlanmadı.',
+    'not_allowed' => 'Bu günlüğü açıklatma iznin yok.',
+    'console_unreadable' => 'Konsol Wings üzerinden okunamadı. Node erişilebilir olduğunda tekrar dene.',
+    'console_empty' => 'Konsol boş, bu yüzden henüz açıklanacak bir şey yok.',
+    'too_many' => 'Kısa sürede çok soru sordun. :minutes dakika sonra tekrar dene.|Kısa sürede çok soru sordun. :minutes dakika sonra tekrar dene.',
+    'daily_limit' => 'Bu panel günlük :limit açıklama sınırına ulaştı. Yarın tekrar dene.',
+    'no_answer' => ':model bu satırları açıklayamadı. Hata yeniden görünce tekrar dene.',
+];

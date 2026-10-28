@@ -63,7 +63,7 @@ final class Settings
             'api_keys' => $keys === [] ? null : Crypt::encryptString(json_encode($keys, JSON_THROW_ON_ERROR)),
             'updated_at' => now(),
         ]);
-        self::$row = null;
+        self::flush();
     }
 
     /** The saved key of a service (the chosen one by default), or null. */
@@ -84,6 +84,12 @@ final class Settings
         $settings = self::current();
 
         return $settings['has_key'] && ($settings['audience'] === 'everyone' || $user->isAdmin());
+    }
+
+    /** Forgets the settings read in this request, after they were changed elsewhere. */
+    public static function flush(): void
+    {
+        self::$row = null;
     }
 
     /** @return array<string, string> */
