@@ -19,7 +19,7 @@ Simplify's add-on list.
 ## When the panel shows an error
 
 When the panel itself breaks, for example with a 500 error, its normal pages may not open. Explain has three ways
-around that, both for root admins:
+around that, all for root admins:
 
 - The plain page **`/simplify-explain/emergency`** checks the panel log or the Wings log of a node. It works while
   you are still signed in, and does not need Filament or the add-on list.
