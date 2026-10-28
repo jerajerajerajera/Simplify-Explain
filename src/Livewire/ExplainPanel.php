@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Simplify\Explain\Livewire;
 
+use App\Models\Node;
 use App\Models\Server;
 use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Locked;
@@ -13,11 +14,15 @@ use Simplify\Explain\Services\Explainer;
 /** The content of the Explain popup: checks the log once it opens and shows the answer. */
 final class ExplainPanel extends Component
 {
+    /** console (of serverId), panel, or wings (of nodeId). */
     #[Locked]
     public string $source = 'console';
 
     #[Locked]
     public ?int $serverId = null;
+
+    #[Locked]
+    public ?int $nodeId = null;
 
     /** @var array<string, mixed>|null */
     public ?array $result = null;
@@ -26,6 +31,8 @@ final class ExplainPanel extends Component
     {
         $this->result = match ($this->source) {
             'console' => Explainer::console(Server::findOrFail($this->serverId)),
+            'panel' => Explainer::panel(),
+            'wings' => Explainer::wings(Node::findOrFail($this->nodeId)),
             default => ['ok' => false, 'error' => __('simplify-explain::explain.not_allowed')],
         };
     }
