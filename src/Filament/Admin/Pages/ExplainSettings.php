@@ -75,31 +75,7 @@ final class ExplainSettings extends Page implements HasSchemas
                 ->description(__('simplify-explain::settings.service_help'))
                 ->columns(2)
                 ->schema([
-                    Select::make('provider')
-                        ->label(__('simplify-explain::settings.provider'))
-                        ->options(Providers::labels())
-                        ->selectablePlaceholder(false)
-                        ->required()
-                        ->live()
-                        ->afterStateUpdated(fn (Get $get, Set $set) => $set('model', Providers::model((string) $get('provider'), null))),
-                    Select::make('model')
-                        ->label(__('simplify-explain::settings.model'))
-                        ->options(fn (Get $get) => $this->modelOptions((string) $get('provider')))
-                        ->selectablePlaceholder(false)
-                        ->required(),
-                    TextInput::make('key')
-                        ->label(__('simplify-explain::settings.key'))
-                        ->password()
-                        ->autocomplete(false)
-                        ->maxLength(300)
-                        ->placeholder(fn (Get $get) => Settings::key((string) $get('provider'))
-                            ? __('simplify-explain::settings.key_saved')
-                            : Providers::get((string) $get('provider'))::keyPlaceholder())
-                        ->helperText(fn (Get $get) => __('simplify-explain::settings.key_help', [
-                            'page' => Providers::get((string) $get('provider'))::keyPage(),
-                            'company' => Providers::get((string) $get('provider'))::company(),
-                        ]))
-                        ->columnSpanFull(),
+                    ...self::serviceFields(),
                     Toggle::make('remove_key')
                         ->label(__('simplify-explain::settings.remove_key'))
                         ->visible(fn (Get $get) => Settings::key((string) $get('provider')) !== null),
@@ -114,17 +90,59 @@ final class ExplainSettings extends Page implements HasSchemas
                 ]),
             Section::make(__('simplify-explain::settings.access'))
                 ->schema([
-                    Select::make('audience')
-                        ->label(__('simplify-explain::settings.audience'))
-                        ->options([
-                            'everyone' => __('simplify-explain::settings.audience_everyone'),
-                            'admins' => __('simplify-explain::settings.audience_admins'),
-                        ])
-                        ->selectablePlaceholder(false)
-                        ->required()
-                        ->helperText(__('simplify-explain::settings.audience_help')),
+                    self::audienceField(),
                 ]),
         ]);
+    }
+
+    /**
+     * The AI service, its model and the API key; also asked in Simplify's setup.
+     *
+     * @return list<Select|TextInput>
+     */
+    public static function serviceFields(): array
+    {
+        return [
+            Select::make('provider')
+                ->label(__('simplify-explain::settings.provider'))
+                ->options(Providers::labels())
+                ->selectablePlaceholder(false)
+                ->required()
+                ->live()
+                ->afterStateUpdated(fn (Get $get, Set $set) => $set('model', Providers::model((string) $get('provider'), null))),
+            Select::make('model')
+                ->label(__('simplify-explain::settings.model'))
+                ->options(fn (Get $get) => self::modelOptions((string) $get('provider')))
+                ->selectablePlaceholder(false)
+                ->required(),
+            TextInput::make('key')
+                ->label(__('simplify-explain::settings.key'))
+                ->password()
+                ->autocomplete(false)
+                ->maxLength(300)
+                ->placeholder(fn (Get $get) => Settings::key((string) $get('provider'))
+                    ? __('simplify-explain::settings.key_saved')
+                    : Providers::get((string) $get('provider'))::keyPlaceholder())
+                ->helperText(fn (Get $get) => __('simplify-explain::settings.key_help', [
+                    'page' => Providers::get((string) $get('provider'))::keyPage(),
+                    'company' => Providers::get((string) $get('provider'))::company(),
+                ]))
+                ->columnSpanFull(),
+        ];
+    }
+
+    /** Who sees the Explain button; also asked in Simplify's setup. */
+    public static function audienceField(): Select
+    {
+        return Select::make('audience')
+            ->label(__('simplify-explain::settings.audience'))
+            ->options([
+                'everyone' => __('simplify-explain::settings.audience_everyone'),
+                'admins' => __('simplify-explain::settings.audience_admins'),
+            ])
+            ->selectablePlaceholder(false)
+            ->required()
+            ->helperText(__('simplify-explain::settings.audience_help'));
     }
 
     protected function getHeaderActions(): array
@@ -167,7 +185,7 @@ final class ExplainSettings extends Page implements HasSchemas
     }
 
     /** @return array<string, string> model id => "name (price)" */
-    private function modelOptions(string $provider): array
+    private static function modelOptions(string $provider): array
     {
         $class = Providers::get($provider);
         $options = [];

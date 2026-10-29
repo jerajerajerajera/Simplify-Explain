@@ -145,6 +145,19 @@ step('the add-on describes itself for Simplify', function () use ($admin) {
     must(in_array(ExplainAddon::class, $tagged, true), 'the add-on is not tagged');
 });
 
+step('Simplify\'s setup asks for the service, key and audience and saves them', function () use ($admin, $player) {
+    $addon = app(ExplainAddon::class);
+    auth()->login($player);
+    must($addon->setupFields() === [], 'a user without admin rights gets the setup fields');
+    auth()->login($admin);
+    $before = $addon->setupState();
+    must(count($addon->setupFields()) === 4 && $before['key'] === '', 'the setup fields are missing or the key is sent back');
+    $addon->saveSetup([...$before, 'audience' => 'everyone', 'key' => 'sk-setup-secret']);
+    must(Settings::key($before['provider']) === 'sk-setup-secret' && Settings::current()['audience'] === 'everyone', 'the setup answers were not saved');
+    $addon->saveSetup([...$before, 'audience' => 'everyone']);
+    must(Settings::key($before['provider']) === 'sk-setup-secret', 'an empty key in the setup removed the saved key');
+    Settings::save($before, removeKey: true);
+});
 $server = null;
 step('a test server is made', function () use ($admin, &$server) {
     $node = Node::factory()->create();
