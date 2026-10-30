@@ -20,15 +20,21 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Livewire\Livewire;
+use Simplify\Explain\Ai\Anthropic;
+use Simplify\Explain\Ai\Client;
+use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
 use Simplify\Explain\Services\EmergencyAccess;
+use Simplify\Explain\Services\LogCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
 
@@ -226,6 +232,57 @@ step('root admins can explain the Wings log of a node', function () use ($admin,
 step('other users cannot explain the panel or Wings log', function () use ($player, $server) {
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'panel'])->call('check')->assertSet('result.ok', false);
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'wings', 'nodeId' => $server->node_id])->call('check')->assertSet('result.ok', false);
+});
+$own = null;
+step('a customer with access gets an explanation, not with audience "admins"', function () use ($player, $server, &$own) {
+    $allocation = Allocation::factory()->create(['node_id' => $server->node_id, 'port' => 25572]);
+    $own = Server::factory()->create([
+        'owner_id' => $player->id,
+        'node_id' => $server->node_id,
+        'egg_id' => $server->egg_id,
+        'allocation_id' => $allocation->id,
+    ]);
+    $allocation->update(['server_id' => $own->id]);
+    Settings::save(['audience' => 'admins']);
+    Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.ok', false);
+    Settings::save(['audience' => 'everyone']);
+    Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.ok', true);
+});
+step('asking too often is limited per person and per panel', function () use ($admin, $server) {
+    $person = 'simplify-explain.user.'.$admin->id;
+    RateLimiter::clear($person);
+    RateLimiter::clear('simplify-explain.panel');
+    Cache::flush();
+    for ($i = 0; $i < LogCheck::PER_USER; $i++) {
+        RateLimiter::hit($person, 600);
+    }
+    $result = Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $server->id])->call('check')->get('result');
+    must($result['ok'] === false && str_contains($result['error'], trans_choice('simplify-explain::explain.too_many', 10, ['minutes' => 10])), 'no limit per person: '.json_encode($result));
+    RateLimiter::clear($person);
+    for ($i = 0; $i < LogCheck::PER_DAY; $i++) {
+        RateLimiter::hit('simplify-explain.panel', 86400);
+    }
+    $result = Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $server->id])->call('check')->get('result');
+    must($result['ok'] === false && $result['error'] === __('simplify-explain::explain.daily_limit', ['limit' => LogCheck::PER_DAY]), 'no daily limit: '.json_encode($result));
+    RateLimiter::clear('simplify-explain.panel');
+});
+step('Test checks the typed key with the chosen service and never shows the key', function () use ($admin) {
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    auth()->login($admin);
+    Http::fake(['api.openai.com/*' => Http::response(['error' => ['code' => 'invalid_api_key', 'message' => 'Incorrect API key provided: sk-typed-secret']], 401)]);
+    Livewire::actingAs($admin)
+        ->test(ExplainSettings::class)
+        ->set('data.provider', 'openai')
+        ->set('data.model', 'gpt-6-luna')
+        ->set('data.key', 'sk-typed-secret')
+        ->call('test');
+    Http::assertSent(fn (Request $request) => str_contains($request->url(), 'api.openai.com')
+        && $request->header('Authorization')[0] === 'Bearer sk-typed-secret'
+        && str_contains($request->body(), 'Reply with OK.'));
+    $failed = Client::test(OpenAi::class, 'sk-typed-secret', 'gpt-6-luna');
+    must(! $failed['ok'] && $failed['message'] === __('simplify-explain::errors.invalid_key', ['company' => 'OpenAI', 'status' => 401]), 'a wrong key is not reported in plain words');
+    $passed = Client::test(Anthropic::class, 'sk-ant-smoke', 'claude-haiku-5-5');
+    must($passed['ok'] && ! str_contains($passed['message'].$failed['message'], 'secret'), 'a working key is not reported, or the key is shown');
 });
 step('the emergency page opens for root admins only', function () use ($admin, $player) {
     $url = route('simplify-explain.emergency');
