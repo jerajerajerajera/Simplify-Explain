@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.3
+
+- Settings: Test sits in the head of the page next to Save, instead of a button inside the form. In Simplify's host mode
+  both are in the title bar.
+
 ## 1.0.2
 
 - Simplify's setup (from Simplify 1.3) now asks for the AI service, its API key and who may use Explain, in its last

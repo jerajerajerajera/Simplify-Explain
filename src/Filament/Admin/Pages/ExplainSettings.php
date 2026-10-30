@@ -12,7 +12,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -79,14 +78,6 @@ final class ExplainSettings extends Page implements HasSchemas
                     Toggle::make('remove_key')
                         ->label(__('simplify-explain::settings.remove_key'))
                         ->visible(fn (Get $get) => Settings::key((string) $get('provider')) !== null),
-                    Actions::make([
-                        Action::make('test')
-                            ->button()
-                            ->label(__('simplify-explain::settings.test'))
-                            ->icon('tabler-plug-connected')
-                            ->color('gray')
-                            ->action(fn () => $this->test()),
-                    ])->columnSpanFull(),
                 ]),
             Section::make(__('simplify-explain::settings.access'))
                 ->schema([
@@ -147,7 +138,13 @@ final class ExplainSettings extends Page implements HasSchemas
 
     protected function getHeaderActions(): array
     {
+        // Test and Save in the head of the page, as on Simplify's own pages (and in host mode's title bar).
         return [
+            Action::make('test')
+                ->label(__('simplify-explain::settings.test'))
+                ->icon('tabler-plug-connected')
+                ->color('gray')
+                ->action(fn () => $this->test()),
             Action::make('save')
                 ->label(__('simplify-explain::settings.save'))
                 ->icon('tabler-device-floppy')
