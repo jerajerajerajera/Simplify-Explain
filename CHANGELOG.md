@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.4
+
+- Under a problem Explain found, customers get an "Open a ticket" button to the panel's support link from Simplify's
+  settings, as in PelicanSimplify 0.7.0. Admins do not see it.
+
 ## 1.0.3
 
 - Settings: Test sits in the head of the page next to Save, instead of a button inside the form. In Simplify's host mode

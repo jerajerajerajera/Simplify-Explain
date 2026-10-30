@@ -11,6 +11,7 @@ return [
     'noticed' => 'Ką nors pastebėjote?',
     'try' => 'Pabandykite tai',
     'checked_by' => 'Patikrino :model pagal :lines eilutę.|Patikrino :model pagal :lines eilutes.|Patikrino :model pagal :lines eilučių.',
+    'ticket' => 'Pateikti užklausą',
     'panel_button' => 'Paaiškinti panelės žurnalą',
     'wings_button' => 'Paaiškinti Wings žurnalą',
     'not_set_up' => 'Explain šioje panelėje dar nenustatytas.',

@@ -11,6 +11,7 @@ return [
     'noticed' => 'Bạn nhận thấy điều gì?',
     'try' => 'Hãy thử',
     'checked_by' => 'Được :model kiểm tra, dựa trên :lines dòng.',
+    'ticket' => 'Gửi yêu cầu hỗ trợ',
     'panel_button' => 'Giải thích nhật ký panel',
     'wings_button' => 'Giải thích nhật ký Wings',
     'not_set_up' => 'Explain chưa được thiết lập trên panel này.',

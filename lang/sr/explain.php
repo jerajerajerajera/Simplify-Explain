@@ -11,6 +11,7 @@ return [
     'noticed' => 'Primetio si nešto?',
     'try' => 'Probaj ovo',
     'checked_by' => 'Proverio :model na osnovu :lines reda.|Proverio :model na osnovu :lines reda.|Proverio :model na osnovu :lines redova.',
+    'ticket' => 'Отвори тикет',
     'panel_button' => 'Objasni log panela',
     'wings_button' => 'Objasni Wings log',
     'not_set_up' => 'Explain još nije podešen na ovom panelu.',

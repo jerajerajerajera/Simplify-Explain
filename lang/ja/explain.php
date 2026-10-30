@@ -11,6 +11,7 @@ return [
     'noticed' => '何か気になることがありますか?',
     'try' => '試してみてください',
     'checked_by' => ':model が :lines 行をもとに確認しました。',
+    'ticket' => 'チケットを作成',
     'panel_button' => 'パネルのログを説明',
     'wings_button' => 'Wings のログを説明',
     'not_set_up' => 'このパネルではまだ Explain が設定されていません。',

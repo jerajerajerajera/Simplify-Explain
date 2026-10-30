@@ -11,6 +11,7 @@ return [
     'noticed' => 'Vous avez remarqué quelque chose ?',
     'try' => 'Essayez ceci',
     'checked_by' => 'Vérifié par :model, sur la base de :lines ligne.|Vérifié par :model, sur la base de :lines lignes.',
+    'ticket' => 'Ouvrir un ticket',
     'panel_button' => 'Expliquer le journal du panel',
     'wings_button' => 'Expliquer le journal Wings',
     'not_set_up' => 'Explain n\'est pas encore configuré sur ce panel.',

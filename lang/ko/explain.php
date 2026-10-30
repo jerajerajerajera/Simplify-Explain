@@ -11,6 +11,7 @@ return [
     'noticed' => '눈에 띈 점이 있나요?',
     'try' => '이렇게 해 보세요',
     'checked_by' => ':model이(가) :lines줄을 바탕으로 확인했습니다.',
+    'ticket' => '티켓 열기',
     'panel_button' => '패널 로그 설명',
     'wings_button' => 'Wings 로그 설명',
     'not_set_up' => '이 패널에는 아직 Explain이 설정되지 않았습니다.',

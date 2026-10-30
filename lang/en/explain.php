@@ -11,6 +11,7 @@ return [
     'noticed' => 'Noticed something?',
     'try' => 'Try this',
     'checked_by' => 'Checked by :model, based on :lines line.|Checked by :model, based on :lines lines.',
+    'ticket' => 'Open a ticket',
     'panel_button' => 'Explain panel log',
     'wings_button' => 'Explain Wings log',
     'not_set_up' => 'Explain is not set up on this panel yet.',

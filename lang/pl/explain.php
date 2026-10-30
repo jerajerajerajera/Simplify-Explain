@@ -11,6 +11,7 @@ return [
     'noticed' => 'Zauważyłeś coś?',
     'try' => 'Spróbuj tego',
     'checked_by' => 'Sprawdzone przez :model na podstawie :lines linii.|Sprawdzone przez :model na podstawie :lines linii.|Sprawdzone przez :model na podstawie :lines linii.',
+    'ticket' => 'Otwórz zgłoszenie',
     'panel_button' => 'Wyjaśnij log panelu',
     'wings_button' => 'Wyjaśnij log Wings',
     'not_set_up' => 'Explain nie jest jeszcze skonfigurowany w tym panelu.',
