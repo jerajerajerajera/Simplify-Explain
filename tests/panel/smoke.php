@@ -159,7 +159,7 @@ step('Simplify\'s setup asks for the service, key and audience and saves them', 
     must($addon->setupFields() === [], 'a user without admin rights gets the setup fields');
     auth()->login($admin);
     $before = $addon->setupState();
-    must(count($addon->setupFields()) === 4 && $before['key'] === '', 'the setup fields are missing or the key is sent back');
+    must(count($addon->setupFields()) === 5 && $before['key'] === '', 'the setup fields are missing or the key is sent back');
     $addon->saveSetup([...$before, 'audience' => 'everyone', 'key' => 'sk-setup-secret']);
     must(Settings::key($before['provider']) === 'sk-setup-secret' && Settings::current()['audience'] === 'everyone', 'the setup answers were not saved');
     $addon->saveSetup([...$before, 'audience' => 'everyone']);
@@ -300,6 +300,23 @@ step('Test checks the typed key with the chosen service and never shows the key'
     must(! $failed['ok'] && $failed['message'] === __('simplify-explain::errors.invalid_key', ['company' => 'OpenAI', 'status' => 401]), 'a wrong key is not reported in plain words');
     $passed = Client::test(Anthropic::class, 'sk-ant-smoke', 'claude-haiku-5-5');
     must($passed['ok'] && ! str_contains($passed['message'].$failed['message'], 'secret'), 'a working key is not reported, or the key is shown');
+});
+step('Ollama on the admin\'s own server explains the console without a key', function () use ($admin, $server) {
+    Http::fake(['192.168.1.10:11434/*' => Http::response(['message' => ['role' => 'assistant', 'content' => json_encode([
+        'found' => true, 'summary' => 'Flywheel is missing.', 'issues' => [['title' => 'Ollama saw Flywheel', 'cause' => 'Create needs it.', 'steps' => []]],
+    ])]])]);
+    Settings::save(['provider' => 'ollama', 'model' => 'qwen3:8b', 'key' => 'http://192.168.1.10:11434']);
+    must(Settings::current()['model'] === 'qwen3:8b' && Settings::current()['has_key'], 'the Ollama address or model was not saved');
+    Cache::flush();
+    Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $server->id])->call('check')->assertSet('result.summary', 'Flywheel is missing.');
+    Http::assertSent(fn (Request $request) => $request->url() === 'http://192.168.1.10:11434/api/chat'
+        && ! $request->hasHeader('Authorization') && str_contains($request->body(), 'qwen3:8b'));
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    auth()->login($admin);
+    $errors = Livewire::actingAs($admin)->test(ExplainSettings::class)->set('data.key', 'file:///etc/passwd')->call('save')->errors();
+    must($errors->has('data.key'), 'no error for an address that is not http(s)');
+    must(Settings::key('ollama') === 'http://192.168.1.10:11434', 'an address that is not http(s) was saved');
+    Settings::save(['provider' => 'anthropic', 'model' => 'claude-haiku-5-5']);
 });
 step('the emergency page opens for root admins only', function () use ($admin, $player) {
     $url = route('simplify-explain.emergency');

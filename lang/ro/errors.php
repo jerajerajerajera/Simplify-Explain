@@ -9,4 +9,6 @@ return [
     'busy' => ':company este ocupat pentru această cheie acum. Încearcă din nou peste un minut.',
     'unavailable' => ':company este temporar indisponibil. Încearcă din nou peste un minut.',
     'failed' => ':company nu a putut răspunde la această întrebare (eroare :status). Încearcă mai târziu.',
+    'server_unreachable' => 'Panoul nu poate ajunge la serverul :company la :host. Verifică adresa în setările Explain și dacă :company rulează.',
+    'server_model_missing' => 'Acest model nu este pe serverul tău :company. Descarcă-l cu "ollama pull" sau introdu alt model în setările Explain.',
 ];

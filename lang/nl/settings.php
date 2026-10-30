@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Het paneellog en het Wings-log kunnen gegevens van iedereen bevatten, dus alleen root-admins kunnen die laten uitleggen.',
     'save' => 'Opslaan',
     'saved' => 'Instellingen opgeslagen',
+    'address' => 'Adres',
+    'address_help' => 'Waar het paneel je :company-server bereikt. De logs blijven in je eigen netwerk en er wordt niets in rekening gebracht. Kleine modellen geven eenvoudigere antwoorden dan de online diensten.',
+    'address_invalid' => 'Vul een adres in dat begint met http:// of https://.',
+    'model_help_server' => 'De naam van een model dat je hebt gedownload met "ollama pull".',
+    'test_no_address' => 'Vul eerst het adres in.',
+    'test_passed_server' => ':company antwoordt',
+    'test_ok_server' => 'Het werkt met :model.',
 ];

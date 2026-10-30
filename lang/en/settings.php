@@ -26,4 +26,11 @@ return [
     'audience_help' => 'The panel log and the Wings log can hold anyone\'s details, so only root admins can explain those.',
     'save' => 'Save',
     'saved' => 'Settings saved',
+    'address' => 'Address',
+    'address_help' => 'Where the panel reaches your :company server. The logs stay on your own network and nothing is billed. Small models give simpler answers than the hosted services.',
+    'address_invalid' => 'Enter an address that starts with http:// or https://.',
+    'model_help_server' => 'The name of a model you downloaded with "ollama pull".',
+    'test_no_address' => 'Enter the address first.',
+    'test_passed_server' => ':company answers',
+    'test_ok_server' => 'It works with :model.',
 ];

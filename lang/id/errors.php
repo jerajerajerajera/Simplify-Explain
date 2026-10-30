@@ -9,4 +9,6 @@ return [
     'busy' => ':company sedang sibuk untuk kunci ini. Coba lagi dalam satu menit.',
     'unavailable' => ':company sedang tidak tersedia. Coba lagi dalam satu menit.',
     'failed' => ':company tidak dapat menjawab pertanyaan ini (galat :status). Coba lagi nanti.',
+    'server_unreachable' => 'Panel tidak dapat menjangkau server :company di :host. Periksa alamat di pengaturan Explain dan pastikan :company berjalan.',
+    'server_model_missing' => 'Model ini tidak ada di server :company Anda. Unduh dengan "ollama pull" atau masukkan model lain di pengaturan Explain.',
 ];

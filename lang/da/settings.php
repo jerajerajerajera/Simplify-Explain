@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Panelloggen og Wings-loggen kan indeholde alles oplysninger, så kun root-admins kan få dem forklaret.',
     'save' => 'Gem',
     'saved' => 'Indstillinger gemt',
+    'address' => 'Adresse',
+    'address_help' => 'Hvor panelet når din :company-server. Logfilerne bliver på dit eget netværk, og intet bliver faktureret. Små modeller giver enklere svar end de hostede tjenester.',
+    'address_invalid' => 'Skriv en adresse, der starter med http:// eller https://.',
+    'model_help_server' => 'Navnet på en model, du har hentet med "ollama pull".',
+    'test_no_address' => 'Skriv adressen først.',
+    'test_passed_server' => ':company svarer',
+    'test_ok_server' => 'Det virker med :model.',
 ];

@@ -26,4 +26,11 @@ return [
     'audience_help' => '패널 로그와 Wings 로그에는 누구의 정보든 들어 있을 수 있으므로 root 관리자만 설명을 요청할 수 있습니다.',
     'save' => '저장',
     'saved' => '설정이 저장되었습니다',
+    'address' => '주소',
+    'address_help' => '패널이 :company 서버에 연결하는 주소입니다. 로그는 내 네트워크 안에 머물고 요금이 청구되지 않습니다. 작은 모델은 호스팅 서비스보다 단순한 답변을 줍니다.',
+    'address_invalid' => 'http:// 또는 https://로 시작하는 주소를 입력하세요.',
+    'model_help_server' => '"ollama pull"로 내려받은 모델 이름입니다.',
+    'test_no_address' => '먼저 주소를 입력하세요.',
+    'test_passed_server' => ':company 응답함',
+    'test_ok_server' => ':model에서 작동합니다.',
 ];

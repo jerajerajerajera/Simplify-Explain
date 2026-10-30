@@ -9,4 +9,6 @@ return [
     'busy' => ':company on juuri nyt ruuhkautunut tälle avaimelle. Yritä minuutin päästä uudelleen.',
     'unavailable' => ':company ei ole tilapäisesti käytettävissä. Yritä minuutin päästä uudelleen.',
     'failed' => ':company ei pystynyt vastaamaan (virhe :status). Yritä myöhemmin uudelleen.',
+    'server_unreachable' => 'Paneeli ei tavoita :company-palvelinta osoitteessa :host. Tarkista osoite Explainin asetuksista ja että :company on käynnissä.',
+    'server_model_missing' => 'Tätä mallia ei ole :company-palvelimellasi. Lataa se komennolla "ollama pull" tai anna toinen malli Explainin asetuksissa.',
 ];

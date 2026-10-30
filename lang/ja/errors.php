@@ -9,4 +9,6 @@ return [
     'busy' => ':company はこのキーで混み合っています。1分後にもう一度お試しください。',
     'unavailable' => ':company は一時的に利用できません。1分後にもう一度お試しください。',
     'failed' => ':company はこの質問に回答できませんでした (エラー :status)。後でもう一度お試しください。',
+    'server_unreachable' => 'パネルが :host の :company サーバーに接続できません。Explain の設定のアドレスと、:company が起動していることを確認してください。',
+    'server_model_missing' => 'このモデルは :company サーバーにありません。"ollama pull" でダウンロードするか、Explain の設定で別のモデルを入力してください。',
 ];

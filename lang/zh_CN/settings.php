@@ -26,4 +26,11 @@ return [
     'audience_help' => '面板日志和 Wings 日志可能包含任何人的信息，因此只有 root 管理员才能请求解释。',
     'save' => '保存',
     'saved' => '设置已保存',
+    'address' => '地址',
+    'address_help' => '面板访问你的 :company 服务器所用的地址。日志留在你自己的网络中，不产生费用。小模型的回答比托管服务更简单。',
+    'address_invalid' => '请输入以 http:// 或 https:// 开头的地址。',
+    'model_help_server' => '用 "ollama pull" 下载的模型名称。',
+    'test_no_address' => '请先输入地址。',
+    'test_passed_server' => ':company 已响应',
+    'test_ok_server' => '可与 :model 配合使用。',
 ];

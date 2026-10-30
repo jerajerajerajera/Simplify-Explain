@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Log panela i Wings log mogu sadržati bilo čije podatke, pa samo root admini mogu da traže njihovo objašnjenje.',
     'save' => 'Sačuvaj',
     'saved' => 'Podešavanja sačuvana',
+    'address' => 'Adresa',
+    'address_help' => 'Adresa na kojoj panel pronalazi tvoj :company server. Logovi ostaju u tvojoj mreži i ništa se ne naplaćuje. Mali modeli daju jednostavnije odgovore od hostovanih servisa.',
+    'address_invalid' => 'Unesi adresu koja počinje sa http:// ili https://.',
+    'model_help_server' => 'Ime modela koji si preuzeo komandom "ollama pull".',
+    'test_no_address' => 'Prvo unesi adresu.',
+    'test_passed_server' => ':company odgovara',
+    'test_ok_server' => 'Radi sa :model.',
 ];

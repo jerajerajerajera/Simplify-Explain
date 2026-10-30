@@ -9,4 +9,6 @@ return [
     'busy' => ':company è occupato per questa chiave. Riprova tra un minuto.',
     'unavailable' => ':company non è disponibile al momento. Riprova tra un minuto.',
     'failed' => ':company non è riuscito a rispondere (errore :status). Riprova più tardi.',
+    'server_unreachable' => 'Il pannello non raggiunge il server :company su :host. Controlla l\'indirizzo nelle impostazioni di Explain e che :company sia in esecuzione.',
+    'server_model_missing' => 'Questo modello non è sul tuo server :company. Scaricalo con "ollama pull" o inserisci un altro modello nelle impostazioni di Explain.',
 ];

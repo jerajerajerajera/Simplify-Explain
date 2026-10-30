@@ -26,4 +26,11 @@ return [
     'audience_help' => 'O registo do painel e o do Wings podem conter dados de qualquer pessoa, por isso só os root admins os podem mandar explicar.',
     'save' => 'Guardar',
     'saved' => 'Definições guardadas',
+    'address' => 'Endereço',
+    'address_help' => 'Onde o painel encontra o seu servidor :company. Os registos ficam na sua própria rede e nada é cobrado. Modelos pequenos dão respostas mais simples do que os serviços alojados.',
+    'address_invalid' => 'Introduza um endereço que comece por http:// ou https://.',
+    'model_help_server' => 'O nome de um modelo que transferiu com "ollama pull".',
+    'test_no_address' => 'Introduza primeiro o endereço.',
+    'test_passed_server' => ':company responde',
+    'test_ok_server' => 'Funciona com :model.',
 ];

@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Le journal du panel et le journal Wings peuvent contenir les données de n\'importe qui, seuls les root admins peuvent donc les faire expliquer.',
     'save' => 'Enregistrer',
     'saved' => 'Paramètres enregistrés',
+    'address' => 'Adresse',
+    'address_help' => 'L\'adresse à laquelle le panneau joint votre serveur :company. Les journaux restent sur votre propre réseau et rien n\'est facturé. Les petits modèles donnent des réponses plus simples que les services hébergés.',
+    'address_invalid' => 'Saisissez une adresse qui commence par http:// ou https://.',
+    'model_help_server' => 'Le nom d\'un modèle téléchargé avec « ollama pull ».',
+    'test_no_address' => 'Saisissez d\'abord l\'adresse.',
+    'test_passed_server' => ':company répond',
+    'test_ok_server' => 'Cela fonctionne avec :model.',
 ];

@@ -26,4 +26,11 @@ return [
     'audience_help' => 'El registro del panel y el de Wings pueden contener datos de cualquiera, así que solo los root admins pueden pedir que se expliquen.',
     'save' => 'Guardar',
     'saved' => 'Ajustes guardados',
+    'address' => 'Dirección',
+    'address_help' => 'Dónde el panel encuentra tu servidor de :company. Los registros se quedan en tu propia red y no se cobra nada. Los modelos pequeños dan respuestas más simples que los servicios alojados.',
+    'address_invalid' => 'Escribe una dirección que empiece por http:// o https://.',
+    'model_help_server' => 'El nombre de un modelo que descargaste con "ollama pull".',
+    'test_no_address' => 'Escribe primero la dirección.',
+    'test_passed_server' => ':company responde',
+    'test_ok_server' => 'Funciona con :model.',
 ];

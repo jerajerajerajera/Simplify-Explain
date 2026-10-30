@@ -9,4 +9,6 @@ return [
     'busy' => ':company är upptagen för den här nyckeln just nu. Försök igen om en minut.',
     'unavailable' => ':company är tillfälligt otillgänglig. Försök igen om en minut.',
     'failed' => ':company kunde inte svara på frågan (fel :status). Försök igen senare.',
+    'server_unreachable' => 'Panelen når inte :company-servern på :host. Kontrollera adressen i Explains inställningar och att :company körs.',
+    'server_model_missing' => 'Den här modellen finns inte på din :company-server. Ladda ner den med "ollama pull" eller ange en annan modell i Explains inställningar.',
 ];

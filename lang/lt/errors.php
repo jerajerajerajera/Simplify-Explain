@@ -9,4 +9,6 @@ return [
     'busy' => ':company šiuo metu užimtas šiam raktui. Bandykite po minutės.',
     'unavailable' => ':company laikinai nepasiekiamas. Bandykite po minutės.',
     'failed' => ':company negalėjo atsakyti į šį klausimą (klaida :status). Bandykite vėliau.',
+    'server_unreachable' => 'Skydelis negali pasiekti :company serverio adresu :host. Patikrinkite adresą Explain nustatymuose ir ar :company veikia.',
+    'server_model_missing' => 'Šio modelio nėra jūsų :company serveryje. Atsisiųskite jį komanda "ollama pull" arba Explain nustatymuose įveskite kitą modelį.',
 ];

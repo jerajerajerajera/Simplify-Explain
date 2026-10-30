@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Nhật ký panel và nhật ký Wings có thể chứa dữ liệu của bất kỳ ai, nên chỉ root admin mới có thể yêu cầu giải thích chúng.',
     'save' => 'Lưu',
     'saved' => 'Đã lưu cài đặt',
+    'address' => 'Địa chỉ',
+    'address_help' => 'Địa chỉ để bảng điều khiển kết nối tới máy chủ :company của bạn. Nhật ký vẫn nằm trong mạng của bạn và không bị tính phí. Mô hình nhỏ cho câu trả lời đơn giản hơn các dịch vụ trực tuyến.',
+    'address_invalid' => 'Nhập địa chỉ bắt đầu bằng http:// hoặc https://.',
+    'model_help_server' => 'Tên một mô hình bạn đã tải bằng "ollama pull".',
+    'test_no_address' => 'Hãy nhập địa chỉ trước.',
+    'test_passed_server' => ':company đã trả lời',
+    'test_ok_server' => 'Hoạt động với :model.',
 ];
