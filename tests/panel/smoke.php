@@ -27,6 +27,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Livewire\Livewire;
+use Simplify\Core\Support\PanelSettings;
 use Simplify\Explain\Ai\Anthropic;
 use Simplify\Explain\Ai\Client;
 use Simplify\Explain\Ai\OpenAi;
@@ -37,6 +38,7 @@ use Simplify\Explain\Services\EmergencyAccess;
 use Simplify\Explain\Services\LogCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
+use Simplify\Hosting\Providers\HostingServiceProvider;
 
 define('LARAVEL_START', microtime(true));
 require getcwd().'/vendor/autoload.php';
@@ -247,6 +249,21 @@ step('a customer with access gets an explanation, not with audience "admins"', f
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.ok', false);
     Settings::save(['audience' => 'everyone']);
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.ok', true);
+});
+step('customers get "Open a ticket" only with Simplify Hosting and a support link', function () use ($player, &$own) {
+    if (! class_exists('Simplify\Core\Support\PanelSettings')) {
+        require __DIR__.'/stubs/PanelSettings.php';
+    }
+    PanelSettings::$values = ['support_url' => 'https://support.example.com/ticket'];
+    $html = fn () => Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.found', true)->html();
+    must(! str_contains($html(), 'https://support.example.com/ticket'), 'the ticket link shows without Simplify Hosting');
+    if (! class_exists('Simplify\Hosting\Providers\HostingServiceProvider')) {
+        require __DIR__.'/stubs/HostingServiceProvider.php';
+    }
+    app()->register(HostingServiceProvider::class);
+    must(str_contains($html(), 'https://support.example.com/ticket'), 'no ticket link for a customer with Simplify Hosting');
+    PanelSettings::$values = [];
+    must(! str_contains($html(), __('simplify-explain::explain.ticket')), 'the ticket link shows without a support link');
 });
 step('asking too often is limited per person and per panel', function () use ($admin, $server) {
     $person = 'simplify-explain.user.'.$admin->id;

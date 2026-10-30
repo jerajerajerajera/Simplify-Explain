@@ -11,6 +11,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Simplify\Core\Support\PanelSettings;
 use Simplify\Explain\Services\Explainer;
+use Simplify\Hosting\Providers\HostingServiceProvider;
 
 /** The content of the Explain popup: checks the log once it opens and shows the answer. */
 final class ExplainPanel extends Component
@@ -38,10 +39,13 @@ final class ExplainPanel extends Component
         };
     }
 
-    /** For customers: the panel's support link from Simplify's settings, under a problem the answer found. */
+    /**
+     * For customers of a host: the panel's support link from Simplify's settings, under a problem the answer found.
+     * Only with Simplify Hosting loaded; a panel without customers has no use for a ticket.
+     */
     public function supportUrl(): ?string
     {
-        if (user()?->isAdmin() || ! class_exists(PanelSettings::class)) {
+        if (user()?->isAdmin() || ! class_exists(PanelSettings::class) || ! app()->providerIsLoaded(HostingServiceProvider::class)) {
             return null;
         }
         $url = PanelSettings::get('support_url');
