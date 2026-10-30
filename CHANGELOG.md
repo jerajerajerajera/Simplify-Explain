@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- "Open a ticket" under a problem Explain found only shows when Simplify Hosting is installed and a support link is
+  set in Simplify's settings.
+
 ## 1.0.5
 
 - The settings page no longer scrolls as a whole page with Simplify 1.5: the form scrolls under the page title.
