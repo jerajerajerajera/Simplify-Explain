@@ -11,6 +11,7 @@ return [
     'noticed' => 'هل لاحظت شيئاً؟',
     'try' => 'جرّب هذا',
     'checked_by' => 'فحصه :model استناداً إلى :lines من الأسطر.',
+    'ticket' => 'فتح تذكرة',
     'panel_button' => 'اشرح سجل اللوحة',
     'wings_button' => 'اشرح سجل Wings',
     'not_set_up' => 'لم يتم إعداد Explain على هذه اللوحة بعد.',

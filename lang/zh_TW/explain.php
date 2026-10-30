@@ -11,6 +11,7 @@ return [
     'noticed' => '注意到什麼了嗎？',
     'try' => '試試這些',
     'checked_by' => '由 :model 根據 :lines 行日誌檢查。',
+    'ticket' => '提交工單',
     'panel_button' => '解釋面板日誌',
     'wings_button' => '解釋 Wings 日誌',
     'not_set_up' => '此面板尚未設定 Explain。',

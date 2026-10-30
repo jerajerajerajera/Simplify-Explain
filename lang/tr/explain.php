@@ -11,6 +11,7 @@ return [
     'noticed' => 'Bir şey mi fark ettin?',
     'try' => 'Bunu dene',
     'checked_by' => ':model tarafından :lines satıra göre kontrol edildi.|:model tarafından :lines satıra göre kontrol edildi.',
+    'ticket' => 'Destek talebi aç',
     'panel_button' => 'Panel günlüğünü açıkla',
     'wings_button' => 'Wings günlüğünü açıkla',
     'not_set_up' => 'Explain bu panelde henüz ayarlanmadı.',

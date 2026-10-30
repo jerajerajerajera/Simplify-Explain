@@ -11,6 +11,7 @@ return [
     'noticed' => 'Щось помітили?',
     'try' => 'Спробуйте так',
     'checked_by' => 'Перевірено :model за :lines рядком.|Перевірено :model за :lines рядками.|Перевірено :model за :lines рядками.',
+    'ticket' => 'Створити заявку',
     'panel_button' => 'Пояснити лог панелі',
     'wings_button' => 'Пояснити лог Wings',
     'not_set_up' => 'Explain ще не налаштовано на цій панелі.',

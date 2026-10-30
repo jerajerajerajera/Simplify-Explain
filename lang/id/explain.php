@@ -11,6 +11,7 @@ return [
     'noticed' => 'Melihat sesuatu?',
     'try' => 'Coba ini',
     'checked_by' => 'Diperiksa oleh :model, berdasarkan :lines baris.',
+    'ticket' => 'Buka tiket',
     'panel_button' => 'Jelaskan log panel',
     'wings_button' => 'Jelaskan log Wings',
     'not_set_up' => 'Explain belum diatur di panel ini.',

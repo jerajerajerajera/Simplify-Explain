@@ -11,6 +11,7 @@ return [
     'noticed' => 'Všiml sis něčeho?',
     'try' => 'Zkus tohle',
     'checked_by' => 'Zkontroloval :model na základě :lines řádku.|Zkontroloval :model na základě :lines řádků.|Zkontroloval :model na základě :lines řádků.',
+    'ticket' => 'Otevřít tiket',
     'panel_button' => 'Vysvětlit log panelu',
     'wings_button' => 'Vysvětlit log Wings',
     'not_set_up' => 'Explain zatím na tomto panelu není nastaven.',

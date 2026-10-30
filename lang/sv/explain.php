@@ -11,6 +11,7 @@ return [
     'noticed' => 'Märkt något?',
     'try' => 'Prova detta',
     'checked_by' => 'Kontrollerad av :model, utifrån :lines rad.|Kontrollerad av :model, utifrån :lines rader.',
+    'ticket' => 'Skapa ett ärende',
     'panel_button' => 'Förklara panelloggen',
     'wings_button' => 'Förklara Wings-loggen',
     'not_set_up' => 'Explain är inte inställt på den här panelen än.',

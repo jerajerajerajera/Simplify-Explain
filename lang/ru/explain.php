@@ -11,6 +11,7 @@ return [
     'noticed' => 'Что-то заметили?',
     'try' => 'Попробуйте так',
     'checked_by' => 'Проверено :model по :lines строке.|Проверено :model по :lines строкам.|Проверено :model по :lines строкам.',
+    'ticket' => 'Создать тикет',
     'panel_button' => 'Объяснить лог панели',
     'wings_button' => 'Объяснить лог Wings',
     'not_set_up' => 'Explain ещё не настроен на этой панели.',

@@ -11,6 +11,7 @@ return [
     'noticed' => 'Ai observat ceva?',
     'try' => 'Încearcă asta',
     'checked_by' => 'Verificat de :model, pe baza a :lines linii.',
+    'ticket' => 'Deschideți un tichet',
     'panel_button' => 'Explică jurnalul panoului',
     'wings_button' => 'Explică jurnalul Wings',
     'not_set_up' => 'Explain nu este încă configurat pe acest panou.',

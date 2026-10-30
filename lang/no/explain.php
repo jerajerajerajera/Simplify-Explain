@@ -11,6 +11,7 @@ return [
     'noticed' => 'Har du lagt merke til noe?',
     'try' => 'Prøv dette',
     'checked_by' => 'Sjekket av :model ut fra :lines linje.|Sjekket av :model ut fra :lines linjer.',
+    'ticket' => 'Opprett en sak',
     'panel_button' => 'Forklar panelloggen',
     'wings_button' => 'Forklar Wings-loggen',
     'not_set_up' => 'Explain er ikke satt opp på dette panelet ennå.',

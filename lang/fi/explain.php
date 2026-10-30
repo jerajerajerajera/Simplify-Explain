@@ -11,6 +11,7 @@ return [
     'noticed' => 'Huomasitko jotain?',
     'try' => 'Kokeile tätä',
     'checked_by' => 'Tarkistanut :model, :lines rivin perusteella.|Tarkistanut :model, :lines rivin perusteella.',
+    'ticket' => 'Avaa tiketti',
     'panel_button' => 'Selitä paneelin loki',
     'wings_button' => 'Selitä Wings-loki',
     'not_set_up' => 'Explainia ei ole vielä otettu käyttöön tässä paneelissa.',

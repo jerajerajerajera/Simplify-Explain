@@ -48,6 +48,14 @@
             @endforeach
         @endif
 
+        @if ($result['found'] && ($support = $this->supportUrl()))
+            <div>
+                <x-filament::button tag="a" :href="$support" target="_blank" rel="noopener" color="gray" size="sm" icon="tabler-lifebuoy">
+                    {{ __('simplify-explain::explain.ticket') }}
+                </x-filament::button>
+            </div>
+        @endif
+
         @if ($result['model'])
             <div style="font-size: 0.75rem; opacity: 0.7;">
                 {{ trans_choice('simplify-explain::explain.checked_by', $result['lines'], ['model' => $result['model'], 'lines' => $result['lines']]) }}

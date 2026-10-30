@@ -11,6 +11,7 @@ return [
     'noticed' => 'Παρατήρησες κάτι;',
     'try' => 'Δοκίμασε αυτό',
     'checked_by' => 'Ελέγχθηκε από το :model, με βάση :lines γραμμή.|Ελέγχθηκε από το :model, με βάση :lines γραμμές.',
+    'ticket' => 'Άνοιγμα αιτήματος',
     'panel_button' => 'Εξήγηση log του panel',
     'wings_button' => 'Εξήγηση log του Wings',
     'not_set_up' => 'Το Explain δεν έχει ρυθμιστεί ακόμα σε αυτό το panel.',

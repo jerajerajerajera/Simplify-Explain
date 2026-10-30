@@ -11,6 +11,7 @@ return [
     'noticed' => 'Észrevettél valamit?',
     'try' => 'Próbáld ezt',
     'checked_by' => 'Ellenőrizte: :model, :lines sor alapján.|Ellenőrizte: :model, :lines sor alapján.',
+    'ticket' => 'Jegy nyitása',
     'panel_button' => 'Panelnapló magyarázata',
     'wings_button' => 'Wings napló magyarázata',
     'not_set_up' => 'Az Explain még nincs beállítva ezen a panelen.',

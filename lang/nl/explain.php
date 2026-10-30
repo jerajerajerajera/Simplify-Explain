@@ -11,6 +11,7 @@ return [
     'noticed' => 'Iets gemerkt?',
     'try' => 'Probeer dit',
     'checked_by' => 'Gecontroleerd door :model, op basis van :lines regel.|Gecontroleerd door :model, op basis van :lines regels.',
+    'ticket' => 'Ticket openen',
     'panel_button' => 'Paneellog uitleggen',
     'wings_button' => 'Wings-log uitleggen',
     'not_set_up' => 'Explain is nog niet ingesteld op dit paneel.',

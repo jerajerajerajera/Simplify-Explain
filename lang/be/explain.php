@@ -11,6 +11,7 @@ return [
     'noticed' => 'Нешта заўважылі?',
     'try' => 'Паспрабуйце так',
     'checked_by' => 'Праверана :model па :lines радку.|Праверана :model па :lines радках.|Праверана :model па :lines радках.',
+    'ticket' => 'Стварыць заяўку',
     'panel_button' => 'Растлумачыць лог панэлі',
     'wings_button' => 'Растлумачыць лог Wings',
     'not_set_up' => 'Explain яшчэ не наладжаны на гэтай панэлі.',

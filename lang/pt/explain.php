@@ -11,6 +11,7 @@ return [
     'noticed' => 'Notaste alguma coisa?',
     'try' => 'Experimenta isto',
     'checked_by' => 'Verificado por :model, com base em :lines linha.|Verificado por :model, com base em :lines linhas.',
+    'ticket' => 'Abrir um pedido',
     'panel_button' => 'Explicar registo do painel',
     'wings_button' => 'Explicar registo do Wings',
     'not_set_up' => 'O Explain ainda não está configurado neste painel.',
