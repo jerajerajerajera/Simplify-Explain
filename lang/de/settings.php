@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Das Panel-Log und das Wings-Log können Daten aller Nutzer enthalten, daher können nur Root-Admins diese erklären lassen.',
     'save' => 'Speichern',
     'saved' => 'Einstellungen gespeichert',
+    'address' => 'Adresse',
+    'address_help' => 'Unter dieser Adresse erreicht das Panel deinen :company-Server. Die Logs bleiben in deinem eigenen Netzwerk und es fallen keine Kosten an. Kleine Modelle geben einfachere Antworten als die gehosteten Dienste.',
+    'address_invalid' => 'Gib eine Adresse ein, die mit http:// oder https:// beginnt.',
+    'model_help_server' => 'Der Name eines Modells, das du mit "ollama pull" heruntergeladen hast.',
+    'test_no_address' => 'Gib zuerst die Adresse ein.',
+    'test_passed_server' => ':company antwortet',
+    'test_ok_server' => 'Es funktioniert mit :model.',
 ];

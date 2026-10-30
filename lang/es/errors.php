@@ -9,4 +9,6 @@ return [
     'busy' => ':company está ocupado para esta clave ahora mismo. Inténtalo de nuevo en un minuto.',
     'unavailable' => ':company no está disponible temporalmente. Inténtalo de nuevo en un minuto.',
     'failed' => ':company no pudo responder a esta pregunta (error :status). Inténtalo más tarde.',
+    'server_unreachable' => 'El panel no puede conectar con el servidor de :company en :host. Revisa la dirección en los ajustes de Explain y que :company esté en marcha.',
+    'server_model_missing' => 'Este modelo no está en tu servidor de :company. Descárgalo con "ollama pull" o escribe otro modelo en los ajustes de Explain.',
 ];

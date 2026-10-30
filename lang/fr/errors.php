@@ -9,4 +9,6 @@ return [
     'busy' => ':company est surchargé pour cette clé. Réessayez dans une minute.',
     'unavailable' => ':company est temporairement indisponible. Réessayez dans une minute.',
     'failed' => ':company n\'a pas pu répondre à cette question (erreur :status). Réessayez plus tard.',
+    'server_unreachable' => 'Le panneau ne peut pas joindre le serveur :company à :host. Vérifiez l\'adresse dans les réglages d\'Explain et que :company est lancé.',
+    'server_model_missing' => 'Ce modèle n\'est pas sur votre serveur :company. Téléchargez-le avec « ollama pull » ou saisissez un autre modèle dans les réglages d\'Explain.',
 ];

@@ -26,4 +26,11 @@ return [
     'audience_help' => 'A panel naplója és a Wings napló bárki adatait tartalmazhatja, ezért ezeket csak root adminok kérhetik magyarázatra.',
     'save' => 'Mentés',
     'saved' => 'Beállítások mentve',
+    'address' => 'Cím',
+    'address_help' => 'Ezen a címen éri el a panel a :company-szerveredet. A naplók a saját hálózatodban maradnak, és nincs költség. A kis modellek egyszerűbb válaszokat adnak, mint a felhős szolgáltatások.',
+    'address_invalid' => 'Adj meg egy http:// vagy https:// kezdetű címet.',
+    'model_help_server' => 'Egy modell neve, amelyet az "ollama pull" paranccsal töltöttél le.',
+    'test_no_address' => 'Előbb add meg a címet.',
+    'test_passed_server' => 'A(z) :company válaszol',
+    'test_ok_server' => 'Működik ezzel: :model.',
 ];

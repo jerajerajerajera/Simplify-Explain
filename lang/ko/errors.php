@@ -9,4 +9,6 @@ return [
     'busy' => '지금 이 키로는 :company가 혼잡합니다. 1분 뒤에 다시 시도하세요.',
     'unavailable' => ':company를 일시적으로 사용할 수 없습니다. 1분 뒤에 다시 시도하세요.',
     'failed' => ':company가 이 질문에 답하지 못했습니다(오류 :status). 나중에 다시 시도하세요.',
+    'server_unreachable' => '패널이 :host의 :company 서버에 연결할 수 없습니다. Explain 설정의 주소와 :company가 실행 중인지 확인하세요.',
+    'server_model_missing' => '이 모델은 :company 서버에 없습니다. "ollama pull"로 내려받거나 Explain 설정에서 다른 모델을 입력하세요.',
 ];

@@ -6,6 +6,7 @@ declare(strict_types=1);
 use Simplify\Explain\Ai\Anthropic;
 use Simplify\Explain\Ai\Client;
 use Simplify\Explain\Ai\Gemini;
+use Simplify\Explain\Ai\Ollama;
 use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\Ai\Providers;
 
@@ -34,6 +35,16 @@ check('gemini: no additionalProperties', ! str_contains(json_encode($gemini['bod
 check('gemini: text skips thoughts', Gemini::text(['candidates' => [['content' => ['parts' => [['thought' => true, 'text' => 'x'], ['text' => 'y']]]]]]) === 'y');
 check('gemini: blocked', Gemini::text(['candidates' => [['finishReason' => 'SAFETY']]]) === null);
 
+$ollama = Ollama::request('http://192.168.1.10:11434/', 'qwen3:8b', 'help', $schema, 'log');
+check('ollama: chat on the saved address', $ollama['url'] === 'http://192.168.1.10:11434/api/chat' && $ollama['headers'] === []);
+check('ollama: schema and no stream', $ollama['body']['format'] === $schema && $ollama['body']['stream'] === false && $ollama['body']['model'] === 'qwen3:8b');
+check('ollama: only http and https', Ollama::request('file:///etc/passwd', 'm', 'h', $schema, 'l')['url'] === ''
+    && Ollama::request('gopher://x', 'm', 'h', $schema, 'l')['url'] === '' && Ollama::request('http://u:p@x', 'm', 'h', $schema, 'l')['url'] === '');
+check('ollama: text', Ollama::text(['message' => ['role' => 'assistant', 'content' => '{"x":1}']]) === '{"x":1}' && Ollama::text([]) === null);
+check('ollama: missing model', Ollama::failure(404, ['error' => 'model "x" not found']) === 'server_model_missing');
+check('ollama: any model name, unsafe ones fall back', Providers::model('ollama', 'qwen3:8b') === 'qwen3:8b'
+    && Providers::model('ollama', 'a b;rm') === 'llama3.3' && Providers::model('anthropic', 'qwen3:8b') === 'claude-opus-5-5');
+
 check('failure: 401', Anthropic::failure(401, []) === 'invalid_key');
 check('failure: gemini bad key', Gemini::failure(400, ['error' => ['message' => 'API key not valid. Please pass a valid API key.']]) === 'invalid_key');
 check('failure: no credit', OpenAi::failure(429, ['error' => ['code' => 'insufficient_quota']]) === 'no_credit');
@@ -48,7 +59,7 @@ check('providers: own model stays', Providers::model('openai', 'gpt-6-luna') ===
 foreach (Providers::ALL as $class) {
     foreach ($class::models() as $model => $tier) {
         check("$model has a known tier", in_array($tier, ['best', 'balanced', 'cheapest'], true));
-        check("$model has a name", $class::modelName($model) !== $model);
+        check("$model has a name", $class::selfHosted() || $class::modelName($model) !== $model);
     }
 }
 

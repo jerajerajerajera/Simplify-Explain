@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Log panel dan log Wings bisa berisi data siapa saja, jadi hanya root admin yang bisa meminta penjelasannya.',
     'save' => 'Simpan',
     'saved' => 'Pengaturan disimpan',
+    'address' => 'Alamat',
+    'address_help' => 'Alamat tempat panel menjangkau server :company Anda. Log tetap di jaringan Anda sendiri dan tidak ada biaya. Model kecil memberi jawaban yang lebih sederhana daripada layanan yang dihosting.',
+    'address_invalid' => 'Masukkan alamat yang diawali http:// atau https://.',
+    'model_help_server' => 'Nama model yang Anda unduh dengan "ollama pull".',
+    'test_no_address' => 'Masukkan alamat terlebih dahulu.',
+    'test_passed_server' => ':company menjawab',
+    'test_ok_server' => 'Berfungsi dengan :model.',
 ];

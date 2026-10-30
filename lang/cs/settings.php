@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Log panelu a log Wings mohou obsahovat údaje kohokoli, proto je mohou nechat vysvětlit jen root admini.',
     'save' => 'Uložit',
     'saved' => 'Nastavení uloženo',
+    'address' => 'Adresa',
+    'address_help' => 'Adresa, na které panel najde váš server :company. Logy zůstávají ve vaší vlastní síti a nic se neúčtuje. Malé modely dávají jednodušší odpovědi než hostované služby.',
+    'address_invalid' => 'Zadejte adresu, která začíná http:// nebo https://.',
+    'model_help_server' => 'Název modelu, který jste stáhli příkazem "ollama pull".',
+    'test_no_address' => 'Nejdřív zadejte adresu.',
+    'test_passed_server' => ':company odpovídá',
+    'test_ok_server' => 'Funguje s :model.',
 ];

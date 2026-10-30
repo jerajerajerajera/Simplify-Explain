@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Il log del pannello e quello di Wings possono contenere dati di chiunque, quindi solo i root admin possono farli spiegare.',
     'save' => 'Salva',
     'saved' => 'Impostazioni salvate',
+    'address' => 'Indirizzo',
+    'address_help' => 'Dove il pannello raggiunge il tuo server :company. I log restano nella tua rete e non viene addebitato nulla. I modelli piccoli danno risposte più semplici dei servizi ospitati.',
+    'address_invalid' => 'Inserisci un indirizzo che inizia con http:// o https://.',
+    'model_help_server' => 'Il nome di un modello scaricato con "ollama pull".',
+    'test_no_address' => 'Inserisci prima l\'indirizzo.',
+    'test_passed_server' => ':company risponde',
+    'test_ok_server' => 'Funziona con :model.',
 ];

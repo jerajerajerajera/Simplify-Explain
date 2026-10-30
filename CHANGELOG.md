@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Ollama as a fourth choice: Explain can use a model on your own Ollama server, with its address and model name
+  instead of an API key. The logs stay on your own network.
 - "Open a ticket" under a problem Explain found only shows when Simplify Hosting is installed and a support link is
   set in Simplify's settings.
 

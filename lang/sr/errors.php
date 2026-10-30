@@ -9,4 +9,6 @@ return [
     'busy' => ':company je trenutno zauzet za ovaj ključ. Pokušaj ponovo za minut.',
     'unavailable' => ':company je privremeno nedostupan. Pokušaj ponovo za minut.',
     'failed' => ':company nije mogao da odgovori na ovo pitanje (greška :status). Pokušaj kasnije.',
+    'server_unreachable' => 'Panel ne može da dođe do :company servera na :host. Proveri adresu u podešavanjima Explain i da li :company radi.',
+    'server_model_missing' => 'Ovaj model nije na tvom :company serveru. Preuzmi ga komandom "ollama pull" ili unesi drugi model u podešavanjima Explain.',
 ];

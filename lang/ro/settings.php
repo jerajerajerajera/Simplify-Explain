@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Jurnalul panoului și jurnalul Wings pot conține datele oricui, așa că doar root admin le pot cere explicarea.',
     'save' => 'Salvează',
     'saved' => 'Setări salvate',
+    'address' => 'Adresă',
+    'address_help' => 'Unde ajunge panoul la serverul tău :company. Jurnalele rămân în rețeaua ta și nu se facturează nimic. Modelele mici dau răspunsuri mai simple decât serviciile găzduite.',
+    'address_invalid' => 'Introdu o adresă care începe cu http:// sau https://.',
+    'model_help_server' => 'Numele unui model descărcat cu "ollama pull".',
+    'test_no_address' => 'Introdu mai întâi adresa.',
+    'test_passed_server' => ':company răspunde',
+    'test_ok_server' => 'Funcționează cu :model.',
 ];

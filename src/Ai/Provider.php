@@ -16,6 +16,12 @@ abstract class Provider
     /** The choice on the settings page, such as "Claude by Anthropic". */
     abstract public static function label(): string;
 
+    /** True for a service on the administrator's own server: its "key" is the address and any model can be typed in. */
+    public static function selfHosted(): bool
+    {
+        return false;
+    }
+
     /**
      * Model id => price tier (best, balanced or cheapest), the default first.
      *

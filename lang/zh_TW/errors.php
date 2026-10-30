@@ -9,4 +9,6 @@ return [
     'busy' => ':company 目前對此金鑰忙碌中。請一分鐘後再試。',
     'unavailable' => ':company 暫時無法使用。請一分鐘後再試。',
     'failed' => ':company 無法回答這個問題（錯誤 :status）。請稍後再試。',
+    'server_unreachable' => '面板無法連線到 :host 上的 :company 伺服器。請檢查 Explain 設定中的位址，並確認 :company 正在執行。',
+    'server_model_missing' => '你的 :company 伺服器上沒有這個模型。請用 "ollama pull" 下載，或在 Explain 設定中輸入其他模型。',
 ];

@@ -9,4 +9,6 @@ return [
     'busy' => ':company đang bận với khóa này. Hãy thử lại sau một phút.',
     'unavailable' => ':company tạm thời không khả dụng. Hãy thử lại sau một phút.',
     'failed' => ':company không thể trả lời câu hỏi này (lỗi :status). Hãy thử lại sau.',
+    'server_unreachable' => 'Bảng điều khiển không kết nối được tới máy chủ :company tại :host. Hãy kiểm tra địa chỉ trong cài đặt Explain và xem :company có đang chạy không.',
+    'server_model_missing' => 'Mô hình này không có trên máy chủ :company của bạn. Hãy tải bằng "ollama pull" hoặc nhập mô hình khác trong cài đặt Explain.',
 ];

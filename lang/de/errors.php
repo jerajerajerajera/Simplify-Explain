@@ -9,4 +9,6 @@ return [
     'busy' => ':company ist für diesen Schlüssel gerade ausgelastet. Versuch es in einer Minute erneut.',
     'unavailable' => ':company ist vorübergehend nicht verfügbar. Versuch es in einer Minute erneut.',
     'failed' => ':company konnte diese Frage nicht beantworten (Fehler :status). Versuch es später erneut.',
+    'server_unreachable' => 'Das Panel erreicht den :company-Server unter :host nicht. Prüfe die Adresse in den Explain-Einstellungen und ob :company läuft.',
+    'server_model_missing' => 'Dieses Modell ist nicht auf deinem :company-Server. Lade es mit "ollama pull" herunter oder gib in den Explain-Einstellungen ein anderes Modell ein.',
 ];

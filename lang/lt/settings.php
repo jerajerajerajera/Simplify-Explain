@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Panelės ir Wings žurnaluose gali būti bet kurio naudotojo duomenų, todėl juos paaiškinti gali tik root administratoriai.',
     'save' => 'Išsaugoti',
     'saved' => 'Nustatymai išsaugoti',
+    'address' => 'Adresas',
+    'address_help' => 'Adresas, kuriuo skydelis pasiekia jūsų :company serverį. Žurnalai lieka jūsų tinkle ir niekas neapmokestinama. Maži modeliai pateikia paprastesnius atsakymus nei debesų paslaugos.',
+    'address_invalid' => 'Įveskite adresą, prasidedantį http:// arba https://.',
+    'model_help_server' => 'Modelio, kurį atsisiuntėte komanda "ollama pull", pavadinimas.',
+    'test_no_address' => 'Pirmiausia įveskite adresą.',
+    'test_passed_server' => ':company atsako',
+    'test_ok_server' => 'Veikia su :model.',
 ];

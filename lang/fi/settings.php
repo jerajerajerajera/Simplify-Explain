@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Paneelin loki ja Wings-loki voivat sisältää kenen tahansa tietoja, joten vain root-ylläpitäjät voivat pyytää niiden selitystä.',
     'save' => 'Tallenna',
     'saved' => 'Asetukset tallennettu',
+    'address' => 'Osoite',
+    'address_help' => 'Osoite, josta paneeli tavoittaa :company-palvelimesi. Lokit pysyvät omassa verkossasi, eikä mitään laskuteta. Pienet mallit antavat yksinkertaisempia vastauksia kuin pilvipalvelut.',
+    'address_invalid' => 'Anna osoite, joka alkaa http:// tai https://.',
+    'model_help_server' => 'Mallin nimi, jonka latasit komennolla "ollama pull".',
+    'test_no_address' => 'Anna ensin osoite.',
+    'test_passed_server' => ':company vastaa',
+    'test_ok_server' => 'Toimii mallilla :model.',
 ];

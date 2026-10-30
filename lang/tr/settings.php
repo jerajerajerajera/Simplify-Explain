@@ -26,4 +26,11 @@ return [
     'audience_help' => 'Panel günlüğü ve Wings günlüğü herkesin bilgilerini içerebilir, bu yüzden bunları yalnızca root adminler açıklatabilir.',
     'save' => 'Kaydet',
     'saved' => 'Ayarlar kaydedildi',
+    'address' => 'Adres',
+    'address_help' => 'Panelin :company sunucunuza ulaştığı adres. Kayıtlar kendi ağınızda kalır ve hiçbir ücret alınmaz. Küçük modeller, barındırılan hizmetlerden daha basit yanıtlar verir.',
+    'address_invalid' => 'http:// veya https:// ile başlayan bir adres girin.',
+    'model_help_server' => '"ollama pull" ile indirdiğiniz modelin adı.',
+    'test_no_address' => 'Önce adresi girin.',
+    'test_passed_server' => ':company yanıt veriyor',
+    'test_ok_server' => ':model ile çalışıyor.',
 ];

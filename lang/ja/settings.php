@@ -26,4 +26,11 @@ return [
     'audience_help' => 'パネルのログと Wings のログには誰の情報でも含まれる可能性があるため、説明できるのは root 管理者だけです。',
     'save' => '保存',
     'saved' => '設定を保存しました',
+    'address' => 'アドレス',
+    'address_help' => 'パネルが :company サーバーに接続するアドレスです。ログは自分のネットワーク内にとどまり、料金はかかりません。小さなモデルはホスト型サービスより簡単な回答になります。',
+    'address_invalid' => 'http:// または https:// で始まるアドレスを入力してください。',
+    'model_help_server' => '"ollama pull" でダウンロードしたモデルの名前です。',
+    'test_no_address' => '先にアドレスを入力してください。',
+    'test_passed_server' => ':company が応答しました',
+    'test_ok_server' => ':model で動作します。',
 ];

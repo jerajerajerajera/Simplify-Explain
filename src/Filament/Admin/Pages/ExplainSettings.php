@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Simplify\Explain\Filament\Admin\Pages;
 
 use BackedEnum;
+use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -77,7 +78,7 @@ final class ExplainSettings extends Page implements HasSchemas
                     ...self::serviceFields(),
                     Toggle::make('remove_key')
                         ->label(__('simplify-explain::settings.remove_key'))
-                        ->visible(fn (Get $get) => Settings::key((string) $get('provider')) !== null),
+                        ->visible(fn (Get $get) => ! self::selfHosted($get) && Settings::key((string) $get('provider')) !== null),
                 ]),
             Section::make(__('simplify-explain::settings.access'))
                 ->schema([
@@ -105,16 +106,25 @@ final class ExplainSettings extends Page implements HasSchemas
                 ->label(__('simplify-explain::settings.model'))
                 ->options(fn (Get $get) => self::modelOptions((string) $get('provider')))
                 ->selectablePlaceholder(false)
-                ->required(),
+                ->required()
+                ->visible(fn (Get $get) => ! self::selfHosted($get)),
+            // A self-hosted service runs whatever model was downloaded on it, so its name is typed in.
+            TextInput::make('model')
+                ->label(__('simplify-explain::settings.model'))
+                ->placeholder(fn (Get $get) => array_key_first(Providers::get((string) $get('provider'))::models()))
+                ->regex('/^[A-Za-z0-9._:\/-]{1,100}$/')
+                ->helperText(__('simplify-explain::settings.model_help_server'))
+                ->required()
+                ->visible(fn (Get $get) => self::selfHosted($get)),
             TextInput::make('key')
-                ->label(__('simplify-explain::settings.key'))
-                ->password()
+                ->label(fn (Get $get) => __('simplify-explain::settings.'.(self::selfHosted($get) ? 'address' : 'key')))
+                ->password(fn (Get $get) => ! self::selfHosted($get))
+                ->rule(fn (Get $get) => fn (string $attribute, mixed $value, Closure $fail) => self::selfHosted($get)
+                    && filled($value) && ! Providers::validAddress((string) $value) ? $fail(__('simplify-explain::settings.address_invalid')) : null)
                 ->autocomplete(false)
                 ->maxLength(300)
-                ->placeholder(fn (Get $get) => Settings::key((string) $get('provider'))
-                    ? __('simplify-explain::settings.key_saved')
-                    : Providers::get((string) $get('provider'))::keyPlaceholder())
-                ->helperText(fn (Get $get) => __('simplify-explain::settings.key_help', [
+                ->placeholder(fn (Get $get) => self::keyPlaceholder((string) $get('provider')))
+                ->helperText(fn (Get $get) => __('simplify-explain::settings.'.(self::selfHosted($get) ? 'address_help' : 'key_help'), [
                     'page' => Providers::get((string) $get('provider'))::keyPage(),
                     'company' => Providers::get((string) $get('provider'))::company(),
                 ]))
@@ -169,16 +179,36 @@ final class ExplainSettings extends Page implements HasSchemas
         $provider = Providers::has(data_get($this->data, 'provider')) ? (string) data_get($this->data, 'provider') : Providers::default();
         $key = trim((string) data_get($this->data, 'key', '')) ?: Settings::key($provider);
         if ($key === null) {
-            Notification::make()->title(__('simplify-explain::settings.test_no_key'))->warning()->send();
+            Notification::make()->title(__('simplify-explain::settings.'.(Providers::get($provider)::selfHosted() ? 'test_no_address' : 'test_no_key')))->warning()->send();
 
             return;
         }
         $result = Client::test(Providers::get($provider), $key, Providers::model($provider, data_get($this->data, 'model')));
         Notification::make()
-            ->title($result['ok'] ? __('simplify-explain::settings.test_passed') : __('simplify-explain::settings.test_failed'))
+            ->title(match (true) {
+                ! $result['ok'] => __('simplify-explain::settings.test_failed'),
+                Providers::get($provider)::selfHosted() => __('simplify-explain::settings.test_passed_server', ['company' => Providers::get($provider)::company()]),
+                default => __('simplify-explain::settings.test_passed'),
+            })
             ->body($result['message'])
             ->{$result['ok'] ? 'success' : 'danger'}()
             ->send();
+    }
+
+    private static function selfHosted(Get $get): bool
+    {
+        return Providers::get((string) $get('provider'))::selfHosted();
+    }
+
+    /** The saved address of a self-hosted service is not secret, so it is shown; a saved key never is. */
+    private static function keyPlaceholder(string $provider): string
+    {
+        $saved = Settings::key($provider);
+        if ($saved !== null) {
+            return Providers::get($provider)::selfHosted() ? $saved : __('simplify-explain::settings.key_saved');
+        }
+
+        return Providers::get($provider)::keyPlaceholder();
     }
 
     /** @return array<string, string> model id => "name (price)" */

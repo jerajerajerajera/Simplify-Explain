@@ -9,4 +9,6 @@ return [
     'busy' => ':company مشغول لهذا المفتاح الآن. حاول مرة أخرى بعد دقيقة.',
     'unavailable' => ':company غير متاح مؤقتاً. حاول مرة أخرى بعد دقيقة.',
     'failed' => 'لم يتمكن :company من الإجابة عن هذا السؤال (خطأ :status). حاول لاحقاً.',
+    'server_unreachable' => 'لا تستطيع اللوحة الوصول إلى خادم :company على :host. تحقّق من العنوان في إعدادات Explain ومن أن :company يعمل.',
+    'server_model_missing' => 'هذا النموذج غير موجود على خادم :company لديك. نزّله باستخدام "ollama pull" أو أدخل نموذجاً آخر في إعدادات Explain.',
 ];

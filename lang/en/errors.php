@@ -9,4 +9,6 @@ return [
     'busy' => ':company is busy for this key right now. Try again in a minute.',
     'unavailable' => ':company is temporarily unavailable. Try again in a minute.',
     'failed' => ':company could not answer this question (error :status). Try again later.',
+    'server_unreachable' => 'The panel cannot reach the :company server at :host. Check the address in the Explain settings and that :company is running.',
+    'server_model_missing' => 'This model is not on your :company server. Download it with "ollama pull" or enter another model in the Explain settings.',
 ];

@@ -9,4 +9,6 @@ return [
     'busy' => ':company je teď pro tento klíč vytížený. Zkus to za minutu znovu.',
     'unavailable' => ':company je dočasně nedostupný. Zkus to za minutu znovu.',
     'failed' => ':company na tento dotaz nedokázal odpovědět (chyba :status). Zkus to později.',
+    'server_unreachable' => 'Panel se nemůže spojit se serverem :company na :host. Zkontrolujte adresu v nastavení Explain a že :company běží.',
+    'server_model_missing' => 'Tento model na vašem serveru :company není. Stáhněte ho příkazem "ollama pull" nebo zadejte jiný model v nastavení Explain.',
 ];
