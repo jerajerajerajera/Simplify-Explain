@@ -7,7 +7,7 @@ server's console and it first checks whether something is wrong. When it is, you
 fix it. Root admins can also have the panel log and the Wings log of a node explained.
 
 It works on its own. With [Simplify](https://github.com/jerajerajerajera/Simplify) installed, it also shows up in
-Simplify's add-on list.
+Simplify's add-on list, and Simplify's setup asks for the service, the key and who may use it.
 
 ## Setup
 
@@ -57,6 +57,12 @@ The API key is stored encrypted with the panel's `APP_KEY` and never shown again
 
 Updates come from the Pelican Hub only.
 
+## Development
+
+- `bash tests/run.sh` runs the checks that need no panel, including `tests/hub-check.py`.
+- `pint` formats the code (Laravel preset).
+- `python3 scripts/build-package.py` builds the zip for the Hub.
+
 ## License
 
-See [LICENSE.md](LICENSE.md).
+Source available, see [LICENSE.md](LICENSE.md). Copyright (c) 2026 Jeroen (jerajerajerajera).
