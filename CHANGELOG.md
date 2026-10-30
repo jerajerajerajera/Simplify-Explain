@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.5
+
+- The settings page no longer scrolls as a whole page with Simplify 1.5: the form scrolls under the page title.
+
 ## 1.0.4
 
 - Under a problem Explain found, customers get an "Open a ticket" button to the panel's support link from Simplify's
