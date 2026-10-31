@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.1.0
 
 - Ollama as a fourth choice: Explain can use a model on your own Ollama server, with its address and model name
   instead of an API key. The logs stay on your own network.
