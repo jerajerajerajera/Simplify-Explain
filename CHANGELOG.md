@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- The plugin description mentions Ollama.
+
 ## 1.1.0
 
 - Ollama as a fourth choice: Explain can use a model on your own Ollama server, with its address and model name
