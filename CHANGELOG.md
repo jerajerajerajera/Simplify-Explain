@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Settings: with Simplify, a change shows "Changes made" with Save, and leaving the page first asks Save or Discard.
 - The plugin description mentions Ollama.
 - Checks: a change to docs or Markdown only skips the panel smoke; tests and pint still run.
 
