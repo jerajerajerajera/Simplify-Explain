@@ -129,6 +129,10 @@ step('settings page renders for a root admin', function () use ($admin) {
     $url = ExplainSettings::getUrl(panel: 'admin');
     expectStatus(visit($admin, $url), $url);
 });
+step('the settings page fits the content card and does not scroll the page', function () use ($admin) {
+    $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
+    must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*class="[^"]*\\bs-fit\\b/', $html), 'the settings form is not marked s-fit, so the page scrolls instead of the card');
+});
 step('settings page is closed to other users', function () use ($player) {
     $url = ExplainSettings::getUrl(panel: 'admin');
     must(visit($player, $url)->getStatusCode() !== 200, 'a user without admin rights can open the settings');

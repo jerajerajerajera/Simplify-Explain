@@ -8,7 +8,7 @@
 
 | Nr | Datum | Wat zag de gebruiker | Oorzaak | Fix (versie) | Regressietest | Teruggekomen | Regel |
 |---|---|---|---|---|---|---|---|
-| B9 | 1.0.5 | Instellingspagina scrolt als geheel met Simplify 1.5 | Formulier zonder `s-fit` | 1.0.5 | nog geen test (voorbeeld: Toolkit `tests/panel/smoke.php`) | 0× (patroon met andere add-ons) | P-7 |
+| B9 | 1.0.5 | Instellingspagina scrolt als geheel met Simplify 1.5 | Formulier zonder `s-fit` | 1.0.5 | `tests/panel/smoke.php`: "the settings page fits the content card and does not scroll the page" (rood op 1.0.4, groen vanaf 1.0.5) | 0× (patroon met andere add-ons) | P-7 |
 
 ## Patronen
 
