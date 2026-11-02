@@ -3,6 +3,7 @@
 ## Unreleased
 
 - The plugin description mentions Ollama.
+- Checks: a change to docs or Markdown only skips the panel smoke; tests and pint still run.
 
 ## 1.1.0
 
