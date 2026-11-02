@@ -133,6 +133,10 @@ step('the settings page fits the content card and does not scroll the page', fun
     $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
     must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*class="[^"]*\\bs-fit\\b/', $html), 'the settings form is not marked s-fit, so the page scrolls instead of the card');
 });
+step('the settings form asks before unsaved changes are lost and never saves by itself', function () use ($admin) {
+    $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
+    must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*data-simplify-unsaved="data"/', $html), 'the settings form does not opt in to Simplify\'s unsaved-changes bar');
+});
 step('settings page is closed to other users', function () use ($player) {
     $url = ExplainSettings::getUrl(panel: 'admin');
     must(visit($player, $url)->getStatusCode() !== 200, 'a user without admin rights can open the settings');
