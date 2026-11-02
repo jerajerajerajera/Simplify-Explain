@@ -7,13 +7,15 @@ server's console and it first checks whether something is wrong. When it is, you
 fix it. Root admins can also have the panel log and the Wings log of a node explained.
 
 It works on its own. With [Simplify](https://github.com/jerajerajerajera/Simplify) installed, it also shows up in
-Simplify's add-on list, and Simplify's setup asks for the service, the key and who may use it.
+Simplify's add-on list, and Simplify's setup asks for the service, the key and who may use it. With Simplify Hosting
+installed and a support link set in Simplify's settings, customers also get **Open a ticket** under a problem.
 
 ## Setup
 
 1. Install the plugin from the Pelican Hub.
 2. Open **Admin → Simplify → Explain**.
-3. Choose Claude, GPT or Gemini, paste your own API key and press **Test**.
+3. Choose Claude, GPT or Gemini and paste your own API key, or choose Ollama and fill in the address and model of
+   your own Ollama server. Press **Test**.
 4. Choose who can use it: everyone who can see a console, or administrators only.
 
 ## When the panel shows an error
@@ -41,14 +43,15 @@ The Explain buttons themselves sit on Pelican's own Console, Nodes and Logs page
 
 ## Outside services
 
-Explain only contacts an outside service after a root admin saved an API key, and only when someone presses
-Explain or Test. It then sends the last log lines (at most 100) to the chosen service, with that key:
+Explain only contacts a service after a root admin saved an API key or an Ollama address, and only when someone
+presses Explain or Test. It then sends the last log lines (at most 100) to the chosen service:
 
 | Service | Address |
 | --- | --- |
 | Claude by Anthropic | `api.anthropic.com` |
 | GPT by OpenAI | `api.openai.com` (with `store: false`) |
 | Gemini by Google | `generativelanguage.googleapis.com` |
+| Ollama | the address of your own Ollama server (no key) |
 
 Before sending, IP addresses, e-mail addresses, passwords, tokens and long secrets are replaced with `[hidden]`.
 The API key is stored encrypted with the panel's `APP_KEY` and never shown again. There is no telemetry.
