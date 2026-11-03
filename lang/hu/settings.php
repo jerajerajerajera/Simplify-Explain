@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Van mentett kulcs. Hagyd üresen a megtartásához.',
     'key_help' => 'Kulcsot itt hozhatsz létre: :page. Arra a :company-fiókra számlázzák, ezért a biztonság kedvéért állíts be ott havi limitet. A kulcsot titkosítva tároljuk, és soha többé nem jelenik meg.',
     'remove_key' => 'Mentett kulcs törlése',
+    'key_removed' => 'A mentett kulcs törölve',
     'test' => 'Teszt',
     'test_no_key' => 'Előbb adj meg egy API-kulcsot.',
     'test_passed' => 'A kulcs működik',

@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Ein Schlüssel ist gespeichert. Leer lassen, um ihn zu behalten.',
     'key_help' => 'Erstelle einen Schlüssel auf :page. Er wird dem :company-Konto berechnet, also leg dort sicherheitshalber ein Monatslimit fest. Der Schlüssel wird verschlüsselt gespeichert und nie wieder angezeigt.',
     'remove_key' => 'Gespeicherten Schlüssel entfernen',
+    'key_removed' => 'Der gespeicherte Schlüssel wurde entfernt',
     'test' => 'Testen',
     'test_no_key' => 'Gib zuerst einen API-Schlüssel ein.',
     'test_passed' => 'Der Schlüssel funktioniert',

@@ -14,6 +14,7 @@ return [
     'key_saved' => '已保存密钥。留空则保留。',
     'key_help' => '在 :page 创建密钥。费用由该 :company 账户承担，为保险起见请在那里设置每月限额。密钥会加密保存，且不会再次显示。',
     'remove_key' => '移除已保存的密钥',
+    'key_removed' => '已删除保存的密钥',
     'test' => '测试',
     'test_no_key' => '请先输入 API 密钥。',
     'test_passed' => '密钥可用',

@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Raktas išsaugotas. Palikite tuščią, kad jis liktų.',
     'key_help' => 'Sukurkite raktą :page. Mokestis nuskaitomas iš tos :company paskyros, tad dėl viso pikto nustatykite ten mėnesio limitą. Raktas saugomas užšifruotas ir daugiau niekada nerodomas.',
     'remove_key' => 'Pašalinti išsaugotą raktą',
+    'key_removed' => 'Išsaugotas raktas pašalintas',
     'test' => 'Tikrinti',
     'test_no_key' => 'Pirmiausia įveskite API raktą.',
     'test_passed' => 'Raktas veikia',

@@ -40,26 +40,39 @@ final class Settings
     }
 
     /**
-     * Saves the choices. An empty key keeps the saved key of the chosen service; $removeKey forgets it.
+     * Saves the choices. An empty key keeps the saved key of the chosen service; forget() removes it.
      * Keys of the other services stay.
      *
      * @param  array<string, mixed>  $input
      */
-    public static function save(array $input, bool $removeKey = false): void
+    public static function save(array $input): void
     {
         $current = self::current();
         $provider = Providers::has($input['provider'] ?? null) ? $input['provider'] : $current['provider'];
         $keys = self::keys();
         $key = trim((string) ($input['key'] ?? ''));
-        if ($removeKey) {
-            unset($keys[$provider]);
-        } elseif ($key !== '') {
+        if ($key !== '') {
             $keys[$provider] = $key;
         }
         DB::table(self::TABLE)->updateOrInsert(['id' => 1], [
             'provider' => $provider,
             'model' => Providers::model($provider, $input['model'] ?? null),
             'audience' => in_array($input['audience'] ?? null, self::AUDIENCES, true) ? $input['audience'] : $current['audience'],
+            'api_keys' => $keys === [] ? null : Crypt::encryptString(json_encode($keys, JSON_THROW_ON_ERROR)),
+            'updated_at' => now(),
+        ]);
+        self::flush();
+    }
+
+    /** Forgets the saved key of one service; everything else stays. */
+    public static function forget(string $provider): void
+    {
+        $keys = self::keys();
+        if (! isset($keys[$provider])) {
+            return;
+        }
+        unset($keys[$provider]);
+        DB::table(self::TABLE)->where('id', 1)->update([
             'api_keys' => $keys === [] ? null : Crypt::encryptString(json_encode($keys, JSON_THROW_ON_ERROR)),
             'updated_at' => now(),
         ]);

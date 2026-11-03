@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Settings: "Remove the saved key" is a button that asks first, instead of a switch. It removes the key at once and leaves other unsaved changes alone.
+
 ## 2.0.0-beta.1
 
 - First version on the Hub, as a beta. It holds everything of 1.1.1.

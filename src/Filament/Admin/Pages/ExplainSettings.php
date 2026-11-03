@@ -9,10 +9,10 @@ use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -76,8 +76,7 @@ final class ExplainSettings extends Page implements HasSchemas
                 ->columns(2)
                 ->schema([
                     ...self::serviceFields(),
-                    Toggle::make('remove_key')
-                        ->label(__('simplify-explain::settings.remove_key'))
+                    Actions::make([self::removeKeyAction()])
                         ->visible(fn (Get $get) => ! self::selfHosted($get) && Settings::key((string) $get('provider')) !== null),
                 ]),
             Section::make(__('simplify-explain::settings.access'))
@@ -167,9 +166,28 @@ final class ExplainSettings extends Page implements HasSchemas
     {
         abort_unless(self::canAccess(), 403);
         $state = $this->form->getState();
-        Settings::save($state, ! empty($state['remove_key']));
+        Settings::save($state);
         $this->fillForm();
         Notification::make()->title(__('simplify-explain::settings.saved'))->success()->send();
+    }
+
+    /** A button with a confirmation, not a switch: the key goes at once, other changes stay unsaved. */
+    public static function removeKeyAction(): Action
+    {
+        return Action::make('removeKey')
+            ->label(__('simplify-explain::settings.remove_key'))
+            ->icon('tabler-trash')
+            ->color('gray')
+            ->requiresConfirmation()
+            ->action(fn (Get $get, self $livewire) => $livewire->removeKey((string) $get('provider')));
+    }
+
+    /** Forgets the saved key of one service, after the confirmation. */
+    public function removeKey(string $provider): void
+    {
+        abort_unless(self::canAccess(), 403);
+        Settings::forget($provider);
+        Notification::make()->title(__('simplify-explain::settings.key_removed'))->success()->send();
     }
 
     /** Checks the typed key, or the saved one, with the chosen model. */
@@ -231,7 +249,6 @@ final class ExplainSettings extends Page implements HasSchemas
             'model' => $settings['model'],
             'audience' => $settings['audience'],
             'key' => '',
-            'remove_key' => false,
         ]);
     }
 }

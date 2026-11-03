@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Kľúč je uložený. Nechaj prázdne, aby zostal.',
     'key_help' => 'Vytvor kľúč na :page. Účtuje sa na ten účet :company, takže si tam pre istotu nastav mesačný limit. Kľúč je uložený šifrovane a už sa nikdy nezobrazí.',
     'remove_key' => 'Odstrániť uložený kľúč',
+    'key_removed' => 'Uložený kľúč bol odstránený',
     'test' => 'Otestovať',
     'test_no_key' => 'Najprv zadaj API kľúč.',
     'test_passed' => 'Kľúč funguje',

@@ -14,6 +14,7 @@ return [
     'key_saved' => 'En nyckel är sparad. Lämna tomt för att behålla den.',
     'key_help' => 'Skapa en nyckel på :page. Den debiteras det :company-kontot, så ställ in en månadsgräns där för säkerhets skull. Nyckeln sparas krypterad och visas aldrig igen.',
     'remove_key' => 'Ta bort den sparade nyckeln',
+    'key_removed' => 'Den sparade nyckeln har tagits bort',
     'test' => 'Testa',
     'test_no_key' => 'Ange en API-nyckel först.',
     'test_passed' => 'Nyckeln fungerar',

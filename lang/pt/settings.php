@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Há uma chave guardada. Deixa vazio para a manter.',
     'key_help' => 'Cria uma chave em :page. É cobrada nessa conta :company, por isso define lá um limite mensal por segurança. A chave é guardada encriptada e nunca mais é mostrada.',
     'remove_key' => 'Remover a chave guardada',
+    'key_removed' => 'A chave guardada foi removida',
     'test' => 'Testar',
     'test_no_key' => 'Introduz primeiro uma chave API.',
     'test_passed' => 'A chave funciona',

@@ -14,6 +14,7 @@ return [
     'key_saved' => '已儲存金鑰。留空即可保留。',
     'key_help' => '在 :page 建立金鑰。費用由該 :company 帳戶支付，為保險起見請在那裡設定每月上限。金鑰會加密儲存，且不會再次顯示。',
     'remove_key' => '移除已儲存的金鑰',
+    'key_removed' => '已移除儲存的金鑰',
     'test' => '測試',
     'test_no_key' => '請先輸入 API 金鑰。',
     'test_passed' => '金鑰可用',
