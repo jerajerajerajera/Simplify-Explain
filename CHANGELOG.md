@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 1.1.1
+
 - A download of the repository (the Pelican Hub's zip) holds only the plugin, without docs, tests, scripts and workflows.
 - Settings: with Simplify, a change shows "Changes made" with Save, and leaving the page first asks Save or Discard.
 - The plugin description mentions Ollama.
