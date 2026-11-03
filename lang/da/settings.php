@@ -14,6 +14,7 @@ return [
     'key_saved' => 'En nøgle er gemt. Lad feltet være tomt for at beholde den.',
     'key_help' => 'Opret en nøgle på :page. Den faktureres den :company-konto, så sæt en månedlig grænse der for en sikkerheds skyld. Nøglen gemmes krypteret og vises aldrig igen.',
     'remove_key' => 'Fjern den gemte nøgle',
+    'key_removed' => 'Den gemte nøgle er fjernet',
     'test' => 'Test',
     'test_no_key' => 'Indtast først en API-nøgle.',
     'test_passed' => 'Nøglen virker',

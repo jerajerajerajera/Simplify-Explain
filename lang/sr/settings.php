@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Ključ je sačuvan. Ostavi prazno da ga zadržiš.',
     'key_help' => 'Napravi ključ na :page. Naplaćuje se tom :company nalogu, zato tamo za svaki slučaj postavi mesečni limit. Ključ se čuva šifrovan i više se nikad ne prikazuje.',
     'remove_key' => 'Ukloni sačuvani ključ',
+    'key_removed' => 'Сачувани кључ је уклоњен',
     'test' => 'Testiraj',
     'test_no_key' => 'Prvo unesi API ključ.',
     'test_passed' => 'Ključ radi',

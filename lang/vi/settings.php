@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Đã lưu một khóa. Để trống để giữ nguyên.',
     'key_help' => 'Tạo khóa tại :page. Khóa được tính phí vào tài khoản :company đó, vì vậy hãy đặt giới hạn hằng tháng ở đó cho an toàn. Khóa được lưu ở dạng mã hóa và không bao giờ hiển thị lại.',
     'remove_key' => 'Xóa khóa đã lưu',
+    'key_removed' => 'Đã xóa khóa đã lưu',
     'test' => 'Kiểm tra',
     'test_no_key' => 'Hãy nhập khóa API trước.',
     'test_passed' => 'Khóa hoạt động',

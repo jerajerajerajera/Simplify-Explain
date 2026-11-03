@@ -14,6 +14,7 @@ return [
     'key_saved' => 'A key is saved. Leave empty to keep it.',
     'key_help' => 'Create a key at :page. It is billed to that :company account, so set a monthly limit there to be safe. The key is stored encrypted and never shown again.',
     'remove_key' => 'Remove the saved key',
+    'key_removed' => 'The saved key is removed',
     'test' => 'Test',
     'test_no_key' => 'Enter an API key first.',
     'test_passed' => 'The key works',

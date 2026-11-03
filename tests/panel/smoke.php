@@ -147,8 +147,11 @@ step('the key is stored encrypted and kept when left empty', function () {
     must($stored !== '' && ! str_contains($stored, 'sk-smoke-secret'), 'the key is not encrypted');
     Settings::save(['provider' => 'openai', 'model' => 'gpt-6-luna', 'audience' => 'admins', 'key' => '']);
     must(Settings::key('openai') === 'sk-smoke-secret' && Settings::current()['audience'] === 'admins', 'saving without a key lost the key or the choices');
-    Settings::save(['provider' => 'openai'], removeKey: true);
-    must(! Settings::current()['has_key'], 'the key was not removed');
+    Settings::save(['provider' => 'anthropic', 'key' => 'sk-ant-other']);
+    Settings::forget('openai');
+    must(Settings::key('openai') === null && Settings::key('anthropic') === 'sk-ant-other', 'the key was not removed, or another service lost its key');
+    Settings::forget('anthropic');
+    Settings::save(['provider' => 'openai', 'model' => 'gpt-6-luna', 'audience' => 'admins']);
 });
 step('the add-on describes itself for Simplify', function () use ($admin) {
     if (! class_exists('Simplify\Core\Addons\Addon')) {
@@ -172,7 +175,7 @@ step('Simplify\'s setup asks for the service, key and audience and saves them', 
     must(Settings::key($before['provider']) === 'sk-setup-secret' && Settings::current()['audience'] === 'everyone', 'the setup answers were not saved');
     $addon->saveSetup([...$before, 'audience' => 'everyone']);
     must(Settings::key($before['provider']) === 'sk-setup-secret', 'an empty key in the setup removed the saved key');
-    Settings::save($before, removeKey: true);
+    Settings::forget($before['provider']);
 });
 $server = null;
 step('a test server is made', function () use ($admin, &$server) {
@@ -308,6 +311,18 @@ step('Test checks the typed key with the chosen service and never shows the key'
     must(! $failed['ok'] && $failed['message'] === __('simplify-explain::errors.invalid_key', ['company' => 'OpenAI', 'status' => 401]), 'a wrong key is not reported in plain words');
     $passed = Client::test(Anthropic::class, 'sk-ant-smoke', 'claude-haiku-5-5');
     must($passed['ok'] && ! str_contains($passed['message'].$failed['message'], 'secret'), 'a working key is not reported, or the key is shown');
+});
+step('Remove the saved key is a button that asks first and keeps unsaved changes', function () use ($admin) {
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    auth()->login($admin);
+    Settings::save(['provider' => 'openai', 'model' => 'gpt-6-luna', 'audience' => 'admins', 'key' => 'sk-remove-secret']);
+    $page = Livewire::actingAs($admin)->test(ExplainSettings::class);
+    $html = $page->html();
+    must(str_contains($html, __('simplify-explain::settings.remove_key')) && ! str_contains($html, 'data.remove_key') && ! str_contains($html, 'role="switch"'), 'Remove the saved key is still a switch');
+    must(ExplainSettings::removeKeyAction()->isConfirmationRequired(), 'Remove the saved key does not ask first');
+    $page->set('data.audience', 'everyone')->call('removeKey', 'openai');
+    must(Settings::key('openai') === null, 'the key was not removed');
+    must(Settings::current()['audience'] === 'admins' && $page->get('data.audience') === 'everyone', 'removing the key saved or lost the other changes');
 });
 step('Ollama on the admin\'s own server explains the console without a key', function () use ($admin, $server) {
     Http::fake(['192.168.1.10:11434/*' => Http::response(['message' => ['role' => 'assistant', 'content' => json_encode([

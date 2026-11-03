@@ -14,6 +14,7 @@ return [
     'key_saved' => 'O cheie este salvată. Lasă gol pentru a o păstra.',
     'key_help' => 'Creează o cheie pe :page. Este facturată acelui cont :company, așa că setează acolo o limită lunară, ca să fii sigur. Cheia este stocată criptat și nu mai este afișată niciodată.',
     'remove_key' => 'Șterge cheia salvată',
+    'key_removed' => 'Cheia salvată a fost eliminată',
     'test' => 'Testează',
     'test_no_key' => 'Introdu mai întâi o cheie API.',
     'test_passed' => 'Cheia funcționează',

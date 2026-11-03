@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Kayıtlı bir anahtar var. Korumak için boş bırak.',
     'key_help' => ':page adresinde bir anahtar oluştur. O :company hesabına faturalanır, bu yüzden güvenlik için orada aylık bir limit belirle. Anahtar şifreli saklanır ve bir daha gösterilmez.',
     'remove_key' => 'Kayıtlı anahtarı kaldır',
+    'key_removed' => 'Kayıtlı anahtar kaldırıldı',
     'test' => 'Test et',
     'test_no_key' => 'Önce bir API anahtarı gir.',
     'test_passed' => 'Anahtar çalışıyor',

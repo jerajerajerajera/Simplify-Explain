@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Er is een sleutel opgeslagen. Laat leeg om die te houden.',
     'key_help' => 'Maak een sleutel aan op :page. Die wordt bij dat :company-account in rekening gebracht, dus stel daar voor de zekerheid een maandlimiet in. De sleutel wordt versleuteld opgeslagen en nooit meer getoond.',
     'remove_key' => 'Opgeslagen sleutel verwijderen',
+    'key_removed' => 'De opgeslagen sleutel is verwijderd',
     'test' => 'Testen',
     'test_no_key' => 'Vul eerst een API-sleutel in.',
     'test_passed' => 'De sleutel werkt',

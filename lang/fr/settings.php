@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Une clé est enregistrée. Laissez vide pour la garder.',
     'key_help' => 'Créez une clé sur :page. Elle est facturée sur ce compte :company, définissez-y donc une limite mensuelle par sécurité. La clé est stockée chiffrée et n\'est plus jamais affichée.',
     'remove_key' => 'Supprimer la clé enregistrée',
+    'key_removed' => 'La clé enregistrée a été supprimée',
     'test' => 'Tester',
     'test_no_key' => 'Saisissez d\'abord une clé API.',
     'test_passed' => 'La clé fonctionne',

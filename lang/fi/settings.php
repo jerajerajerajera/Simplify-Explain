@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Avain on tallennettu. Jätä tyhjäksi, niin se säilyy.',
     'key_help' => 'Luo avain osoitteessa :page. Se laskutetaan siltä :company-tililtä, joten aseta sinne varmuuden vuoksi kuukausiraja. Avain tallennetaan salattuna eikä sitä näytetä enää.',
     'remove_key' => 'Poista tallennettu avain',
+    'key_removed' => 'Tallennettu avain poistettiin',
     'test' => 'Testaa',
     'test_no_key' => 'Anna ensin API-avain.',
     'test_passed' => 'Avain toimii',

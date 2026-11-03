@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Hay una clave guardada. Déjalo vacío para conservarla.',
     'key_help' => 'Crea una clave en :page. Se cobra a esa cuenta de :company, así que pon allí un límite mensual por seguridad. La clave se guarda cifrada y no se vuelve a mostrar.',
     'remove_key' => 'Quitar la clave guardada',
+    'key_removed' => 'Se ha eliminado la clave guardada',
     'test' => 'Probar',
     'test_no_key' => 'Primero introduce una clave API.',
     'test_passed' => 'La clave funciona',

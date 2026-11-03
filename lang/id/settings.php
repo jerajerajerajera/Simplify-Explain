@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Kunci sudah tersimpan. Biarkan kosong untuk mempertahankannya.',
     'key_help' => 'Buat kunci di :page. Biayanya ditagihkan ke akun :company itu, jadi atur batas bulanan di sana agar aman. Kunci disimpan terenkripsi dan tidak pernah ditampilkan lagi.',
     'remove_key' => 'Hapus kunci tersimpan',
+    'key_removed' => 'Kunci yang disimpan telah dihapus',
     'test' => 'Uji',
     'test_no_key' => 'Masukkan kunci API terlebih dahulu.',
     'test_passed' => 'Kunci berfungsi',

@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Klucz jest zapisany. Zostaw puste, aby go zachować.',
     'key_help' => 'Utwórz klucz na :page. Jest rozliczany na tym koncie :company, więc dla bezpieczeństwa ustaw tam miesięczny limit. Klucz jest przechowywany w postaci zaszyfrowanej i nigdy więcej nie jest pokazywany.',
     'remove_key' => 'Usuń zapisany klucz',
+    'key_removed' => 'Zapisany klucz został usunięty',
     'test' => 'Testuj',
     'test_no_key' => 'Najpierw wpisz klucz API.',
     'test_passed' => 'Klucz działa',

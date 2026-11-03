@@ -14,6 +14,7 @@ return [
     'key_saved' => 'Una chiave è salvata. Lascia vuoto per mantenerla.',
     'key_help' => 'Crea una chiave su :page. Viene addebitata a quell\'account :company, quindi imposta lì un limite mensile per sicurezza. La chiave è salvata cifrata e non viene più mostrata.',
     'remove_key' => 'Rimuovi la chiave salvata',
+    'key_removed' => 'La chiave salvata è stata rimossa',
     'test' => 'Prova',
     'test_no_key' => 'Inserisci prima una chiave API.',
     'test_passed' => 'La chiave funziona',

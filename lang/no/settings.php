@@ -14,6 +14,7 @@ return [
     'key_saved' => 'En nøkkel er lagret. La feltet stå tomt for å beholde den.',
     'key_help' => 'Lag en nøkkel på :page. Den belastes den :company-kontoen, så sett en månedlig grense der for sikkerhets skyld. Nøkkelen lagres kryptert og vises aldri igjen.',
     'remove_key' => 'Fjern den lagrede nøkkelen',
+    'key_removed' => 'Den lagrede nøkkelen er fjernet',
     'test' => 'Test',
     'test_no_key' => 'Skriv inn en API-nøkkel først.',
     'test_passed' => 'Nøkkelen fungerer',
