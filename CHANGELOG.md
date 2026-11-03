@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 2.0.0-beta.1
+
+- First version on the Hub, as a beta. It holds everything of 1.1.1.
+
 ## 1.1.1
 
 - A download of the repository (the Pelican Hub's zip) holds only the plugin, without docs, tests, scripts and workflows.
