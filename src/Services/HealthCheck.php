@@ -67,7 +67,7 @@ final class HealthCheck
             return [];
         }
 
-        return app(ResultStore::class)->latestResults()?->storedCheckResults ?? [];
+        return app(ResultStore::class)->latestResults()->storedCheckResults ?? [];
     }
 
     /**

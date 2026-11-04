@@ -18,6 +18,7 @@ use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\ExplainAction;
 use Simplify\Explain\Http\Controllers\EmergencyController;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Livewire\PanelLogButton;
 use Simplify\Explain\Livewire\ProblemHost;
 use Simplify\Explain\Problems\Problems;
@@ -37,6 +38,7 @@ final class ExplainServiceProvider extends ServiceProvider
     {
         Livewire::component('simplify-explain-panel', ExplainPanel::class);
         Livewire::component('simplify-explain-panel-log-button', PanelLogButton::class);
+        Livewire::component('simplify-explain-settings-form', ExplainSettingsForm::class);
         Livewire::component('simplify-explain-problem-host', ProblemHost::class);
 
         Console::registerCustomHeaderActions(HeaderActionPosition::Before, ExplainAction::console());

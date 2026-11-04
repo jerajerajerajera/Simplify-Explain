@@ -2,9 +2,12 @@
 
 ## Unreleased
 
+- With a Simplify that has add-on settings (add-on API 8), Explain's settings sit in Simplify settings › Add-ons and its own page leaves the menu. The page still opens by its address and uses the same form. Test is now a button in the form.
+- Failure messages in Simplify's bell can carry the button too: the whole id can be the template `__ID__` (see the README).
 - An error shown as a Filament notification can carry an Explain button too: `Problems::notificationAction($id)` (see the README).
 - A question button right after an error explains it: Simplify, its add-ons and any other plugin can mark an error with the render hook `simplify::problem.actions` and give the log that belongs to it (see "Explain your plugin's errors" in the README).
 - With Simplify, every health check that failed or warns gets that button on the Health page, for root admins. It explains what is wrong and how to fix it, from the check's result and the panel log.
+- Clean-up: four of the five PHPStan baseline findings are fixed; only the optional Hosting class stays.
 - Checks: PHPStan (level 5) runs in CI, and the panel smoke also runs with the real Simplify core (main) instead of a stub.
 
 ## 2.0.0-beta.4
