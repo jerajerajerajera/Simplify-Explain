@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Checks: PHPStan (level 5) runs in CI, and the panel smoke also runs with the real Simplify core (main) instead of a stub.
+
 ## 2.0.0-beta.4
 
 - Settings: "Remove the saved key" is a button that asks first, instead of a switch. It removes the key at once and leaves other unsaved changes alone.
