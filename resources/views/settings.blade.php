@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <form wire:submit="save" class="s-fit" data-simplify-unsaved="data">
-        {{ $this->form }}
-    </form>
+    <div class="s-fit">
+        @livewire('simplify-explain-settings-form')
+    </div>
 </x-filament-panels::page>

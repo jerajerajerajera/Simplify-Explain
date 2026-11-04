@@ -35,6 +35,7 @@ use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Livewire\ProblemHost;
 use Simplify\Explain\Problems\Problems;
 use Simplify\Explain\Services\EmergencyAccess;
@@ -135,11 +136,29 @@ step('settings page renders for a root admin', function () use ($admin) {
 });
 step('the settings page fits the content card and does not scroll the page', function () use ($admin) {
     $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
-    must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*class="[^"]*\\bs-fit\\b/', $html), 'the settings form is not marked s-fit, so the page scrolls instead of the card');
+    must((bool) preg_match('/<div class="s-fit">/', $html), 'the settings form is not marked s-fit, so the page scrolls instead of the card');
 });
 step('the settings form asks before unsaved changes are lost and never saves by itself', function () use ($admin) {
     $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
-    must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*data-simplify-unsaved="data"/', $html), 'the settings form does not opt in to Simplify\'s unsaved-changes bar');
+    must((bool) preg_match('/data-simplify-unsaved="data" data-simplify-save="save"/', $html), 'the settings form does not opt in to Simplify\'s unsaved-changes bar');
+    must(! str_contains($html, 'wire:submit="save"'), 'the settings form has its own <form>, which cannot sit inside Simplify\'s settings');
+});
+step('the settings form saves on its own and is for root admins only (also in Simplify settings)', function () use ($admin, $player) {
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    $before = Settings::current();
+    Livewire::actingAs($admin)->test(ExplainSettingsForm::class)
+        ->assertSee(__('simplify-explain::settings.test'))
+        ->set('data.audience', $before['audience'] === 'admins' ? 'everyone' : 'admins')
+        ->dispatch('simplify-explain-settings-save');
+    must(Settings::current()['audience'] !== $before['audience'], 'the form did not save on the save event');
+    Settings::save(['provider' => $before['provider'], 'model' => $before['model'], 'audience' => $before['audience']]);
+    try {
+        Livewire::actingAs($player)->test(ExplainSettingsForm::class);
+        $opened = true;
+    } catch (Throwable) {
+        $opened = false;
+    }
+    must(! $opened, 'the settings form opens for someone who is not a root admin');
 });
 step('settings page is closed to other users', function () use ($player) {
     $url = ExplainSettings::getUrl(panel: 'admin');
@@ -164,6 +183,7 @@ step('the add-on describes itself for Simplify', function () use ($admin) {
     auth()->login($admin);
     $addon = app(ExplainAddon::class);
     must($addon->id() === 'simplify-explain' && $addon->settingsUrl() !== null && $addon->description() !== '', 'the add-on is incomplete');
+    must($addon->settingsForm() === ExplainSettingsForm::class, 'the add-on gives no settings form for Simplify settings');
     $tagged = array_map(fn ($a) => $a::class, iterator_to_array(app()->tagged('simplify.addons')));
     must(in_array(ExplainAddon::class, $tagged, true), 'the add-on is not tagged');
 });
@@ -364,7 +384,7 @@ step('Test checks the typed key with the chosen service and never shows the key'
     auth()->login($admin);
     Http::fake(['api.openai.com/*' => Http::response(['error' => ['code' => 'invalid_api_key', 'message' => 'Incorrect API key provided: sk-typed-secret']], 401)]);
     Livewire::actingAs($admin)
-        ->test(ExplainSettings::class)
+        ->test(ExplainSettingsForm::class)
         ->set('data.provider', 'openai')
         ->set('data.model', 'gpt-6-luna')
         ->set('data.key', 'sk-typed-secret')
@@ -381,10 +401,10 @@ step('Remove the saved key is a button that asks first and keeps unsaved changes
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     auth()->login($admin);
     Settings::save(['provider' => 'openai', 'model' => 'gpt-6-luna', 'audience' => 'admins', 'key' => 'sk-remove-secret']);
-    $page = Livewire::actingAs($admin)->test(ExplainSettings::class);
+    $page = Livewire::actingAs($admin)->test(ExplainSettingsForm::class);
     $html = $page->html();
     must(str_contains($html, __('simplify-explain::settings.remove_key')) && ! str_contains($html, 'data.remove_key') && ! str_contains($html, 'role="switch"'), 'Remove the saved key is still a switch');
-    must(ExplainSettings::removeKeyAction()->isConfirmationRequired(), 'Remove the saved key does not ask first');
+    must(ExplainSettingsForm::removeKeyAction()->isConfirmationRequired(), 'Remove the saved key does not ask first');
     $page->set('data.audience', 'everyone')->call('removeKey', 'openai');
     must(Settings::key('openai') === null, 'the key was not removed');
     must(Settings::current()['audience'] === 'admins' && $page->get('data.audience') === 'everyone', 'removing the key saved or lost the other changes');
@@ -401,7 +421,7 @@ step('Ollama on the admin\'s own server explains the console without a key', fun
         && ! $request->hasHeader('Authorization') && str_contains($request->body(), 'qwen3:8b'));
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     auth()->login($admin);
-    $errors = Livewire::actingAs($admin)->test(ExplainSettings::class)->set('data.key', 'file:///etc/passwd')->call('save')->errors();
+    $errors = Livewire::actingAs($admin)->test(ExplainSettingsForm::class)->set('data.key', 'file:///etc/passwd')->call('save')->errors();
     must($errors->has('data.key'), 'no error for an address that is not http(s)');
     must(Settings::key('ollama') === 'http://192.168.1.10:11434', 'an address that is not http(s) was saved');
     Settings::save(['provider' => 'anthropic', 'model' => 'claude-haiku-5-5']);
