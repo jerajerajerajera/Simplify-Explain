@@ -11,10 +11,15 @@ use Simplify\Explain\Services\LogCheck;
 use Simplify\Explain\Services\PanelLog;
 use Throwable;
 
-/** Pelican's health checks as errors Explain can explain: "simplify:health:<key>", for root admins only. */
+/**
+ * Pelican's health checks as errors Explain can explain, for root admins only: "simplify:health:<key>" for one check,
+ * "simplify:health:all" for every check that fails or warns (Pelican's own Health page, without Simplify).
+ */
 final class HealthProblems
 {
     private const PREFIX = 'simplify:health:';
+
+    public const ALL = 'all';
 
     public static function id(string $key): string
     {
@@ -23,13 +28,14 @@ final class HealthProblems
 
     public function canExplainProblem(string $id, User $user): bool
     {
-        return ($key = self::key($id)) !== null && Explainer::mayExplainLogs($user) && HealthCheck::find($key) !== null;
+        return Explainer::mayExplainLogs($user) && self::checks($id) !== [];
     }
 
     /** @return array{title: string, context: string, lines: list<string>}|null */
     public function explainProblem(string $id, User $user): ?array
     {
-        if (! $this->canExplainProblem($id, $user) || ! ($check = HealthCheck::find((string) self::key($id)))) {
+        $checks = Explainer::mayExplainLogs($user) ? self::checks($id) : [];
+        if ($checks === []) {
             return null;
         }
         try {
@@ -37,11 +43,18 @@ final class HealthProblems
         } catch (Throwable) {
             $log = [];
         }
+        $lines = [];
+        foreach ($checks as $check) {
+            $lines = [...$lines, ...HealthCheck::lines($check)];
+        }
+        $title = self::key($id) === self::ALL
+            ? __('simplify-explain::explain.health_all_heading')
+            : __('simplify-explain::explain.health_heading', ['check' => self::label((string) self::key($id), $checks[0]['label'])]);
 
         return [
-            'title' => __('simplify-explain::explain.health_heading', ['check' => self::label((string) self::key($id), $check['label'])]),
+            'title' => $title,
             'context' => HealthCheck::context().' '.Explainer::ASKED_FROM['panel'],
-            'lines' => [...HealthCheck::lines($check), ...array_slice($log, -(LogCheck::LINES - 10))],
+            'lines' => [...array_slice($lines, 0, 40), ...array_slice($log, -(LogCheck::LINES - min(40, count($lines))))],
         ];
     }
 
@@ -51,6 +64,25 @@ final class HealthProblems
         $name = 'admin/health.results.'.$key.'.label';
 
         return trans()->has($name) ? (string) trans($name) : $fallback;
+    }
+
+    /**
+     * The checks this id is about that need attention now; empty when none or when the id is not a health id.
+     *
+     * @return list<array{label: string, status: string, message: string, summary: string, meta: array<mixed>}>
+     */
+    private static function checks(string $id): array
+    {
+        $key = self::key($id);
+        if ($key === null) {
+            return [];
+        }
+        if ($key === self::ALL) {
+            return HealthCheck::failing();
+        }
+        $check = HealthCheck::find($key);
+
+        return $check !== null ? [$check] : [];
     }
 
     private static function key(string $id): ?string

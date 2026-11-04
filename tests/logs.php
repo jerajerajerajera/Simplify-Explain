@@ -43,6 +43,7 @@ check('a health check is named as Simplify names its row', HealthCheck::key('Nod
 check('only plain check names are accepted', HealthCheck::validKey('queue') && ! HealthCheck::validKey('../queue') && ! HealthCheck::validKey(''));
 check('a failed check is found with its result', HealthCheck::find('queue')['status'] === 'failed');
 check('a check that is fine gets no explanation', HealthCheck::find('nodeversions') === null && HealthCheck::find('schedule') === null);
+check('every check that fails or warns is listed, the ones that are fine are not', array_column(HealthCheck::failing(), 'label') === ['Queue']);
 check('the result is sent as lines with its details', HealthCheck::lines(HealthCheck::find('queue')) === [
     'Health check: Queue',
     'Status: failed',

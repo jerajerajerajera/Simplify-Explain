@@ -13,6 +13,8 @@ use App\Models\Role;
 use App\Models\Server;
 use App\Models\User;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
+use Filament\Notifications\NotificationMailbox;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
@@ -28,6 +30,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Livewire\Livewire;
+use Simplify\Core\Addons\Addon;
 use Simplify\Core\Support\PanelSettings;
 use Simplify\Explain\Ai\Anthropic;
 use Simplify\Explain\Ai\Client;
@@ -37,7 +40,9 @@ use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
 use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Livewire\ProblemHost;
+use Simplify\Explain\Notifications\ExplainMailbox;
 use Simplify\Explain\Problems\Problems;
+use Simplify\Explain\Providers\ExplainServiceProvider;
 use Simplify\Explain\Services\EmergencyAccess;
 use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\LogCheck;
@@ -291,6 +296,48 @@ step('a failed health check gets a question button that explains it, for root ad
         Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke queue heartbeat missing') && str_contains($request->body(), 'Health check: Queue'));
         Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:cache'])->call('check')->assertSet('result.ok', false);
         Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:queue'])->call('check')->assertSet('result.ok', false);
+    } finally {
+        HealthCheck::$stored = null;
+        auth()->logout();
+    }
+});
+step('without Simplify too: red messages, Pelican\'s Health page and its 500 page get Explain', function () use ($admin, $player) {
+    RateLimiter::clear('simplify-explain.user.'.$admin->id);
+    $core = class_exists(Addon::class);
+    try {
+        auth()->login($admin);
+        Notification::make()->title('Could not start the server')->body('The daemon returned an <b>error</b>: smoke invalid state.')->danger()->send();
+        Notification::make()->title('Saved')->success()->send();
+        $sent = (array) (fn () => $this->pendingNotifications)->call(app(NotificationMailbox::class));
+        must(count($sent) === 2, 'the messages did not reach the mailbox');
+        preg_match('/pelican:message:[A-Za-z0-9]{32}/', json_encode($sent[0]), $found);
+        must(isset($found[0]), 'a red message has no Explain link');
+        must(! str_contains(json_encode($sent[1]), 'pelican:message:'), 'a message that is not red has an Explain link');
+        $again = ExplainMailbox::withExplain($sent[0]);
+        must(substr_count(json_encode($again), Problems::NOTIFICATION_ACTION) === 1, 'a red message got the Explain link twice');
+        $details = Problems::details($found[0], $admin);
+        must(($details['title'] ?? '') === 'Could not start the server' && in_array('Details: The daemon returned an error: smoke invalid state.', $details['lines'], true), 'the red message is not what Explain reads');
+        must(Problems::details($found[0], $player) === null, 'someone else can have another person\'s message explained');
+        must(Problems::details('pelican:message:'.str_repeat('a', 32), $admin) === null, 'a made-up message can be explained');
+
+        HealthCheck::$stored = fn () => [
+            (object) ['label' => 'Queue', 'status' => 'failed', 'notificationMessage' => 'Queue jobs running failed.', 'shortSummary' => 'Failed', 'meta' => ['default' => 'smoke queue all']],
+            (object) ['label' => 'Schedule', 'status' => 'failed', 'notificationMessage' => 'The schedule did not run yet.', 'shortSummary' => 'Failed', 'meta' => []],
+        ];
+        $button = ExplainServiceProvider::healthButton();
+        must($core ? $button === '' : str_contains($button, 'data-simplify-explain="simplify:health:all"'), $core ? 'Pelican\'s Health page got a second button next to Simplify\'s' : 'no Explain button on Pelican\'s Health page');
+        $all = Problems::details('simplify:health:all', $admin);
+        must(in_array('Health check: Queue', $all['lines'] ?? [], true) && in_array('Health check: Schedule', $all['lines'] ?? [], true), 'Explain does not read every failing check');
+        must(Problems::details('simplify:health:all', $player) === null, 'someone who is not a root admin can have the health checks explained');
+        HealthCheck::$stored = fn () => [];
+        must(ExplainServiceProvider::healthButton() === '', 'an Explain button on the Health page while every check is fine');
+
+        must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows outside the error page');
+        app()->instance('simplify-explain.error-page', true);
+        $link = ExplainServiceProvider::errorLink();
+        must($core ? $link === '' : str_contains($link, route('simplify-explain.emergency')), 'no emergency link on Pelican\'s 500 page for a root admin');
+        auth()->login($player);
+        must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows for someone who is not a root admin');
     } finally {
         HealthCheck::$stored = null;
         auth()->logout();

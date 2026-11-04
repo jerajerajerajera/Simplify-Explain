@@ -18,6 +18,9 @@ final class Problems
 {
     public const TAG = 'simplify.problems';
 
+    /** The name of Explain's action on a Filament notification. */
+    public const NOTIFICATION_ACTION = 'simplify-explain-problem';
+
     /**
      * An "Explain" button for a Filament notification about this error, or null when this user cannot have it
      * explained. Notifications strip the hook's HTML, so call this instead:
@@ -30,7 +33,7 @@ final class Problems
                 return null;
             }
 
-            return Action::make('simplify-explain-problem')
+            return Action::make(self::NOTIFICATION_ACTION)
                 ->label(__('simplify-explain::explain.button'))
                 ->icon('tabler-message-question')
                 ->color('gray')
@@ -114,7 +117,7 @@ final class Problems
     /** @return list<object> Explain's own sources first, then those tagged by other plugins. */
     private static function sources(): array
     {
-        $sources = [app(HealthProblems::class)];
+        $sources = [app(HealthProblems::class), app(MessageProblems::class)];
         try {
             foreach (app()->tagged(self::TAG) as $source) {
                 if (is_object($source)) {

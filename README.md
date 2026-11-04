@@ -19,6 +19,20 @@ installed and a support link set in Simplify's settings, customers also get **Op
    your own Ollama server. Press **Test**.
 4. Choose who can use it: everyone who can see a console, or administrators only.
 
+## Pelican's own errors
+
+Explain also works on its own, without Simplify:
+
+- Every red message in Pelican (a Filament notification with the status "danger") gets an **Explain** link, for
+  people who may use Explain. Explain keeps the message on the panel for 30 minutes, for the person who saw it, and
+  reads it from there on a click, never from the browser. On a server's page it adds that server's console, for people
+  who may use the console; for root admins elsewhere the recent errors of the panel log.
+- Pelican's **Health** page gets one Explain button in its title bar while a check fails or warns (root admins).
+- Pelican's **500 page** links root admins to the emergency page below.
+
+With Simplify, red messages get the same link; Simplify's Health rows and error spots carry the question button
+instead of the last two.
+
 ## When the panel shows an error
 
 When the panel itself breaks, for example with a 500 error, its normal pages may not open. Explain has three ways

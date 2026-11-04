@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- The question button after an error takes its colours from Simplify's theme, or from Pelican's without Simplify, instead of fixed ones.
+- Explain on Pelican's own errors, also without Simplify: every red message gets an Explain link, Pelican's Health page an Explain button while a check fails, and its 500 page a link to the emergency page for root admins.
 - Uninstalling keeps the settings and saved keys, so installing again brings everything back (see "Updates" in the README).
 - Checks: CI updates from the Hub-stable 1.1.0 with every setting filled in, puts the previous release back over this version, and uninstalls and installs again, checking that the settings stay each time. PHPStan runs without a baseline, `tests/run.sh` checks for secrets and internal addresses, and Dependabot keeps the GitHub Actions current.
 - With a Simplify that has add-on settings (add-on API 8), Explain's settings sit in Simplify settings › Add-ons and its own page leaves the menu. The page still opens by its address and uses the same form. Test is now a button in the form.
