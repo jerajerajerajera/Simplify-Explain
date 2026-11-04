@@ -9,7 +9,7 @@ use App\Filament\Admin\Pages\Health;
 use App\Filament\Admin\Pages\ListLogs;
 use App\Filament\Admin\Resources\Nodes\Pages\EditNode;
 use App\Filament\Server\Pages\Console;
-use Filament\Notifications\NotificationMailbox;
+use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
@@ -25,7 +25,7 @@ use Simplify\Explain\Livewire\ExplainPanel;
 use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Livewire\PanelLogButton;
 use Simplify\Explain\Livewire\ProblemHost;
-use Simplify\Explain\Notifications\ExplainMailbox;
+use Simplify\Explain\Notifications\ExplainNotification;
 use Simplify\Explain\Problems\HealthProblems;
 use Simplify\Explain\Problems\Problems;
 use Simplify\Explain\Services\Explainer;
@@ -40,9 +40,9 @@ final class ExplainServiceProvider extends ServiceProvider
         // Simplify reads this tag to list its add-ons. Without Simplify nothing reads it and ExplainAddon is never loaded.
         $this->app->tag([ExplainAddon::class], 'simplify.addons');
 
-        // Every red message in Pelican gets Explain's link, with or without Simplify (see ExplainMailbox).
-        if (class_exists(NotificationMailbox::class)) {
-            $this->app->extend(NotificationMailbox::class, fn (NotificationMailbox $mailbox) => $mailbox instanceof ExplainMailbox ? $mailbox : new ExplainMailbox);
+        // Every red message in Pelican gets Explain's link, with or without Simplify (see ExplainNotification).
+        if (! $this->app->bound(Notification::class)) {
+            $this->app->bind(Notification::class, ExplainNotification::class);
         }
     }
 
