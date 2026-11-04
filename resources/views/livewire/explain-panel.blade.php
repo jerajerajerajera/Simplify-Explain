@@ -1,7 +1,21 @@
 <div wire:init="check" style="display: flex; flex-direction: column; gap: 0.75rem;">
-    @if (($result['title'] ?? '') !== '')
-        <div style="font-weight: 600;">{{ $result['title'] }}</div>
-    @endif
+    {{-- Simplify's header model: title, subtitle, actions right. Room on the right for the window's close button. --}}
+    <header style="display: flex; gap: 0.75rem; align-items: flex-start; padding-inline-end: 2rem;">
+        <div style="flex: 1; min-width: 0;">
+            <h2 class="fi-modal-heading">{{ $this->heading() }}</h2>
+            <p class="fi-modal-description">{{ $this->from() }}</p>
+        </div>
+        @if ($result !== null)
+            <x-filament::icon-button
+                icon="tabler-refresh"
+                color="gray"
+                :label="__('simplify-explain::explain.check_again')"
+                :tooltip="__('simplify-explain::explain.check_again')"
+                wire:click="check"
+                wire:loading.attr="disabled"
+            />
+        @endif
+    </header>
     @if ($result === null)
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <x-filament::loading-indicator style="width: 1.25rem; height: 1.25rem;" />
@@ -11,11 +25,6 @@
         <x-filament::section icon="tabler-alert-triangle" icon-color="warning" compact>
             {{ $result['error'] }}
         </x-filament::section>
-        <div>
-            <x-filament::button color="gray" size="sm" icon="tabler-refresh" wire:click="check" wire:loading.attr="disabled">
-                {{ __('simplify-explain::explain.again') }}
-            </x-filament::button>
-        </div>
     @else
         <x-filament::section
             :icon="$result['found'] ? 'tabler-alert-circle' : 'tabler-circle-check'"

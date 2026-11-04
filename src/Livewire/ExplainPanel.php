@@ -35,6 +35,28 @@ final class ExplainPanel extends Component
     /** @var array<string, mixed>|null */
     public ?array $result = null;
 
+    /** The window's title: what is explained. */
+    public function heading(): string
+    {
+        $title = (string) ($this->result['title'] ?? '');
+        if ($title !== '') {
+            return $title;
+        }
+
+        return match ($this->source) {
+            'console' => __('simplify-explain::explain.console_heading', ['server' => (string) (Server::find($this->serverId)->name ?? '')]),
+            'panel' => __('simplify-explain::explain.panel_heading'),
+            'wings' => __('simplify-explain::explain.wings_heading', ['node' => (string) (Node::find($this->nodeId)->name ?? '')]),
+            default => __('simplify-explain::explain.heading'),
+        };
+    }
+
+    /** The window's subtitle: where the lines come from. */
+    public function from(): string
+    {
+        return __('simplify-explain::explain.'.(in_array($this->source, ['console', 'panel', 'wings'], true) ? $this->source : 'problem').'_from');
+    }
+
     public function check(): void
     {
         $this->result = match ($this->source) {

@@ -67,7 +67,7 @@ final class EmergencyController
             }
         }
 
-        return $this->page(200, $this->form($nodes, $nodeError, $csrf).$answer);
+        return $this->page(200, $this->form($nodes, $nodeError, $csrf), $this->t('lead'), $answer);
     }
 
     /**
@@ -89,8 +89,7 @@ final class EmergencyController
     /** @param  array<int, Node>  $nodes */
     private function form(array $nodes, ?string $nodeError, ?string $csrf): string
     {
-        $html = '<p class="lead">'.$this->t('lead').'</p>';
-        $html .= '<form method="post" class="ask" onsubmit="this.classList.add(\'busy\')">';
+        $html = '<form method="post" class="ask" onsubmit="this.classList.add(\'busy\')">';
         $html .= $csrf ? '<input type="hidden" name="_token" value="'.self::e($csrf).'">' : '';
         $html .= '<button type="submit" name="source" value="panel">'.$this->t('check_panel').'</button>';
         foreach ($nodes as $id => $node) {
@@ -177,12 +176,16 @@ final class EmergencyController
         return $text;
     }
 
-    private function page(int $status, string $body): Response
+    /**
+     * The page in Simplify's header model: a card with the title, the subtitle and what can be done; answers below it.
+     */
+    private function page(int $status, string $body, string $lead = '', string $after = ''): Response
     {
         $title = self::e((string) __('simplify-explain::emergency.title'));
         $html = '<!doctype html><html lang="'.self::e(str_replace('_', '-', app()->getLocale())).'"><head><meta charset="utf-8">'
             .'<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex">'
-            .'<title>'.$title.'</title><style>'.self::CSS.'</style></head><body><main><h1>'.$title.'</h1>'.$body.'</main></body></html>';
+            .'<title>'.$title.'</title><style>'.self::CSS.'</style></head><body><main><section class="card"><header class="head"><h1>'.$title.'</h1>'
+            .($lead !== '' ? '<p class="lead">'.$lead.'</p>' : '').'</header>'.$body.'</section>'.$after.'</main></body></html>';
 
         return response($html, $status, [
             'Content-Type' => 'text/html; charset=utf-8',
@@ -200,10 +203,11 @@ final class EmergencyController
     }
 
     private const CSS = <<<'CSS'
-:root{color-scheme:light dark;--bg:#f4f5f7;--card:#fff;--text:#1d2129;--muted:#5d6472;--line:#dde0e6;--accent:#2563eb;--on-accent:#fff;--good:#15803d;--bad:#b45309}
-@media (prefers-color-scheme:dark){:root{--bg:#111318;--card:#1a1d24;--text:#e8eaef;--muted:#9aa1ae;--line:#2c313b;--accent:#60a5fa;--on-accent:#0b1220;--good:#4ade80;--bad:#fbbf24}}
+:root{color-scheme:light dark;--bg:#f9fafb;--card:#fff;--text:#18181b;--muted:#52525b;--line:#e4e4e7;--accent:#2563eb;--on-accent:#fff;--good:#15803d;--bad:#b45309}
+@media (prefers-color-scheme:dark){:root{--bg:#09090b;--card:#18181b;--text:#fafafa;--muted:#a1a1aa;--line:#27272a;--accent:#60a5fa;--on-accent:#0b1220;--good:#4ade80;--bad:#fbbf24}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
-main{max-width:720px;margin:0 auto;padding:32px 16px}h1{font-size:22px;margin:0 0 8px}h2{font-size:16px;margin:0 0 6px}
+main{max-width:720px;margin:0 auto;padding:32px 16px}h1{font-size:18px;margin:0}h2{font-size:16px;margin:0 0 6px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}.head{display:flex;flex-direction:column;gap:2px;margin-bottom:4px}.head .lead{margin:0;font-size:14px}
 p{margin:0 0 10px}.lead,.note{color:var(--muted)}.note{font-size:13px}code{font:13px ui-monospace,monospace;background:var(--card);border:1px solid var(--line);border-radius:6px;padding:1px 5px}
 .ask{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}button{font:inherit;font-weight:600;border:1px solid var(--accent);background:var(--accent);color:var(--on-accent);border-radius:8px;padding:9px 14px;cursor:pointer}
 button.secondary{background:var(--card);color:var(--text);border-color:var(--line)}.wait{display:none;width:100%;color:var(--muted)}.busy .wait{display:block}.busy button{opacity:.5;pointer-events:none}
