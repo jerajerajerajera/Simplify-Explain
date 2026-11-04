@@ -4,9 +4,8 @@
 
 A plugin for the [Pelican panel](https://pelican.dev) that explains logs in plain words. Press **Explain** on a
 server's console and it first checks whether something is wrong. When it is, you get the likely cause and steps to
-fix it. Root admins can also have the panel log and the Wings log of a node explained, and with
-[Simplify](https://github.com/jerajerajerajera/Simplify) every health check that failed gets a question button that
-explains it.
+fix it. Root admins can also have the panel log and the Wings log of a node explained. Wherever Simplify, its add-ons
+or another plugin show that something failed, a small question button right after the message explains that error.
 
 It works on its own. With [Simplify](https://github.com/jerajerajerajera/Simplify) installed, it also shows up in
 Simplify's add-on list, and Simplify's setup asks for the service, the key and who may use it. With Simplify Hosting
@@ -33,6 +32,62 @@ around that, all for root admins:
 - `php artisan simplify-explain:check --url` prints a temporary address to the emergency page that works for 60
   minutes without signing in. A new address replaces the old one; only a hash of it is kept, in
   `simplify-explain/emergency-access.json` on the panel's local storage disk.
+
+## Explain your plugin's errors
+
+Any Pelican plugin can put Explain's question button after its own error messages. Your plugin does not need Explain
+or Simplify for this: without Explain nothing renders and nothing is called.
+
+**1. Mark the error in your view**, right after the error text, while the error is shown:
+
+```blade
+{{ \Filament\Support\Facades\FilamentView::renderHook('simplify::problem.actions', scopes: ['simplify-problem', 'simplify-problem:'.$problemId]) }}
+```
+
+`$problemId` is `<your-plugin-id>:<kind>:<reference>`, for example `my-plugin:backup:42`: two to five parts of letters,
+digits, `.`, `-` or `_`, at most 128 characters.
+
+**2. Give the log that belongs to it.** Tag a class in your service provider's `register()`:
+
+```php
+$this->app->tag([MyPluginProblems::class], 'simplify.problems');
+```
+
+The class has two public methods (no interface to implement):
+
+```php
+/** Called on every render of the spot, so keep it cheap: is this id yours, and may this user see the error? */
+public function canExplainProblem(string $id, \App\Models\User $user): bool
+{
+    $backup = str_starts_with($id, 'my-plugin:backup:') ? MyBackup::find((int) substr($id, 17)) : null;
+
+    return $backup?->failed() === true && $user->can('view', $backup);
+}
+
+/**
+ * Called only after a click.
+ *
+ * @return array{title: string, context: string, lines: list<string>}|null
+ */
+public function explainProblem(string $id, \App\Models\User $user): ?array
+{
+    if (! $this->canExplainProblem($id, $user)) {
+        return null;
+    }
+
+    return [
+        'title' => __('my-plugin::backup.explain_title'),          // the window's heading, translated
+        'context' => 'A backup of a game server failed to upload.', // one or two English sentences for the AI
+        'lines' => MyBackup::find((int) substr($id, 17))->logLines(), // the log, oldest first, at most 100 lines
+    ];
+}
+```
+
+- Read the lines on the panel, never from the browser, and check the user in both methods. Give panel or Wings log
+  lines only to root admins.
+- Explain adds its own checks: a saved key, the "who may use it" setting and the limits per person and per panel.
+  Before anything is sent it removes addresses, e-mail addresses, tokens and passwords.
+- Simplify's Health page uses this with ids like `simplify:health:queue`.
 
 ## Routes
 

@@ -15,27 +15,24 @@ use Livewire\Component;
 use Simplify\Explain\Filament\ExplainAction;
 
 /**
- * The question button on a row of Pelican's Health page that needs attention. Simplify gives each such row a render
- * hook; this button brings its own popup.
+ * The question button right after an error anywhere in Simplify or an add-on. The view gives the render hook
+ * simplify::problem.actions; this button brings its own popup.
  */
-final class HealthCheckButton extends Component implements HasActions, HasSchemas
+final class ProblemButton extends Component implements HasActions, HasSchemas
 {
     use InteractsWithActions;
     use InteractsWithSchemas;
 
     #[Locked]
-    public string $check = '';
-
-    #[Locked]
-    public string $label = '';
+    public string $problem = '';
 
     public function explainAction(): Action
     {
-        return ExplainAction::health($this->check, $this->label)->name('explain');
+        return ExplainAction::problem($this->problem)->name('explain');
     }
 
     public function render(): View
     {
-        return view('simplify-explain::livewire.panel-log-button');
+        return view('simplify-explain::livewire.problem-button');
     }
 }

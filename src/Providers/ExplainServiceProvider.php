@@ -18,10 +18,13 @@ use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\ExplainAction;
 use Simplify\Explain\Http\Controllers\EmergencyController;
 use Simplify\Explain\Livewire\ExplainPanel;
-use Simplify\Explain\Livewire\HealthCheckButton;
+use Simplify\Explain\Livewire\ProblemButton;
 use Simplify\Explain\Livewire\PanelLogButton;
 use Simplify\Explain\Services\Explainer;
+use Simplify\Explain\Problems\HealthProblems;
+use Simplify\Explain\Problems\Problems;
 use Simplify\Explain\Services\HealthCheck;
+use Simplify\Explain\Services\Settings;
 use Throwable;
 
 final class ExplainServiceProvider extends ServiceProvider
@@ -36,7 +39,7 @@ final class ExplainServiceProvider extends ServiceProvider
     {
         Livewire::component('simplify-explain-panel', ExplainPanel::class);
         Livewire::component('simplify-explain-panel-log-button', PanelLogButton::class);
-        Livewire::component('simplify-explain-health-button', HealthCheckButton::class);
+        Livewire::component('simplify-explain-problem-button', ProblemButton::class);
 
         Console::registerCustomHeaderActions(HeaderActionPosition::Before, ExplainAction::console());
         EditNode::registerCustomHeaderActions(HeaderActionPosition::Before, ExplainAction::wingsLog());
@@ -46,11 +49,16 @@ final class ExplainServiceProvider extends ServiceProvider
             scopes: ListLogs::class,
         );
 
-        // Simplify's Health page gives every check that needs attention a spot for add-on buttons. Without Simplify
-        // the hook is never rendered.
+        // Any view can mark an error with this hook (see the README); Explain puts its question button there. The
+        // older Health hook is the same with the check's key.
+        FilamentView::registerRenderHook(
+            'simplify::problem.actions',
+            fn (array $scopes = []) => self::problemButton(Problems::fromScopes($scopes)),
+            scopes: 'simplify-problem',
+        );
         FilamentView::registerRenderHook(
             'simplify::health.check.actions',
-            fn (array $scopes = []) => self::healthButton($scopes),
+            fn (array $scopes = []) => self::problemButton(self::healthId($scopes)),
             scopes: 'simplify-health-check',
         );
 
@@ -64,34 +72,36 @@ final class ExplainServiceProvider extends ServiceProvider
             ->name('simplify-explain.emergency.access');
     }
 
-    /**
-     * The question button for the health check named in the hook's scopes ("simplify-health-check:queue"), only for
-     * root admins with a key and only while that check's stored result needs attention.
-     *
-     * @param  array<mixed>  $scopes
-     */
-    public static function healthButton(array $scopes): string
+    /** The question button for an error, only when its source lets this user see it and Explain is set up for them. */
+    public static function problemButton(?string $id): string
     {
         try {
-            $key = null;
-            foreach ($scopes as $scope) {
-                if (is_string($scope) && str_starts_with($scope, 'simplify-health-check:')) {
-                    $key = substr($scope, strlen('simplify-health-check:'));
-                }
-            }
-            if ($key === null || ! HealthCheck::validKey($key) || ! Explainer::mayExplainLogs(user()) || ! ($found = HealthCheck::find($key))) {
+            if ($id === null || ! Settings::availableFor(user()) || Problems::sourceFor($id, user()) === null) {
                 return '';
             }
-            $label = trans()->has('admin/health.results.'.$key.'.label') ? trans('admin/health.results.'.$key.'.label') : $found['label'];
 
             return Blade::render(
-                '@livewire(\'simplify-explain-health-button\', [\'check\' => $check, \'label\' => $label], key(\'simplify-explain-health-\'.$check))',
-                ['check' => $key, 'label' => (string) $label],
+                '@livewire(\'simplify-explain-problem-button\', [\'problem\' => $id], key(\'simplify-explain-problem-\'.$id))',
+                ['id' => $id],
             );
         } catch (Throwable $error) {
             report($error);
 
             return '';
         }
+    }
+
+    /** @param  array<mixed>  $scopes */
+    private static function healthId(array $scopes): ?string
+    {
+        foreach ($scopes as $scope) {
+            if (is_string($scope) && str_starts_with($scope, 'simplify-health-check:')) {
+                $key = substr($scope, strlen('simplify-health-check:'));
+
+                return HealthCheck::validKey($key) ? HealthProblems::id($key) : null;
+            }
+        }
+
+        return null;
     }
 }

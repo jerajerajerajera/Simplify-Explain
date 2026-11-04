@@ -3,6 +3,7 @@
 // Reading warnings from the panel log and the log part of a Wings diagnostics report.
 declare(strict_types=1);
 
+use Simplify\Explain\Problems\Problems;
 use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\WingsLog;
@@ -50,5 +51,9 @@ check('the result is sent as lines with its details', HealthCheck::lines(HealthC
     'Details: {"default":"The last run of the queue was more than 5 minutes ago."}',
 ]);
 HealthCheck::$stored = null;
+
+check('an error id is plugin, kind and reference', Problems::validId('simplify-eggupdates:test:42') && Problems::validId('simplify:health:queue'));
+check('a malformed error id is refused', ! Problems::validId('queue') && ! Problems::validId('a:b c') && ! Problems::validId('a:b:c:d:e:f') && ! Problems::validId('a:'.str_repeat('b', 130)));
+check('the error id is read from the hook\'s scopes', Problems::fromScopes(['simplify-problem', 'simplify-problem:simplify:install:17']) === 'simplify:install:17' && Problems::fromScopes(['simplify-problem']) === null && Problems::fromScopes(['simplify-problem:bad id']) === null);
 
 finish('logs');
