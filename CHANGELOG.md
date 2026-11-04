@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-beta.4
 
 - Settings: "Remove the saved key" is a button that asks first, instead of a switch. It removes the key at once and leaves other unsaved changes alone.
 
