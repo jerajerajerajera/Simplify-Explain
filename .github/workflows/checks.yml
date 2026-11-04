@@ -203,9 +203,11 @@ jobs:
           tar -C plugin --exclude=.git --exclude=dist -cf - . | tar -C panel/plugins/simplify-explain -xf -
           # Pelican keeps the plugin's status in the meta of its plugin.json: keep it, as a restored folder would.
           php -r '$old = json_decode(file_get_contents("/tmp/explain-plugin.json"), true); $file = "panel/plugins/simplify-explain/plugin.json"; $new = json_decode(file_get_contents($file), true); $new["meta"] = $old["meta"] ?? []; file_put_contents($file, json_encode($new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));'
-          (cd panel && php ../plugin/tests/panel/update-check.php kept)
           cd panel
+          # Compiled views of the previous version stay valid by date (the files keep their old times): clear them,
+          # as Pelican does after an update.
           php artisan optimize:clear > /dev/null
+          php ../plugin/tests/panel/update-check.php kept
           php artisan p:plugin:uninstall simplify-explain --no-interaction | tee uninstall.txt
           grep -q 'Plugin uninstalled' uninstall.txt || { echo 'Simplify Explain did not uninstall'; exit 1; }
           php artisan p:plugin:list | tee plugins.txt
