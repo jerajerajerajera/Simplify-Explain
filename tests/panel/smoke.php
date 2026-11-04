@@ -35,6 +35,7 @@ use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Livewire\ProblemHost;
 use Simplify\Explain\Services\EmergencyAccess;
 use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\LogCheck;
@@ -254,21 +255,56 @@ step('a failed health check gets a question button that explains it, for root ad
         (object) ['label' => 'Queue', 'status' => 'failed', 'notificationMessage' => 'Queue jobs running failed. Check meta for more information.', 'shortSummary' => 'Failed', 'meta' => ['default' => 'smoke queue heartbeat missing']],
         (object) ['label' => 'Cache', 'status' => 'ok', 'notificationMessage' => '', 'shortSummary' => 'Ok', 'meta' => []],
     ];
-    $hook = fn (string $check) => (string) FilamentView::renderHook('simplify::health.check.actions', scopes: ['simplify-health-check', 'simplify-health-check:'.$check]);
+    $hook = fn (string $check) => (string) FilamentView::renderHook('simplify::problem.actions', scopes: ['simplify-problem', 'simplify-problem:simplify:health:'.$check]);
     try {
         auth()->login($admin);
-        must(str_contains($hook('queue'), 'simplify-explain-health'), 'no question button on the failed Queue check');
-        must(! str_contains($hook('cache'), 'simplify-explain-health'), 'a question button on a check that is fine');
-        must(! str_contains($hook('../queue'), 'simplify-explain-health'), 'a question button for a made-up check');
+        must(str_contains($hook('queue'), 'simplify-explain-problem'), 'no question button on the failed Queue check');
+        must(! str_contains($hook('cache'), 'simplify-explain-problem'), 'a question button on a check that is fine');
+        must(! str_contains($hook('../queue'), 'simplify-explain-problem'), 'a question button for a made-up check');
         auth()->login($player);
-        must(! str_contains($hook('queue'), 'simplify-explain-health'), 'a question button for someone who is not a root admin');
+        must(! str_contains($hook('queue'), 'simplify-explain-problem'), 'a question button for someone who is not a root admin');
         auth()->logout();
-        Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'health', 'check' => 'queue'])->call('check')->assertSet('result.ok', true);
+        Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:queue'])->call('check')->assertSet('result.ok', true);
         Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke queue heartbeat missing') && str_contains($request->body(), 'Health check: Queue'));
-        Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'health', 'check' => 'cache'])->call('check')->assertSet('result.ok', false);
-        Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'health', 'check' => 'queue'])->call('check')->assertSet('result.ok', false);
+        Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:cache'])->call('check')->assertSet('result.ok', false);
+        Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:queue'])->call('check')->assertSet('result.ok', false);
     } finally {
         HealthCheck::$stored = null;
+        auth()->logout();
+    }
+});
+step('any plugin can mark an error and give its log; Explain checks who may see it', function () use ($admin, $player) {
+    RateLimiter::clear('simplify-explain.user.'.$admin->id);
+    $source = new class
+    {
+        public function canExplainProblem(string $id, $user): bool
+        {
+            return $id === 'smoke-plugin:job:7' && $user->isRootAdmin();
+        }
+
+        public function explainProblem(string $id, $user): ?array
+        {
+            return $this->canExplainProblem($id, $user) ? ['title' => 'Smoke job 7', 'context' => 'A smoke test job failed.', 'lines' => ['smoke job failed: disk quota exceeded for admin@example.com']] : null;
+        }
+    };
+    app()->instance('smoke.problem.source', $source);
+    app()->tag(['smoke.problem.source'], 'simplify.problems');
+    $hook = fn (string $id) => (string) FilamentView::renderHook('simplify::problem.actions', scopes: ['simplify-problem', 'simplify-problem:'.$id]);
+    try {
+        auth()->login($admin);
+        must(str_contains($hook('smoke-plugin:job:7'), 'simplify-explain-problem'), 'no question button after a plugin\'s error');
+        must(! str_contains($hook('smoke-plugin:job:8'), 'simplify-explain-problem'), 'a question button for an error no plugin claims');
+        must(! str_contains($hook('bad id with spaces'), 'simplify-explain-problem'), 'a question button for a malformed id');
+        must(str_contains($hook('smoke-plugin:job:__ID__'), 'data-simplify-explain="smoke-plugin:job:__ID__"'), 'no template button for errors drawn in the browser');
+        Livewire::actingAs($admin)->test(ProblemHost::class)->call('open', 'smoke-plugin:job:7')->call('open', 'smoke-plugin:job:__ID__')->call('open', 'bad id');
+        auth()->login($player);
+        must(! str_contains($hook('smoke-plugin:job:7'), 'simplify-explain-problem'), 'a question button for someone the plugin does not allow');
+        auth()->logout();
+        $result = Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'smoke-plugin:job:7'])->call('check')->get('result');
+        must($result['ok'] === true && $result['title'] === 'Smoke job 7', 'no explanation of the plugin\'s error: '.json_encode($result));
+        Http::assertSent(fn (Request $request) => str_contains($request->body(), 'disk quota exceeded') && ! str_contains($request->body(), 'admin@example.com'));
+        Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'smoke-plugin:job:7'])->call('check')->assertSet('result.ok', false);
+    } finally {
         auth()->logout();
     }
 });

@@ -16,7 +16,7 @@ use Simplify\Hosting\Providers\HostingServiceProvider;
 /** The content of the Explain popup: checks the log once it opens and shows the answer. */
 final class ExplainPanel extends Component
 {
-    /** console (of serverId), panel, wings (of nodeId) or health (of check). */
+    /** console (of serverId), panel, wings (of nodeId) or problem (an error a plugin marked). */
     #[Locked]
     public string $source = 'console';
 
@@ -26,9 +26,9 @@ final class ExplainPanel extends Component
     #[Locked]
     public ?int $nodeId = null;
 
-    /** The health check, as Simplify names it: queue, schedule and so on. */
+    /** The error's id, such as simplify-eggupdates:test:42. */
     #[Locked]
-    public ?string $check = null;
+    public ?string $problem = null;
 
     /** @var array<string, mixed>|null */
     public ?array $result = null;
@@ -39,7 +39,7 @@ final class ExplainPanel extends Component
             'console' => Explainer::console(Server::findOrFail($this->serverId)),
             'panel' => Explainer::panel(),
             'wings' => Explainer::wings(Node::findOrFail($this->nodeId)),
-            'health' => Explainer::health((string) $this->check),
+            'problem' => Explainer::problem((string) $this->problem),
             default => ['ok' => false, 'error' => __('simplify-explain::explain.not_allowed')],
         };
     }

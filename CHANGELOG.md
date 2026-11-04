@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- With Simplify, every health check that failed or warns gets a question button on the Health page, for root admins. It explains what is wrong and how to fix it, from the check's result and the panel log.
+- A question button right after an error explains it: Simplify, its add-ons and any other plugin can mark an error with the render hook `simplify::problem.actions` and give the log that belongs to it (see "Explain your plugin's errors" in the README).
+- With Simplify, every health check that failed or warns gets that button on the Health page, for root admins. It explains what is wrong and how to fix it, from the check's result and the panel log.
 
 ## 2.0.0-beta.4
 
