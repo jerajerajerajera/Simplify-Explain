@@ -55,14 +55,17 @@ final class Problems
         return str_contains($id, '__ID__');
     }
 
-    /** The id in a render hook's scopes ("simplify-problem:<id>"), or null. */
+    /** The placeholder for a whole id, for lists whose rows come from several plugins (Simplify's bell). */
+    public const TEMPLATE = '__ID__';
+
+    /** The id in a render hook's scopes ("simplify-problem:<id>", or "simplify-problem:__ID__" for a whole-id template), or null. */
     public static function fromScopes(array $scopes): ?string
     {
         foreach ($scopes as $scope) {
             if (is_string($scope) && str_starts_with($scope, 'simplify-problem:')) {
                 $id = substr($scope, strlen('simplify-problem:'));
 
-                return self::validId($id) ? $id : null;
+                return $id === self::TEMPLATE || self::validId($id) ? $id : null;
             }
         }
 

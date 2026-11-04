@@ -53,6 +53,10 @@ page, so the button holds no state. When your page draws its errors in the brows
 wherever the error shows. Explain then shows the button whenever Explain is set up for the user, and your source
 checks the real id on the click.
 
+A list whose rows come from several plugins can use `__ID__` as the whole id (`simplify-problem:__ID__`). Simplify's
+bell does this: a notification gets the button when its data holds a valid id under `simplify_problem` (for a
+Filament notification, in its `viewData`), so send your failure notification with the id your source explains.
+
 **2. Give the log that belongs to it.** Tag a class in your service provider's `register()`:
 
 ```php

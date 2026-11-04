@@ -319,6 +319,7 @@ step('any plugin can mark an error and give its log; Explain checks who may see 
         must(! str_contains($hook('smoke-plugin:job:8'), 'simplify-explain-problem'), 'a question button for an error no plugin claims');
         must(! str_contains($hook('bad id with spaces'), 'simplify-explain-problem'), 'a question button for a malformed id');
         must(str_contains($hook('smoke-plugin:job:__ID__'), 'data-simplify-explain="smoke-plugin:job:__ID__"'), 'no template button for errors drawn in the browser');
+        must(str_contains($hook('__ID__'), 'data-simplify-explain="__ID__"'), 'no whole-id template button for the bell');
         must(Problems::notificationAction('smoke-plugin:job:7') !== null && Problems::notificationAction('smoke-plugin:job:8') === null, 'no Explain action for a notification about a claimed error');
         Livewire::actingAs($admin)->test(ProblemHost::class)->dispatch('simplify-explain-problem', problem: 'smoke-plugin:job:7');
         Livewire::actingAs($admin)->test(ProblemHost::class)->call('open', 'smoke-plugin:job:7')->call('open', 'smoke-plugin:job:__ID__')->call('open', 'bad id');
