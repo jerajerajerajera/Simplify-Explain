@@ -314,7 +314,8 @@ step('without Simplify too: red messages, Pelican\'s Health page and its 500 pag
         must(isset($found[0]), 'a red message has no Explain link');
         must(! str_contains(json_encode($sent[1]), 'pelican:message:'), 'a message that is not red has an Explain link');
         $again = ExplainMailbox::withExplain($sent[0]);
-        must(substr_count(json_encode($again), Problems::NOTIFICATION_ACTION) === 1, 'a red message got the Explain link twice');
+        $explains = fn (array $message) => count(array_filter((array) ($message['actions'] ?? []), fn ($action) => ($action['name'] ?? null) === Problems::NOTIFICATION_ACTION));
+        must($explains($sent[0]) === 1 && $explains($again) === 1, 'a red message got the Explain link twice');
         $details = Problems::details($found[0], $admin);
         must(($details['title'] ?? '') === 'Could not start the server' && in_array('Details: The daemon returned an error: smoke invalid state.', $details['lines'], true), 'the red message is not what Explain reads');
         must(Problems::details($found[0], $player) === null, 'someone else can have another person\'s message explained');
