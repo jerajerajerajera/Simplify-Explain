@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-beta.5
 
 - An error shown as a Filament notification can carry an Explain button too: `Problems::notificationAction($id)` (see the README).
 - A question button right after an error explains it: Simplify, its add-ons and any other plugin can mark an error with the render hook `simplify::problem.actions` and give the log that belongs to it (see "Explain your plugin's errors" in the README).
