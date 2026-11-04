@@ -93,6 +93,15 @@ public function explainProblem(string $id, \App\Models\User $user): ?array
   lines only to root admins.
 - Explain adds its own checks: a saved key, the "who may use it" setting and the limits per person and per panel.
   Before anything is sent it removes addresses, e-mail addresses, tokens and passwords.
+- A Filament notification strips the hook's HTML. Add Explain's button as a notification action instead; it is
+  `null` when the user cannot have the error explained:
+
+  ```php
+  $explain = class_exists(\Simplify\Explain\Problems\Problems::class)
+      ? \Simplify\Explain\Problems\Problems::notificationAction($problemId)
+      : null;
+  Notification::make()->danger()->title($message)->actions(array_filter([$explain]))->send();
+  ```
 - Simplify's Health page uses this with ids like `simplify:health:queue`.
 
 ## Routes

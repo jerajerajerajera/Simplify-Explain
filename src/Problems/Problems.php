@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Simplify\Explain\Problems;
 
+use Filament\Actions\Action;
+use Simplify\Explain\Services\Settings;
 use Throwable;
 
 /**
@@ -15,6 +17,31 @@ use Throwable;
 final class Problems
 {
     public const TAG = 'simplify.problems';
+
+    /**
+     * An "Explain" button for a Filament notification about this error, or null when this user cannot have it
+     * explained. Notifications strip the hook's HTML, so call this instead:
+     * class_exists(Problems::class) ? Problems::notificationAction($id) : null.
+     */
+    public static function notificationAction(string $id): ?Action
+    {
+        try {
+            if (! Settings::availableFor(user()) || self::sourceFor($id, user()) === null) {
+                return null;
+            }
+
+            return Action::make('simplify-explain-problem')
+                ->label(__('simplify-explain::explain.button'))
+                ->icon('tabler-message-question')
+                ->color('gray')
+                ->dispatch('simplify-explain-problem', ['problem' => $id])
+                ->close();
+        } catch (Throwable $error) {
+            report($error);
+
+            return null;
+        }
+    }
 
     /** "<plugin>:<kind>:<ref>", 2 to 5 parts of letters, digits, dot, dash or underscore. */
     public static function validId(string $id): bool
