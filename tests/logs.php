@@ -3,6 +3,7 @@
 // Reading warnings from the panel log and the log part of a Wings diagnostics report.
 declare(strict_types=1);
 
+use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\WingsLog;
 
@@ -32,5 +33,22 @@ check('only the log part of the report', WingsLog::fromReport($report) === [
     'ERROR: [Oct 28 10:00:05.000] failed to connect to panel',
 ]);
 check('a report without heading keeps its last lines', count(WingsLog::fromReport(implode("\n", range(1, 150)))) === 100);
+
+HealthCheck::$stored = fn () => [
+    (object) ['label' => 'Node Versions', 'status' => 'ok', 'notificationMessage' => '', 'shortSummary' => 'Ok', 'meta' => []],
+    (object) ['label' => 'Queue', 'status' => 'failed', 'notificationMessage' => 'Queue jobs running failed. Check meta for more information.', 'shortSummary' => 'Failed', 'meta' => ['default' => 'The last run of the queue was more than 5 minutes ago.']],
+];
+check('a health check is named as Simplify names its row', HealthCheck::key('Node Versions') === 'nodeversions' && HealthCheck::key('Queue') === 'queue');
+check('only plain check names are accepted', HealthCheck::validKey('queue') && ! HealthCheck::validKey('../queue') && ! HealthCheck::validKey(''));
+check('a failed check is found with its result', HealthCheck::find('queue')['status'] === 'failed');
+check('a check that is fine gets no explanation', HealthCheck::find('nodeversions') === null && HealthCheck::find('schedule') === null);
+check('the result is sent as lines with its details', HealthCheck::lines(HealthCheck::find('queue')) === [
+    'Health check: Queue',
+    'Status: failed',
+    'Message: Queue jobs running failed. Check meta for more information.',
+    'Summary: Failed',
+    'Details: {"default":"The last run of the queue was more than 5 minutes ago."}',
+]);
+HealthCheck::$stored = null;
 
 finish('logs');

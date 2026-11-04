@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\Server;
 use App\Models\User;
 use Filament\Facades\Filament;
+use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
@@ -35,6 +36,7 @@ use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
 use Simplify\Explain\Services\EmergencyAccess;
+use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\LogCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
@@ -245,6 +247,30 @@ step('root admins can explain the Wings log of a node', function () use ($admin,
 step('other users cannot explain the panel or Wings log', function () use ($player, $server) {
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'panel'])->call('check')->assertSet('result.ok', false);
     Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'wings', 'nodeId' => $server->node_id])->call('check')->assertSet('result.ok', false);
+});
+step('a failed health check gets a question button that explains it, for root admins only', function () use ($admin, $player) {
+    RateLimiter::clear('simplify-explain.user.'.$admin->id);
+    HealthCheck::$stored = fn () => [
+        (object) ['label' => 'Queue', 'status' => 'failed', 'notificationMessage' => 'Queue jobs running failed. Check meta for more information.', 'shortSummary' => 'Failed', 'meta' => ['default' => 'smoke queue heartbeat missing']],
+        (object) ['label' => 'Cache', 'status' => 'ok', 'notificationMessage' => '', 'shortSummary' => 'Ok', 'meta' => []],
+    ];
+    $hook = fn (string $check) => (string) FilamentView::renderHook('simplify::health.check.actions', scopes: ['simplify-health-check', 'simplify-health-check:'.$check]);
+    try {
+        auth()->login($admin);
+        must(str_contains($hook('queue'), 'simplify-explain-health'), 'no question button on the failed Queue check');
+        must(! str_contains($hook('cache'), 'simplify-explain-health'), 'a question button on a check that is fine');
+        must(! str_contains($hook('../queue'), 'simplify-explain-health'), 'a question button for a made-up check');
+        auth()->login($player);
+        must(! str_contains($hook('queue'), 'simplify-explain-health'), 'a question button for someone who is not a root admin');
+        auth()->logout();
+        Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'health', 'check' => 'queue'])->call('check')->assertSet('result.ok', true);
+        Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke queue heartbeat missing') && str_contains($request->body(), 'Health check: Queue'));
+        Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'health', 'check' => 'cache'])->call('check')->assertSet('result.ok', false);
+        Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'health', 'check' => 'queue'])->call('check')->assertSet('result.ok', false);
+    } finally {
+        HealthCheck::$stored = null;
+        auth()->logout();
+    }
 });
 $own = null;
 step('a customer with access gets an explanation, not with audience "admins"', function () use ($player, $server, &$own) {

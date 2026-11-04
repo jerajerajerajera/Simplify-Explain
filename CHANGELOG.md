@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- With Simplify, every health check that failed or warns gets a question button on the Health page, for root admins. It explains what is wrong and how to fix it, from the check's result and the panel log.
+
 ## 2.0.0-beta.4
 
 - Settings: "Remove the saved key" is a button that asks first, instead of a switch. It removes the key at once and leaves other unsaved changes alone.
