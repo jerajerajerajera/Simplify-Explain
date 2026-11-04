@@ -11,7 +11,7 @@ use Filament\Facades\Filament;
 use Filament\Support\Enums\Width;
 use Simplify\Explain\Services\Explainer;
 
-/** The Explain buttons and their popup: for a server's console, the panel log and a node's Wings log. */
+/** The Explain buttons and their popup: for a server's console, the panel log, a node's Wings log and a health check. */
 final class ExplainAction
 {
     public static function console(): Action
@@ -36,6 +36,18 @@ final class ExplainAction
                 'source' => 'wings',
                 'nodeId' => self::node($livewire)?->id,
             ]));
+    }
+
+    /** The question button on a health check that needs attention; $check is the key Simplify gives the row. */
+    public static function health(string $check, string $label): Action
+    {
+        return self::make('simplify-explain-health', __('simplify-explain::explain.button'))
+            ->iconButton()
+            ->tooltip(__('simplify-explain::explain.button'))
+            ->extraAttributes(['class' => 'simplify-explain-health'])
+            ->visible(fn () => Explainer::mayExplainLogs(user()))
+            ->modalHeading(__('simplify-explain::explain.health_heading', ['check' => $label]))
+            ->modalContent(fn () => view('simplify-explain::modal', ['source' => 'health', 'check' => $check]));
     }
 
     private static function make(string $name, string $label): Action

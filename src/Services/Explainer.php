@@ -77,6 +77,38 @@ final class Explainer
     }
 
     /**
+     * Explains one of Pelican's health checks that needs attention for a root admin: its stored result and the
+     * recent warnings of the panel log. $check is the key Simplify gives the row, such as queue.
+     *
+     * @return array<string, mixed>
+     */
+    public static function health(string $check): array
+    {
+        $user = user();
+        if (! self::mayExplainLogs($user)) {
+            return self::notAllowed();
+        }
+        try {
+            $result = HealthCheck::find($check);
+        } catch (Throwable $error) {
+            report($error);
+
+            return ['ok' => false, 'error' => __('simplify-explain::explain.health_unreadable')];
+        }
+        if ($result === null) {
+            return ['ok' => false, 'error' => __('simplify-explain::explain.health_missing')];
+        }
+        try {
+            $log = PanelLog::lines();
+        } catch (Throwable) {
+            $log = [];
+        }
+        $lines = [...HealthCheck::lines($result), ...array_slice($log, -(LogCheck::LINES - 10))];
+
+        return LogCheck::run($lines, HealthCheck::context().' '.self::ASKED_FROM['panel'], self::limitKey($user), __('simplify-explain::explain.health_missing'));
+    }
+
+    /**
      * Reads a log and explains it, without checking who asks: the methods above, the emergency page and the
      * terminal command check that first. $source is console (of $server), panel or wings (of $node).
      *
