@@ -54,7 +54,7 @@ HealthCheck::$stored = null;
 
 check('an error id is plugin, kind and reference', Problems::validId('simplify-eggupdates:test:42') && Problems::validId('simplify:health:queue'));
 check('a malformed error id is refused', ! Problems::validId('queue') && ! Problems::validId('a:b c') && ! Problems::validId('a:b:c:d:e:f') && ! Problems::validId('a:'.str_repeat('b', 130)));
-check('a template id is never explained itself', Problems::isTemplate('simplify:install:__ID__') && Problems::sourceFor('simplify:install:__ID__', new stdClass()) === null);
+check('a template id is never explained itself', Problems::isTemplate('simplify:install:__ID__') && Problems::sourceFor('simplify:install:__ID__', new stdClass) === null);
 check('the error id is read from the hook\'s scopes', Problems::fromScopes(['simplify-problem', 'simplify-problem:simplify:install:17']) === 'simplify:install:17' && Problems::fromScopes(['simplify-problem']) === null && Problems::fromScopes(['simplify-problem:bad id']) === null);
 
 finish('logs');
