@@ -23,3 +23,9 @@ parameters:
 			identifier: match.unhandled
 			count: 1
 			path: src/Services/Explainer.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>storedCheckResults" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: src/Services/HealthCheck.php
