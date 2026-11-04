@@ -7,6 +7,7 @@ namespace Simplify\Explain\Services;
 use App\Enums\SubuserPermission;
 use App\Models\Node;
 use App\Models\Server;
+use Simplify\Explain\Problems\Problems;
 use Throwable;
 
 /** Who may explain which log, and the question for each log. */
@@ -77,35 +78,30 @@ final class Explainer
     }
 
     /**
-     * Explains one of Pelican's health checks that needs attention for a root admin: its stored result and the
-     * recent warnings of the panel log. $check is the key Simplify gives the row, such as queue.
+     * Explains an error that a plugin marked with the render hook simplify::problem.actions, for someone who may see it
+     * and may use Explain. The plugin's source gives the log that belongs to the error.
      *
      * @return array<string, mixed>
      */
-    public static function health(string $check): array
+    public static function problem(string $id): array
     {
         $user = user();
-        if (! self::mayExplainLogs($user)) {
+        if (! Settings::availableFor($user)) {
             return self::notAllowed();
         }
         try {
-            $result = HealthCheck::find($check);
+            $details = Problems::details($id, $user);
         } catch (Throwable $error) {
             report($error);
 
-            return ['ok' => false, 'error' => __('simplify-explain::explain.health_unreadable')];
+            return ['ok' => false, 'error' => __('simplify-explain::explain.problem_unreadable')];
         }
-        if ($result === null) {
-            return ['ok' => false, 'error' => __('simplify-explain::explain.health_missing')];
+        if ($details === null) {
+            return ['ok' => false, 'error' => __('simplify-explain::explain.problem_gone')];
         }
-        try {
-            $log = PanelLog::lines();
-        } catch (Throwable) {
-            $log = [];
-        }
-        $lines = [...HealthCheck::lines($result), ...array_slice($log, -(LogCheck::LINES - 10))];
+        $result = LogCheck::run($details['lines'], $details['context'], self::limitKey($user), __('simplify-explain::explain.problem_empty'));
 
-        return LogCheck::run($lines, HealthCheck::context().' '.self::ASKED_FROM['panel'], self::limitKey($user), __('simplify-explain::explain.health_missing'));
+        return $result + ['title' => $details['title']];
     }
 
     /**

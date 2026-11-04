@@ -1,4 +1,7 @@
 <div wire:init="check" style="display: flex; flex-direction: column; gap: 0.75rem;">
+    @if (($result['title'] ?? '') !== '')
+        <div style="font-weight: 600;">{{ $result['title'] }}</div>
+    @endif
     @if ($result === null)
         <div style="display: flex; align-items: center; gap: 0.5rem;">
             <x-filament::loading-indicator style="width: 1.25rem; height: 1.25rem;" />

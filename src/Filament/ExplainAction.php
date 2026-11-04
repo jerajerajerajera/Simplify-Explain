@@ -11,7 +11,7 @@ use Filament\Facades\Filament;
 use Filament\Support\Enums\Width;
 use Simplify\Explain\Services\Explainer;
 
-/** The Explain buttons and their popup: for a server's console, the panel log, a node's Wings log and a health check. */
+/** The Explain buttons and their popup: for a server's console, the panel log, a node's Wings log and any error that a plugin marks. */
 final class ExplainAction
 {
     public static function console(): Action
@@ -38,16 +38,11 @@ final class ExplainAction
             ]));
     }
 
-    /** The question button on a health check that needs attention; $check is the key Simplify gives the row. */
-    public static function health(string $check, string $label): Action
+    /** The popup for an error a plugin marked; ProblemHost mounts it with the error's id as argument. */
+    public static function problem(): Action
     {
-        return self::make('simplify-explain-health', __('simplify-explain::explain.button'))
-            ->iconButton()
-            ->tooltip(__('simplify-explain::explain.button'))
-            ->extraAttributes(['class' => 'simplify-explain-health'])
-            ->visible(fn () => Explainer::mayExplainLogs(user()))
-            ->modalHeading(__('simplify-explain::explain.health_heading', ['check' => $label]))
-            ->modalContent(fn () => view('simplify-explain::modal', ['source' => 'health', 'check' => $check]));
+        return self::make('simplify-explain-problem', __('simplify-explain::explain.button'))
+            ->modalContent(fn (array $arguments) => view('simplify-explain::modal', ['source' => 'problem', 'problem' => (string) ($arguments['problem'] ?? '')]));
     }
 
     private static function make(string $name, string $label): Action
