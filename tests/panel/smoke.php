@@ -44,6 +44,7 @@ use Simplify\Explain\Services\LogCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
 use Simplify\Hosting\Providers\HostingServiceProvider;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 define('LARAVEL_START', microtime(true));
 require getcwd().'/vendor/autoload.php';
@@ -152,13 +153,14 @@ step('the settings form saves on its own and is for root admins only (also in Si
         ->dispatch('simplify-explain-settings-save');
     must(Settings::current()['audience'] !== $before['audience'], 'the form did not save on the save event');
     Settings::save(['provider' => $before['provider'], 'model' => $before['model'], 'audience' => $before['audience']]);
+    // Livewire's tester turns the abort in mount() into a 403 response instead of throwing it.
     try {
-        Livewire::actingAs($player)->test(ExplainSettingsForm::class);
-        $opened = true;
-    } catch (Throwable) {
-        $opened = false;
+        Livewire::actingAs($player)->test(ExplainSettingsForm::class)->assertForbidden();
+        $closed = true;
+    } catch (HttpException $e) {
+        $closed = $e->getStatusCode() === 403;
     }
-    must(! $opened, 'the settings form opens for someone who is not a root admin');
+    must($closed, 'the settings form opens for someone who is not a root admin');
 });
 step('settings page is closed to other users', function () use ($player) {
     $url = ExplainSettings::getUrl(panel: 'admin');
