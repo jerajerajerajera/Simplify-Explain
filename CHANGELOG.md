@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Explain's window and its emergency page use Simplify's header model: what is explained as the title, where the lines come from as the subtitle, and Check again on the right.
 - The question button after an error takes its colours from Simplify's theme, or from Pelican's without Simplify, instead of fixed ones.
 - Explain on Pelican's own errors, also without Simplify: every red message gets an Explain link, Pelican's Health page an Explain button while a check fails, and its 500 page a link to the emergency page for root admins.
 - Uninstalling keeps the settings and saved keys, so installing again brings everything back (see "Updates" in the README).
