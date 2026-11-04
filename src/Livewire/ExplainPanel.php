@@ -44,9 +44,9 @@ final class ExplainPanel extends Component
         }
 
         return match ($this->source) {
-            'console' => __('simplify-explain::explain.console_heading', ['server' => (string) (Server::find($this->serverId)?->name ?? '')]),
+            'console' => __('simplify-explain::explain.console_heading', ['server' => (string) (Server::find($this->serverId)->name ?? '')]),
             'panel' => __('simplify-explain::explain.panel_heading'),
-            'wings' => __('simplify-explain::explain.wings_heading', ['node' => (string) (Node::find($this->nodeId)?->name ?? '')]),
+            'wings' => __('simplify-explain::explain.wings_heading', ['node' => (string) (Node::find($this->nodeId)->name ?? '')]),
             default => __('simplify-explain::explain.heading'),
         };
     }
