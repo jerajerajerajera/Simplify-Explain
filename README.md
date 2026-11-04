@@ -4,7 +4,9 @@
 
 A plugin for the [Pelican panel](https://pelican.dev) that explains logs in plain words. Press **Explain** on a
 server's console and it first checks whether something is wrong. When it is, you get the likely cause and steps to
-fix it. Root admins can also have the panel log and the Wings log of a node explained.
+fix it. Root admins can also have the panel log and the Wings log of a node explained, and with
+[Simplify](https://github.com/jerajerajerajera/Simplify) every health check that failed gets a question button that
+explains it.
 
 It works on its own. With [Simplify](https://github.com/jerajerajerajera/Simplify) installed, it also shows up in
 Simplify's add-on list, and Simplify's setup asks for the service, the key and who may use it. With Simplify Hosting

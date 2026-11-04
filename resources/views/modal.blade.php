@@ -1,1 +1,1 @@
-@livewire('simplify-explain-panel', ['source' => $source, 'serverId' => $serverId ?? null, 'nodeId' => $nodeId ?? null], key('simplify-explain-'.$source.'-'.($serverId ?? $nodeId ?? 0)))
+@livewire('simplify-explain-panel', ['source' => $source, 'serverId' => $serverId ?? null, 'nodeId' => $nodeId ?? null, 'check' => $check ?? null], key('simplify-explain-'.$source.'-'.($serverId ?? $nodeId ?? $check ?? 0)))
