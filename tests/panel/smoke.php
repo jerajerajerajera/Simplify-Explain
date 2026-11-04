@@ -265,7 +265,15 @@ step('customers get "Open a ticket" only with Simplify Hosting and a support lin
     if (! class_exists('Simplify\Core\Support\PanelSettings')) {
         require __DIR__.'/stubs/PanelSettings.php';
     }
-    PanelSettings::$values = ['support_url' => 'https://support.example.com/ticket'];
+    // The stand-in keeps its values in a property; the real core saves them.
+    $support = function (?string $url): void {
+        if (property_exists(PanelSettings::class, 'values')) {
+            PanelSettings::$values = $url ? ['support_url' => $url] : [];
+        } else {
+            PanelSettings::save(['support_url' => $url]);
+        }
+    };
+    $support('https://support.example.com/ticket');
     $html = fn () => Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.found', true)->html();
     must(! str_contains($html(), 'https://support.example.com/ticket'), 'the ticket link shows without Simplify Hosting');
     if (! class_exists('Simplify\Hosting\Providers\HostingServiceProvider')) {
@@ -273,7 +281,7 @@ step('customers get "Open a ticket" only with Simplify Hosting and a support lin
     }
     app()->register(HostingServiceProvider::class);
     must(str_contains($html(), 'https://support.example.com/ticket'), 'no ticket link for a customer with Simplify Hosting');
-    PanelSettings::$values = [];
+    $support(null);
     must(! str_contains($html(), __('simplify-explain::explain.ticket')), 'the ticket link shows without a support link');
 });
 step('asking too often is limited per person and per panel', function () use ($admin, $server) {
