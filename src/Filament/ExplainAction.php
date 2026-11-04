@@ -9,9 +9,7 @@ use App\Models\Server;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Support\Enums\Width;
-use Simplify\Explain\Problems\Problems;
 use Simplify\Explain\Services\Explainer;
-use Simplify\Explain\Services\Settings;
 
 /** The Explain buttons and their popup: for a server's console, the panel log, a node's Wings log and any error that a plugin marks. */
 final class ExplainAction
@@ -40,15 +38,11 @@ final class ExplainAction
             ]));
     }
 
-    /** The question button right after an error; $problem is the id the view gave the render hook. */
-    public static function problem(string $problem): Action
+    /** The popup for an error a plugin marked; ProblemHost mounts it with the error's id as argument. */
+    public static function problem(): Action
     {
         return self::make('simplify-explain-problem', __('simplify-explain::explain.button'))
-            ->iconButton()
-            ->size('sm')
-            ->tooltip(__('simplify-explain::explain.button'))
-            ->visible(fn () => Problems::sourceFor($problem, user()) !== null && Settings::availableFor(user()))
-            ->modalContent(fn () => view('simplify-explain::modal', ['source' => 'problem', 'problem' => $problem]));
+            ->modalContent(fn (array $arguments) => view('simplify-explain::modal', ['source' => 'problem', 'problem' => (string) ($arguments['problem'] ?? '')]));
     }
 
     private static function make(string $name, string $label): Action

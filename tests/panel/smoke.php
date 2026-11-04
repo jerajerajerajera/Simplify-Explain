@@ -21,7 +21,6 @@ use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Artisan;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -36,6 +35,7 @@ use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Livewire\ProblemHost;
 use Simplify\Explain\Services\EmergencyAccess;
 use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\LogCheck;
@@ -255,7 +255,7 @@ step('a failed health check gets a question button that explains it, for root ad
         (object) ['label' => 'Queue', 'status' => 'failed', 'notificationMessage' => 'Queue jobs running failed. Check meta for more information.', 'shortSummary' => 'Failed', 'meta' => ['default' => 'smoke queue heartbeat missing']],
         (object) ['label' => 'Cache', 'status' => 'ok', 'notificationMessage' => '', 'shortSummary' => 'Ok', 'meta' => []],
     ];
-    $hook = fn (string $check) => (string) FilamentView::renderHook('simplify::health.check.actions', scopes: ['simplify-health-check', 'simplify-health-check:'.$check]);
+    $hook = fn (string $check) => (string) FilamentView::renderHook('simplify::problem.actions', scopes: ['simplify-problem', 'simplify-problem:simplify:health:'.$check]);
     try {
         auth()->login($admin);
         must(str_contains($hook('queue'), 'simplify-explain-problem'), 'no question button on the failed Queue check');
@@ -264,7 +264,6 @@ step('a failed health check gets a question button that explains it, for root ad
         auth()->login($player);
         must(! str_contains($hook('queue'), 'simplify-explain-problem'), 'a question button for someone who is not a root admin');
         auth()->logout();
-        must(str_contains(Blade::render("{{ \\Filament\\Support\\Facades\\FilamentView::renderHook('simplify::problem.actions', scopes: ['simplify-problem', 'simplify-problem:simplify:health:queue']) }}"), 'simplify-explain-problem'), 'no question button through the general error hook');
         Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:queue'])->call('check')->assertSet('result.ok', true);
         Http::assertSent(fn (Request $request) => str_contains($request->body(), 'smoke queue heartbeat missing') && str_contains($request->body(), 'Health check: Queue'));
         Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'problem', 'problem' => 'simplify:health:cache'])->call('check')->assertSet('result.ok', false);
@@ -296,6 +295,8 @@ step('any plugin can mark an error and give its log; Explain checks who may see 
         must(str_contains($hook('smoke-plugin:job:7'), 'simplify-explain-problem'), 'no question button after a plugin\'s error');
         must(! str_contains($hook('smoke-plugin:job:8'), 'simplify-explain-problem'), 'a question button for an error no plugin claims');
         must(! str_contains($hook('bad id with spaces'), 'simplify-explain-problem'), 'a question button for a malformed id');
+        must(str_contains($hook('smoke-plugin:job:__ID__'), 'data-simplify-explain="smoke-plugin:job:__ID__"'), 'no template button for errors drawn in the browser');
+        Livewire::actingAs($admin)->test(ProblemHost::class)->call('open', 'smoke-plugin:job:7')->call('open', 'smoke-plugin:job:__ID__')->call('open', 'bad id');
         auth()->login($player);
         must(! str_contains($hook('smoke-plugin:job:7'), 'simplify-explain-problem'), 'a question button for someone the plugin does not allow');
         auth()->logout();

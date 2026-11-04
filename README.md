@@ -47,6 +47,12 @@ or Simplify for this: without Explain nothing renders and nothing is called.
 `$problemId` is `<your-plugin-id>:<kind>:<reference>`, for example `my-plugin:backup:42`: two to five parts of letters,
 digits, `.`, `-` or `_`, at most 128 characters.
 
+Explain renders a small plain button there (`data-simplify-explain="<id>"`) and opens its window from one helper per
+page, so the button holds no state. When your page draws its errors in the browser, render the hook once with
+`__ID__` as the reference (`my-plugin:backup:__ID__`) and replace `__ID__` in that HTML with the real reference
+wherever the error shows. Explain then shows the button whenever Explain is set up for the user, and your source
+checks the real id on the click.
+
 **2. Give the log that belongs to it.** Tag a class in your service provider's `register()`:
 
 ```php

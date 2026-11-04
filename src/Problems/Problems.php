@@ -22,6 +22,12 @@ final class Problems
         return strlen($id) <= 128 && (bool) preg_match('/^[A-Za-z0-9_.-]+(:[A-Za-z0-9_.-]+){1,4}$/', $id);
     }
 
+    /** A template id holds __ID__, which the page replaces in the browser; it is never explained itself. */
+    public static function isTemplate(string $id): bool
+    {
+        return str_contains($id, '__ID__');
+    }
+
     /** The id in a render hook's scopes ("simplify-problem:<id>"), or null. */
     public static function fromScopes(array $scopes): ?string
     {
@@ -39,7 +45,7 @@ final class Problems
     /** The first source that may explain this error to this user, or null. */
     public static function sourceFor(string $id, mixed $user): ?object
     {
-        if (! $user || ! self::validId($id)) {
+        if (! $user || ! self::validId($id) || self::isTemplate($id)) {
             return null;
         }
         foreach (self::sources() as $source) {
