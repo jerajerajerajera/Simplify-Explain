@@ -49,8 +49,12 @@ final class ExplainAddon extends Addon
         return ExplainSettings::getUrl(panel: 'admin');
     }
 
-    /** The settings in Simplify settings › Add-ons (add-on API 8); the form checks its user itself. */
-    public function settingsForm(): ?string
+    /**
+     * The settings in Simplify settings › Add-ons (add-on API 8); the form checks its user itself.
+     *
+     * @return class-string
+     */
+    public function settingsForm(): string
     {
         return ExplainSettingsForm::class;
     }

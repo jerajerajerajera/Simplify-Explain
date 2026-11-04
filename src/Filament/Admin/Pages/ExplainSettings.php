@@ -34,7 +34,13 @@ final class ExplainSettings extends Page
     /** Whether Simplify shows Explain's settings in its own settings (Simplify's ADDONS.md, "Settings"). */
     public static function inSimplifySettings(): bool
     {
-        return class_exists(Addon::class) && defined(Addon::class.'::API') && Addon::API >= 8;
+        return class_exists(Addon::class) && defined(Addon::class.'::API') && self::coreApi() >= 8;
+    }
+
+    /** The add-on API of the installed Simplify, read at run time: the panel may have an older or newer core than the one checked against. */
+    private static function coreApi(): int
+    {
+        return (int) Addon::API;
     }
 
     public static function shouldRegisterNavigation(): bool
