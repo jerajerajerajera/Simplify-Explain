@@ -136,6 +136,10 @@ The API key is stored encrypted with the panel's `APP_KEY` and never shown again
 
 Updates come from the Pelican Hub only.
 
+Uninstalling keeps Explain's settings, including the saved keys (encrypted with the panel's `APP_KEY`), so installing
+it again brings everything back. To remove them for good, use "Remove the saved key" in the settings first, or drop the
+`simplify_explain_settings` table after uninstalling.
+
 ## Development
 
 - `bash tests/run.sh` runs the checks that need no panel, including `tests/hub-check.py`.

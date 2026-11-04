@@ -11,11 +11,13 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Simplify\Core\Support\PanelSettings;
 use Simplify\Explain\Services\Explainer;
-use Simplify\Hosting\Providers\HostingServiceProvider;
 
 /** The content of the Explain popup: checks the log once it opens and shows the answer. */
 final class ExplainPanel extends Component
 {
+    /** Simplify Hosting's provider, by name: Hosting is optional, so its class may not exist. */
+    private const HOSTING = 'Simplify\\Hosting\\Providers\\HostingServiceProvider';
+
     /** console (of serverId), panel, wings (of nodeId) or problem (an error a plugin marked). */
     #[Locked]
     public string $source = 'console';
@@ -50,7 +52,7 @@ final class ExplainPanel extends Component
      */
     public function supportUrl(): ?string
     {
-        if (user()?->isAdmin() || ! class_exists(PanelSettings::class) || ! app()->providerIsLoaded(HostingServiceProvider::class)) {
+        if (user()?->isAdmin() || ! class_exists(PanelSettings::class) || ! app()->providerIsLoaded(self::HOSTING)) {
             return null;
         }
         $url = PanelSettings::get('support_url');

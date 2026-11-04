@@ -1,7 +1,0 @@
-parameters:
-	ignoreErrors:
-		-
-			message: '#^Class Simplify\\Hosting\\Providers\\HostingServiceProvider not found\.$#'
-			identifier: class.notFound
-			count: 1
-			path: src/Livewire/ExplainPanel.php
