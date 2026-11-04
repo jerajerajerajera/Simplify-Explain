@@ -1,31 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Method Simplify\\Explain\\Filament\\Admin\\Pages\\ExplainSettings\:\:getNavigationGroup\(\) never returns null so it can be removed from the return type\.$#'
-			identifier: return.unusedType
-			count: 1
-			path: src/Filament/Admin/Pages/ExplainSettings.php
-
-		-
 			message: '#^Class Simplify\\Hosting\\Providers\\HostingServiceProvider not found\.$#'
 			identifier: class.notFound
 			count: 1
 			path: src/Livewire/ExplainPanel.php
-
-		-
-			message: '#^Using nullsafe property access on non\-nullable type App\\Models\\Egg\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Services/ConsoleLog.php
-
-		-
-			message: '#^Match expression does not handle remaining value\: string$#'
-			identifier: match.unhandled
-			count: 1
-			path: src/Services/Explainer.php
-
-		-
-			message: '#^Using nullsafe property access "\?\-\>storedCheckResults" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
-			identifier: nullsafe.neverNull
-			count: 1
-			path: src/Services/HealthCheck.php

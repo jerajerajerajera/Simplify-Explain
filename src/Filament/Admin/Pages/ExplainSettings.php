@@ -54,7 +54,7 @@ final class ExplainSettings extends Page
     }
 
     /** In the Simplify group of Pelican's menu, with the other Simplify add-ons (Simplify's ADDONS.md, "Admin menu"). */
-    public static function getNavigationGroup(): ?string
+    public static function getNavigationGroup(): string
     {
         return 'Simplify';
     }
