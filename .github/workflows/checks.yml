@@ -102,9 +102,15 @@ jobs:
           php artisan p:plugin:install simplify-explain
           php artisan p:plugin:list | tee plugins.txt
           grep -E 'Simplify Explain .*\| enabled' plugins.txt || { echo 'Simplify Explain did not install'; exit 1; }
+      - name: Open the pages
+        working-directory: panel
+        run: |
+          php plugins/simplify-explain/tests/panel/smoke.php | tee smoke.txt
+          grep -q '^All steps passed$' smoke.txt
       - name: PHPStan (level 5, in the panel)
         if: matrix.simplify == 'main' # the add-on's classes extend the core's
         working-directory: panel
+        # After the smoke: installing larastan brings PHPUnit into the panel, which changes how Livewire's test helpers behave.
         run: |
           composer require --dev larastan/larastan --no-interaction --no-progress --quiet
           # Without a baseline yet: the first run writes one and prints it, to commit as the starting point (every
@@ -115,11 +121,6 @@ jobs:
             vendor/bin/phpstan analyse --configuration plugins/simplify-explain/phpstan.neon --memory-limit 1G --no-progress --generate-baseline=plugins/simplify-explain/phpstan-baseline.neon --allow-empty-baseline
             echo '::group::phpstan-baseline.neon'; cat plugins/simplify-explain/phpstan-baseline.neon; echo '::endgroup::'
           fi
-      - name: Open the pages
-        working-directory: panel
-        run: |
-          php plugins/simplify-explain/tests/panel/smoke.php | tee smoke.txt
-          grep -q '^All steps passed$' smoke.txt
       - name: Laravel log
         if: failure()
         run: grep -h -E '^\[[0-9-]+ [0-9:]+\]' panel/storage/logs/*.log | cut -c1-600 | tail -n 12 || true
