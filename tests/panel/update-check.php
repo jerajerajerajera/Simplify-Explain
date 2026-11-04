@@ -23,6 +23,7 @@ use Simplify\Explain\Services\Settings;
 
 const PLACEHOLDER_KEY = 'upgrade-test-placeholder-not-a-key';
 
+define('LARAVEL_START', microtime(true));
 require getcwd().'/vendor/autoload.php';
 $app = require getcwd().'/bootstrap/app.php';
 $app->make(Kernel::class)->bootstrap();
