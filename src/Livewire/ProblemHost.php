@@ -10,6 +10,7 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 use Illuminate\Contracts\View\View;
+use Livewire\Attributes\On;
 use Livewire\Component;
 use Simplify\Explain\Filament\ExplainAction;
 use Simplify\Explain\Problems\Problems;
@@ -23,7 +24,11 @@ final class ProblemHost extends Component implements HasActions, HasSchemas
     use InteractsWithActions;
     use InteractsWithSchemas;
 
-    /** A click on a question button. Who may see the error is checked when the popup asks its source. */
+    /**
+     * A click on a question button, or the browser event simplify-explain-problem from a notification's Explain
+     * action. Who may see the error is checked when the popup asks its source.
+     */
+    #[On('simplify-explain-problem')]
     public function open(string $problem): void
     {
         if (Problems::validId($problem) && ! Problems::isTemplate($problem)) {
