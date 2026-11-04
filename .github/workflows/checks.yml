@@ -186,20 +186,28 @@ jobs:
         run: |
           previous=$(git ls-remote --tags --refs "https://github.com/${{ github.repository }}.git" 'v*' | sed 's#.*/##' | sort -V | tail -n 1)
           echo "Previous release: $previous"
+          cp panel/plugins/simplify-explain/plugin.json /tmp/explain-plugin.json
           rm -rf panel/plugins/simplify-explain
           git clone --quiet --depth 1 --branch "$previous" "https://github.com/${{ github.repository }}.git" panel/plugins/simplify-explain
           rm -rf panel/plugins/simplify-explain/.git
+          # Pelican keeps the plugin's status in the meta of its plugin.json: keep it, as a restored folder would.
+          php -r '$old = json_decode(file_get_contents("/tmp/explain-plugin.json"), true); $file = "panel/plugins/simplify-explain/plugin.json"; $new = json_decode(file_get_contents($file), true); $new["meta"] = $old["meta"] ?? []; file_put_contents($file, json_encode($new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));'
           cd panel
           php artisan optimize:clear > /dev/null
           php ../plugin/tests/panel/update-check.php kept
       - name: Uninstall and install again
         run: |
+          cp panel/plugins/simplify-explain/plugin.json /tmp/explain-plugin.json
           rm -rf panel/plugins/simplify-explain
           mkdir -p panel/plugins/simplify-explain
           tar -C plugin --exclude=.git --exclude=dist -cf - . | tar -C panel/plugins/simplify-explain -xf -
+          # Pelican keeps the plugin's status in the meta of its plugin.json: keep it, as a restored folder would.
+          php -r '$old = json_decode(file_get_contents("/tmp/explain-plugin.json"), true); $file = "panel/plugins/simplify-explain/plugin.json"; $new = json_decode(file_get_contents($file), true); $new["meta"] = $old["meta"] ?? []; file_put_contents($file, json_encode($new, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));'
+          (cd panel && php ../plugin/tests/panel/update-check.php kept)
           cd panel
           php artisan optimize:clear > /dev/null
-          php artisan p:plugin:uninstall simplify-explain --no-interaction
+          php artisan p:plugin:uninstall simplify-explain --no-interaction | tee uninstall.txt
+          grep -q 'Plugin uninstalled' uninstall.txt || { echo 'Simplify Explain did not uninstall'; exit 1; }
           php artisan p:plugin:list | tee plugins.txt
           ! grep -E 'Simplify Explain .*\| enabled' plugins.txt || { echo 'Simplify Explain is still enabled'; exit 1; }
           php artisan p:plugin:install simplify-explain
