@@ -113,14 +113,99 @@ jobs:
         # After the smoke: installing larastan brings PHPUnit into the panel, which changes how Livewire's test helpers behave.
         run: |
           composer require --dev larastan/larastan --no-interaction --no-progress --quiet
-          # Without a baseline yet: the first run writes one and prints it, to commit as the starting point (every
-          # finding in it is on the clean-up list; new code must be clean).
-          if [ -f plugins/simplify-explain/phpstan-baseline.neon ]; then
-            vendor/bin/phpstan analyse --configuration plugins/simplify-explain/phpstan.neon --memory-limit 1G --no-progress --error-format=github
-          else
-            vendor/bin/phpstan analyse --configuration plugins/simplify-explain/phpstan.neon --memory-limit 1G --no-progress --generate-baseline=plugins/simplify-explain/phpstan-baseline.neon --allow-empty-baseline
-            echo '::group::phpstan-baseline.neon'; cat plugins/simplify-explain/phpstan-baseline.neon; echo '::endgroup::'
-          fi
+          # No baseline: the clean-up list is done (4 Nov 2026), so every finding fails the check.
+          test ! -e plugins/simplify-explain/phpstan-baseline.neon || { echo 'A PHPStan baseline came back: fix the findings instead'; exit 1; }
+          vendor/bin/phpstan analyse --configuration plugins/simplify-explain/phpstan.neon --memory-limit 1G --no-progress --error-format=github
+      - name: Laravel log
+        if: failure()
+        run: grep -h -E '^\[[0-9-]+ [0-9:]+\]' panel/storage/logs/*.log | cut -c1-600 | tail -n 12 || true
+  # The update path (Jeroen 3 Nov): from the Hub-stable 1.1.0 with every setting filled in to this version, then the
+  # previous release back over it, then uninstall and install again.
+  update-path:
+    needs: changes
+    if: needs.changes.outputs.code == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    name: update-path (1.1.0 → this, previous back, reinstall)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: plugin
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: bcmath, gd, intl, mbstring, pdo_sqlite, sqlite3, zip
+          tools: composer
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install -g yarn
+      - name: Install Pelican 1.0.0-rc.2
+        run: |
+          git clone --quiet --depth 1 --branch v1.0.0-rc.2 https://github.com/pelican-dev/panel.git panel
+          cd panel
+          composer install --no-interaction --no-progress --prefer-dist
+          sed -i "s/'version' => 'canary'/'version' => '1.0.0-rc.2'/" config/app.php
+          cp .env.example .env
+          sed -i 's/^APP_INSTALLED=.*/APP_INSTALLED=true/; s/^APP_DEBUG=.*/APP_DEBUG=true/; s#^APP_URL=.*#APP_URL=http://localhost#' .env
+          printf 'DB_CONNECTION=sqlite\nQUEUE_CONNECTION=database\nCACHE_STORE=file\nSESSION_DRIVER=file\nMAIL_MAILER=log\n' >> .env
+          touch database/database.sqlite
+          php artisan key:generate --force
+          php artisan migrate --force
+          yarn install --silent
+      - name: Install Explain 1.1.0 (the Hub-stable) with its settings filled in
+        run: |
+          git clone --quiet --depth 1 --branch v1.1.0 "https://github.com/${{ github.repository }}.git" panel/plugins/simplify-explain
+          rm -rf panel/plugins/simplify-explain/.git
+          cd panel
+          php artisan p:plugin:install simplify-explain
+          php ../plugin/tests/panel/update-check.php fill
+          rm -rf plugins/simplify-explain
+      - name: Install this version over it
+        run: |
+          mkdir -p panel/plugins/simplify-explain
+          tar -C plugin --exclude=.git --exclude=dist -cf - . | tar -C panel/plugins/simplify-explain -xf -
+          cd panel
+          # As Admin → Plugins and the Hub install it: in a queue job.
+          php artisan tinker --execute="App\Jobs\Plugin\InstallPlugin::dispatch(App\Models\User::factory()->create(), 'simplify-explain');"
+          php artisan queue:work --max-jobs=1 --stop-when-empty
+          php artisan p:plugin:list | tee plugins.txt
+          grep -E 'Simplify Explain .*\| enabled' plugins.txt || { echo 'Simplify Explain did not install'; exit 1; }
+          test "$(grep -c '| Simplify Explain ' plugins.txt)" = 1 || { echo 'Simplify Explain is listed twice'; exit 1; }
+          php ../plugin/tests/panel/update-check.php kept
+      - name: Install this version over its own tables
+        # An install that stopped halfway leaves tables without their migration rows; the next install keeps them.
+        working-directory: panel
+        run: |
+          php artisan tinker --execute="DB::table('migrations')->where('migration', 'like', '%simplify_explain%')->delete();"
+          php artisan tinker --execute="app('migrator')->run(base_path('plugins/simplify-explain/database/migrations')); echo 'ran '.DB::table('migrations')->where('migration', 'like', '%simplify_explain%')->count();" | tee again.txt
+          grep -qx "ran $(ls plugins/simplify-explain/database/migrations | grep -c simplify_explain)" again.txt || { echo 'Explain did not install over its own tables'; exit 1; }
+          php ../plugin/tests/panel/update-check.php kept
+      - name: Put the previous release back over this version
+        # Someone who goes back (or the Beelink script that restores the folder) must not get a broken panel.
+        run: |
+          previous=$(git ls-remote --tags --refs "https://github.com/${{ github.repository }}.git" 'v*' | sed 's#.*/##' | sort -V | tail -n 1)
+          echo "Previous release: $previous"
+          rm -rf panel/plugins/simplify-explain
+          git clone --quiet --depth 1 --branch "$previous" "https://github.com/${{ github.repository }}.git" panel/plugins/simplify-explain
+          rm -rf panel/plugins/simplify-explain/.git
+          cd panel
+          php artisan optimize:clear > /dev/null
+          php ../plugin/tests/panel/update-check.php kept
+      - name: Uninstall and install again
+        run: |
+          rm -rf panel/plugins/simplify-explain
+          mkdir -p panel/plugins/simplify-explain
+          tar -C plugin --exclude=.git --exclude=dist -cf - . | tar -C panel/plugins/simplify-explain -xf -
+          cd panel
+          php artisan optimize:clear > /dev/null
+          php artisan p:plugin:uninstall simplify-explain --no-interaction
+          php artisan p:plugin:list | tee plugins.txt
+          ! grep -E 'Simplify Explain .*\| enabled' plugins.txt || { echo 'Simplify Explain is still enabled'; exit 1; }
+          php artisan p:plugin:install simplify-explain
+          php artisan p:plugin:list | grep -E 'Simplify Explain .*\| enabled' || { echo 'Simplify Explain did not install again'; exit 1; }
+          # Pelican rolls back the migrations on uninstall; Explain's down() keeps the data, so everything comes back.
+          php ../plugin/tests/panel/update-check.php kept
       - name: Laravel log
         if: failure()
         run: grep -h -E '^\[[0-9-]+ [0-9:]+\]' panel/storage/logs/*.log | cut -c1-600 | tail -n 12 || true

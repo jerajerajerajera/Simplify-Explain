@@ -44,5 +44,6 @@ return new class extends Migration
         ]);
     }
 
+    /** Nothing to undo: uninstalling keeps the settings (see the create migration). */
     public function down(): void {}
 };
