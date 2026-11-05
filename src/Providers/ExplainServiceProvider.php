@@ -130,11 +130,14 @@ final class ExplainServiceProvider extends ServiceProvider
         }
     }
 
-    /** The link to the emergency page on Pelican's 500 page, for root admins with a saved key, without Simplify. */
+    /**
+     * The link to the emergency page on Pelican's 500 page, for root admins, with and without Simplify: Simplify has no
+     * error page of its own, so Pelican's stays the one root admins see.
+     */
     public static function errorLink(): string
     {
         try {
-            if (! app()->bound('simplify-explain.error-page') || class_exists(Addon::class) || ! Explainer::mayExplainLogs(user())) {
+            if (! app()->bound('simplify-explain.error-page') || ! Explainer::mayExplainLogs(user())) {
                 return '';
             }
 

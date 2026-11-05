@@ -370,9 +370,21 @@ step('without Simplify too: red messages, Pelican\'s Health page and its 500 pag
         must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows outside the error page');
         app()->instance('simplify-explain.error-page', true);
         $link = ExplainServiceProvider::errorLink();
-        must($core ? $link === '' : str_contains($link, route('simplify-explain.emergency')), 'no emergency link on Pelican\'s 500 page for a root admin');
+        // Also with Simplify: it has no 500 page of its own, so Pelican's page is the one that needs the link.
+        must(str_contains($link, route('simplify-explain.emergency')), 'no emergency link on Pelican\'s 500 page for a root admin');
         auth()->login($player);
         must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows for someone who is not a root admin');
+        app()->forgetInstance('simplify-explain.error-page');
+        // The real 500 page, rendered as Pelican does: its layout runs the hook, so the link has to be in the page.
+        Filament::setCurrentPanel(Filament::getPanel('admin'));
+        auth()->login($admin);
+        $page = view('errors::500', ['exception' => new RuntimeException('smoke 500')])->render();
+        must(str_contains($page, route('simplify-explain.emergency')), 'Pelican\'s real 500 page has no emergency link for a root admin');
+        app()->forgetInstance('simplify-explain.error-page');
+        auth()->login($player);
+        $page = view('errors::500', ['exception' => new RuntimeException('smoke 500')])->render();
+        must(! str_contains($page, route('simplify-explain.emergency')), 'Pelican\'s real 500 page shows the emergency link to someone who is not a root admin');
+        app()->forgetInstance('simplify-explain.error-page');
     } finally {
         HealthCheck::$stored = null;
         auth()->logout();
