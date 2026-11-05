@@ -51,7 +51,8 @@ final class ExplainAction
             ->label($label)
             ->icon('tabler-message-question')
             ->color('gray')
-            ->modalHeading(__('simplify-explain::explain.heading'))
+            // The window's own header (title, where the lines come from, Check again) is in the panel: Simplify's header model.
+            ->modalHeading('')
             ->modalWidth(Width::TwoExtraLarge)
             ->modalSubmitAction(false)
             ->modalCancelActionLabel(__('simplify-explain::explain.close'));

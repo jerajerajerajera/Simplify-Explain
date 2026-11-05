@@ -43,6 +43,7 @@ check('a health check is named as Simplify names its row', HealthCheck::key('Nod
 check('only plain check names are accepted', HealthCheck::validKey('queue') && ! HealthCheck::validKey('../queue') && ! HealthCheck::validKey(''));
 check('a failed check is found with its result', HealthCheck::find('queue')['status'] === 'failed');
 check('a check that is fine gets no explanation', HealthCheck::find('nodeversions') === null && HealthCheck::find('schedule') === null);
+check('every check that fails or warns is listed, the ones that are fine are not', array_column(HealthCheck::failing(), 'label') === ['Queue']);
 check('the result is sent as lines with its details', HealthCheck::lines(HealthCheck::find('queue')) === [
     'Health check: Queue',
     'Status: failed',
@@ -54,6 +55,7 @@ HealthCheck::$stored = null;
 
 check('an error id is plugin, kind and reference', Problems::validId('simplify-eggupdates:test:42') && Problems::validId('simplify:health:queue'));
 check('a malformed error id is refused', ! Problems::validId('queue') && ! Problems::validId('a:b c') && ! Problems::validId('a:b:c:d:e:f') && ! Problems::validId('a:'.str_repeat('b', 130)));
+check('a whole id can be a template too (the bell)', Problems::fromScopes(['simplify-problem', 'simplify-problem:__ID__']) === '__ID__' && Problems::fromScopes(['simplify-problem:__ID__x']) === null);
 check('a template id is never explained itself', Problems::isTemplate('simplify:install:__ID__') && Problems::sourceFor('simplify:install:__ID__', new stdClass) === null);
 check('the error id is read from the hook\'s scopes', Problems::fromScopes(['simplify-problem', 'simplify-problem:simplify:install:17']) === 'simplify:install:17' && Problems::fromScopes(['simplify-problem']) === null && Problems::fromScopes(['simplify-problem:bad id']) === null);
 

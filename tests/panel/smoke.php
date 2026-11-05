@@ -13,6 +13,7 @@ use App\Models\Role;
 use App\Models\Server;
 use App\Models\User;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
 use Livewire\Livewire;
+use Simplify\Core\Addons\Addon;
 use Simplify\Core\Support\PanelSettings;
 use Simplify\Explain\Ai\Anthropic;
 use Simplify\Explain\Ai\Client;
@@ -35,14 +37,18 @@ use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
 use Simplify\Explain\Livewire\ExplainPanel;
+use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Livewire\ProblemHost;
+use Simplify\Explain\Notifications\ExplainNotification;
 use Simplify\Explain\Problems\Problems;
+use Simplify\Explain\Providers\ExplainServiceProvider;
 use Simplify\Explain\Services\EmergencyAccess;
 use Simplify\Explain\Services\HealthCheck;
 use Simplify\Explain\Services\LogCheck;
 use Simplify\Explain\Services\PanelLog;
 use Simplify\Explain\Services\Settings;
 use Simplify\Hosting\Providers\HostingServiceProvider;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 define('LARAVEL_START', microtime(true));
 require getcwd().'/vendor/autoload.php';
@@ -135,11 +141,30 @@ step('settings page renders for a root admin', function () use ($admin) {
 });
 step('the settings page fits the content card and does not scroll the page', function () use ($admin) {
     $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
-    must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*class="[^"]*\\bs-fit\\b/', $html), 'the settings form is not marked s-fit, so the page scrolls instead of the card');
+    must((bool) preg_match('/<div class="s-fit">/', $html), 'the settings form is not marked s-fit, so the page scrolls instead of the card');
 });
 step('the settings form asks before unsaved changes are lost and never saves by itself', function () use ($admin) {
     $html = visit($admin, ExplainSettings::getUrl(panel: 'admin'))->getContent();
-    must((bool) preg_match('/<form[^>]*wire:submit="save"[^>]*data-simplify-unsaved="data"/', $html), 'the settings form does not opt in to Simplify\'s unsaved-changes bar');
+    must((bool) preg_match('/data-simplify-unsaved="data" data-simplify-save="save"/', $html), 'the settings form does not opt in to Simplify\'s unsaved-changes bar');
+    must(! str_contains($html, 'wire:submit="save"'), 'the settings form has its own <form>, which cannot sit inside Simplify\'s settings');
+});
+step('the settings form saves on its own and is for root admins only (also in Simplify settings)', function () use ($admin, $player) {
+    Filament::setCurrentPanel(Filament::getPanel('admin'));
+    $before = Settings::current();
+    Livewire::actingAs($admin)->test(ExplainSettingsForm::class)
+        ->assertSee(__('simplify-explain::settings.test'))
+        ->set('data.audience', $before['audience'] === 'admins' ? 'everyone' : 'admins')
+        ->dispatch('simplify-explain-settings-save');
+    must(Settings::current()['audience'] !== $before['audience'], 'the form did not save on the save event');
+    Settings::save(['provider' => $before['provider'], 'model' => $before['model'], 'audience' => $before['audience']]);
+    // Livewire's tester turns the abort in mount() into a 403 response instead of throwing it.
+    try {
+        Livewire::actingAs($player)->test(ExplainSettingsForm::class)->assertForbidden();
+        $closed = true;
+    } catch (HttpException $e) {
+        $closed = $e->getStatusCode() === 403;
+    }
+    must($closed, 'the settings form opens for someone who is not a root admin');
 });
 step('settings page is closed to other users', function () use ($player) {
     $url = ExplainSettings::getUrl(panel: 'admin');
@@ -164,6 +189,7 @@ step('the add-on describes itself for Simplify', function () use ($admin) {
     auth()->login($admin);
     $addon = app(ExplainAddon::class);
     must($addon->id() === 'simplify-explain' && $addon->settingsUrl() !== null && $addon->description() !== '', 'the add-on is incomplete');
+    must($addon->settingsForm() === ExplainSettingsForm::class, 'the add-on gives no settings form for Simplify settings');
     $tagged = array_map(fn ($a) => $a::class, iterator_to_array(app()->tagged('simplify.addons')));
     must(in_array(ExplainAddon::class, $tagged, true), 'the add-on is not tagged');
 });
@@ -274,6 +300,50 @@ step('a failed health check gets a question button that explains it, for root ad
         auth()->logout();
     }
 });
+step('without Simplify too: red messages, Pelican\'s Health page and its 500 page get Explain', function () use ($admin, $player) {
+    RateLimiter::clear('simplify-explain.user.'.$admin->id);
+    $core = class_exists(Addon::class);
+    try {
+        auth()->login($admin);
+        $red = Notification::make()->title('Could not start the server')->body('The daemon returned an <b>error</b>: smoke invalid state.')->danger();
+        must($red instanceof ExplainNotification, 'Pelican\'s messages are not Explain\'s notification class');
+        $red->send();
+        $saved = Notification::make()->title('Saved')->success();
+        $saved->send();
+        $explains = fn (Notification $message) => count(array_filter($message->getActions(), fn ($action) => $action->getName() === Problems::NOTIFICATION_ACTION));
+        preg_match('/pelican:message:[A-Za-z0-9]{32}/', json_encode($red->toArray()), $found);
+        must(isset($found[0]) && $explains($red) === 1, 'a red message has no Explain link');
+        must($explains($saved) === 0, 'a message that is not red has an Explain link');
+        $red->send();
+        must($explains($red) === 1, 'a red message got the Explain link twice');
+        $details = Problems::details($found[0], $admin);
+        must(($details['title'] ?? '') === 'Could not start the server' && in_array('Details: The daemon returned an error: smoke invalid state.', $details['lines'], true), 'the red message is not what Explain reads');
+        must(Problems::details($found[0], $player) === null, 'someone else can have another person\'s message explained');
+        must(Problems::details('pelican:message:'.str_repeat('a', 32), $admin) === null, 'a made-up message can be explained');
+
+        HealthCheck::$stored = fn () => [
+            (object) ['label' => 'Queue', 'status' => 'failed', 'notificationMessage' => 'Queue jobs running failed.', 'shortSummary' => 'Failed', 'meta' => ['default' => 'smoke queue all']],
+            (object) ['label' => 'Schedule', 'status' => 'failed', 'notificationMessage' => 'The schedule did not run yet.', 'shortSummary' => 'Failed', 'meta' => []],
+        ];
+        $button = ExplainServiceProvider::healthButton();
+        must($core ? $button === '' : str_contains($button, 'data-simplify-explain="simplify:health:all"'), $core ? 'Pelican\'s Health page got a second button next to Simplify\'s' : 'no Explain button on Pelican\'s Health page');
+        $all = Problems::details('simplify:health:all', $admin);
+        must(in_array('Health check: Queue', $all['lines'] ?? [], true) && in_array('Health check: Schedule', $all['lines'] ?? [], true), 'Explain does not read every failing check');
+        must(Problems::details('simplify:health:all', $player) === null, 'someone who is not a root admin can have the health checks explained');
+        HealthCheck::$stored = fn () => [];
+        must(ExplainServiceProvider::healthButton() === '', 'an Explain button on the Health page while every check is fine');
+
+        must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows outside the error page');
+        app()->instance('simplify-explain.error-page', true);
+        $link = ExplainServiceProvider::errorLink();
+        must($core ? $link === '' : str_contains($link, route('simplify-explain.emergency')), 'no emergency link on Pelican\'s 500 page for a root admin');
+        auth()->login($player);
+        must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows for someone who is not a root admin');
+    } finally {
+        HealthCheck::$stored = null;
+        auth()->logout();
+    }
+});
 step('any plugin can mark an error and give its log; Explain checks who may see it', function () use ($admin, $player) {
     RateLimiter::clear('simplify-explain.user.'.$admin->id);
     $source = new class
@@ -297,6 +367,7 @@ step('any plugin can mark an error and give its log; Explain checks who may see 
         must(! str_contains($hook('smoke-plugin:job:8'), 'simplify-explain-problem'), 'a question button for an error no plugin claims');
         must(! str_contains($hook('bad id with spaces'), 'simplify-explain-problem'), 'a question button for a malformed id');
         must(str_contains($hook('smoke-plugin:job:__ID__'), 'data-simplify-explain="smoke-plugin:job:__ID__"'), 'no template button for errors drawn in the browser');
+        must(str_contains($hook('__ID__'), 'data-simplify-explain="__ID__"'), 'no whole-id template button for the bell');
         must(Problems::notificationAction('smoke-plugin:job:7') !== null && Problems::notificationAction('smoke-plugin:job:8') === null, 'no Explain action for a notification about a claimed error');
         Livewire::actingAs($admin)->test(ProblemHost::class)->dispatch('simplify-explain-problem', problem: 'smoke-plugin:job:7');
         Livewire::actingAs($admin)->test(ProblemHost::class)->call('open', 'smoke-plugin:job:7')->call('open', 'smoke-plugin:job:__ID__')->call('open', 'bad id');
@@ -372,7 +443,7 @@ step('Test checks the typed key with the chosen service and never shows the key'
     auth()->login($admin);
     Http::fake(['api.openai.com/*' => Http::response(['error' => ['code' => 'invalid_api_key', 'message' => 'Incorrect API key provided: sk-typed-secret']], 401)]);
     Livewire::actingAs($admin)
-        ->test(ExplainSettings::class)
+        ->test(ExplainSettingsForm::class)
         ->set('data.provider', 'openai')
         ->set('data.model', 'gpt-6-luna')
         ->set('data.key', 'sk-typed-secret')
@@ -389,10 +460,10 @@ step('Remove the saved key is a button that asks first and keeps unsaved changes
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     auth()->login($admin);
     Settings::save(['provider' => 'openai', 'model' => 'gpt-6-luna', 'audience' => 'admins', 'key' => 'sk-remove-secret']);
-    $page = Livewire::actingAs($admin)->test(ExplainSettings::class);
+    $page = Livewire::actingAs($admin)->test(ExplainSettingsForm::class);
     $html = $page->html();
     must(str_contains($html, __('simplify-explain::settings.remove_key')) && ! str_contains($html, 'data.remove_key') && ! str_contains($html, 'role="switch"'), 'Remove the saved key is still a switch');
-    must(ExplainSettings::removeKeyAction()->isConfirmationRequired(), 'Remove the saved key does not ask first');
+    must(ExplainSettingsForm::removeKeyAction()->isConfirmationRequired(), 'Remove the saved key does not ask first');
     $page->set('data.audience', 'everyone')->call('removeKey', 'openai');
     must(Settings::key('openai') === null, 'the key was not removed');
     must(Settings::current()['audience'] === 'admins' && $page->get('data.audience') === 'everyone', 'removing the key saved or lost the other changes');
@@ -409,7 +480,7 @@ step('Ollama on the admin\'s own server explains the console without a key', fun
         && ! $request->hasHeader('Authorization') && str_contains($request->body(), 'qwen3:8b'));
     Filament::setCurrentPanel(Filament::getPanel('admin'));
     auth()->login($admin);
-    $errors = Livewire::actingAs($admin)->test(ExplainSettings::class)->set('data.key', 'file:///etc/passwd')->call('save')->errors();
+    $errors = Livewire::actingAs($admin)->test(ExplainSettingsForm::class)->set('data.key', 'file:///etc/passwd')->call('save')->errors();
     must($errors->has('data.key'), 'no error for an address that is not http(s)');
     must(Settings::key('ollama') === 'http://192.168.1.10:11434', 'an address that is not http(s) was saved');
     Settings::save(['provider' => 'anthropic', 'model' => 'claude-haiku-5-5']);

@@ -32,6 +32,6 @@ final class ConsoleLog
     /** What the service is told about the lines. */
     public static function context(Server $server): string
     {
-        return $server->egg?->name ? 'Game or software: '.$server->egg->name : '';
+        return $server->egg->name ? 'Game or software: '.$server->egg->name : '';
     }
 }

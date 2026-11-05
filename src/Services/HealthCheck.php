@@ -41,10 +41,27 @@ final class HealthCheck
         if (! self::validKey($key)) {
             return null;
         }
+        foreach (self::failing() as $check) {
+            if (self::key($check['label']) === $key) {
+                return $check;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Every stored result that needs attention, in Pelican's order.
+     *
+     * @return list<array{label: string, status: string, message: string, summary: string, meta: array<mixed>}>
+     */
+    public static function failing(): array
+    {
+        $checks = [];
         foreach (self::stored() as $result) {
             $status = strtolower((string) $result->status);
-            if (self::key((string) $result->label) === $key && in_array($status, self::NEEDS_ATTENTION, true)) {
-                return [
+            if (in_array($status, self::NEEDS_ATTENTION, true)) {
+                $checks[] = [
                     'label' => (string) $result->label,
                     'status' => $status,
                     'message' => trim((string) $result->notificationMessage),
@@ -54,7 +71,7 @@ final class HealthCheck
             }
         }
 
-        return null;
+        return $checks;
     }
 
     /** @return iterable<object> Pelican's stored check results, each with label, status, notificationMessage, shortSummary and meta. */
@@ -67,7 +84,7 @@ final class HealthCheck
             return [];
         }
 
-        return app(ResultStore::class)->latestResults()?->storedCheckResults ?? [];
+        return app(ResultStore::class)->latestResults()->storedCheckResults ?? [];
     }
 
     /**

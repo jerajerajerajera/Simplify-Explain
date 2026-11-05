@@ -11,11 +11,13 @@ use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Simplify\Core\Support\PanelSettings;
 use Simplify\Explain\Services\Explainer;
-use Simplify\Hosting\Providers\HostingServiceProvider;
 
 /** The content of the Explain popup: checks the log once it opens and shows the answer. */
 final class ExplainPanel extends Component
 {
+    /** Simplify Hosting's provider, by name: Hosting is optional, so its class may not exist. */
+    private const HOSTING = 'Simplify\\Hosting\\Providers\\HostingServiceProvider';
+
     /** console (of serverId), panel, wings (of nodeId) or problem (an error a plugin marked). */
     #[Locked]
     public string $source = 'console';
@@ -32,6 +34,28 @@ final class ExplainPanel extends Component
 
     /** @var array<string, mixed>|null */
     public ?array $result = null;
+
+    /** The window's title: what is explained. */
+    public function heading(): string
+    {
+        $title = (string) ($this->result['title'] ?? '');
+        if ($title !== '') {
+            return $title;
+        }
+
+        return match ($this->source) {
+            'console' => __('simplify-explain::explain.console_heading', ['server' => (string) (Server::find($this->serverId)->name ?? '')]),
+            'panel' => __('simplify-explain::explain.panel_heading'),
+            'wings' => __('simplify-explain::explain.wings_heading', ['node' => (string) (Node::find($this->nodeId)->name ?? '')]),
+            default => __('simplify-explain::explain.heading'),
+        };
+    }
+
+    /** The window's subtitle: where the lines come from. */
+    public function from(): string
+    {
+        return __('simplify-explain::explain.'.(in_array($this->source, ['console', 'panel', 'wings'], true) ? $this->source : 'problem').'_from');
+    }
 
     public function check(): void
     {
@@ -50,7 +74,7 @@ final class ExplainPanel extends Component
      */
     public function supportUrl(): ?string
     {
-        if (user()?->isAdmin() || ! class_exists(PanelSettings::class) || ! app()->providerIsLoaded(HostingServiceProvider::class)) {
+        if (user()?->isAdmin() || ! class_exists(PanelSettings::class) || ! app()->providerIsLoaded(self::HOSTING)) {
             return null;
         }
         $url = PanelSettings::get('support_url');

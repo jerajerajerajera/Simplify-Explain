@@ -7,12 +7,16 @@ namespace Simplify\Explain\Services;
 use App\Enums\SubuserPermission;
 use App\Models\Node;
 use App\Models\Server;
+use InvalidArgumentException;
 use Simplify\Explain\Problems\Problems;
 use Throwable;
 
 /** Who may explain which log, and the question for each log. */
 final class Explainer
 {
+    /** The logs ask() can read. */
+    public const SOURCES = ['console', 'panel', 'wings'];
+
     /** Where the question comes from, so the service knows whether the panel itself is up. */
     public const ASKED_FROM = [
         'panel' => 'The panel itself is up: an administrator is using it to ask this.',
@@ -112,6 +116,9 @@ final class Explainer
      */
     public static function ask(string $source, ?Server $server, ?Node $node, ?string $personal, string $asked, ?string $key = null, int $limit = LogCheck::LINES): array
     {
+        if (! in_array($source, self::SOURCES, true)) {
+            throw new InvalidArgumentException('Unknown log source: '.$source);
+        }
         try {
             $lines = match ($source) {
                 'console' => ConsoleLog::lines($server),

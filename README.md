@@ -14,10 +14,24 @@ installed and a support link set in Simplify's settings, customers also get **Op
 ## Setup
 
 1. Install the plugin from the Pelican Hub.
-2. Open **Admin → Simplify → Explain**.
+2. Open **Simplify settings › Add-ons › Explain**, or **Admin → Simplify → Explain** without Simplify or with an older one.
 3. Choose Claude, GPT or Gemini and paste your own API key, or choose Ollama and fill in the address and model of
    your own Ollama server. Press **Test**.
 4. Choose who can use it: everyone who can see a console, or administrators only.
+
+## Pelican's own errors
+
+Explain also works on its own, without Simplify:
+
+- Every red message in Pelican (a Filament notification with the status "danger") gets an **Explain** link, for
+  people who may use Explain. Explain keeps the message on the panel for 30 minutes, for the person who saw it, and
+  reads it from there on a click, never from the browser. On a server's page it adds that server's console, for people
+  who may use the console; for root admins elsewhere the recent errors of the panel log.
+- Pelican's **Health** page gets one Explain button in its title bar while a check fails or warns (root admins).
+- Pelican's **500 page** links root admins to the emergency page below.
+
+With Simplify, red messages get the same link; Simplify's Health rows and error spots carry the question button
+instead of the last two.
 
 ## When the panel shows an error
 
@@ -52,6 +66,10 @@ page, so the button holds no state. When your page draws its errors in the brows
 `__ID__` as the reference (`my-plugin:backup:__ID__`) and replace `__ID__` in that HTML with the real reference
 wherever the error shows. Explain then shows the button whenever Explain is set up for the user, and your source
 checks the real id on the click.
+
+A list whose rows come from several plugins can use `__ID__` as the whole id (`simplify-problem:__ID__`). Simplify's
+bell does this: a notification gets the button when its data holds a valid id under `simplify_problem` (for a
+Filament notification, in its `viewData`), so send your failure notification with the id your source explains.
 
 **2. Give the log that belongs to it.** Tag a class in your service provider's `register()`:
 
@@ -131,6 +149,10 @@ The API key is stored encrypted with the panel's `APP_KEY` and never shown again
 ## Updates
 
 Updates come from the Pelican Hub only.
+
+Uninstalling keeps Explain's settings, including the saved keys (encrypted with the panel's `APP_KEY`), so installing
+it again brings everything back. To remove them for good, use "Remove the saved key" in the settings first, or drop the
+`simplify_explain_settings` table after uninstalling.
 
 ## Development
 
