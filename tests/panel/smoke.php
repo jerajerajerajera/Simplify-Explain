@@ -62,9 +62,10 @@ function boot(): Application
 {
     $app = require getcwd().'/bootstrap/app.php';
     $app->make(Kernel::class)->bootstrap();
-    // Blade keeps the names of components rendered from a string in a static cache, but registers their view folder
-    // only on the application that made them; a fresh application would then not find "__components::…".
+    // Blade keeps the view factory and the names of components rendered from a string in static properties, so it
+    // would register their "__components" folder on the previous application's factory instead of this one.
     Component::flushCache();
+    Component::forgetFactory();
     // Laravel's console handler would print an uncaught error and still exit 0, which CI reads as a pass.
     set_exception_handler(function (Throwable $e): void {
         echo 'FAIL setup: '.get_class($e).': '.substr($e->getMessage(), 0, 400).' ('.basename($e->getFile()).':'.$e->getLine().")\n";
