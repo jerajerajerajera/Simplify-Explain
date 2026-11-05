@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
+use Illuminate\View\Component;
 use Livewire\Livewire;
 use Simplify\Core\Addons\Addon;
 use Simplify\Core\Support\PanelSettings;
@@ -61,6 +62,9 @@ function boot(): Application
 {
     $app = require getcwd().'/bootstrap/app.php';
     $app->make(Kernel::class)->bootstrap();
+    // Blade keeps the names of components rendered from a string in a static cache, but registers their view folder
+    // only on the application that made them; a fresh application would then not find "__components::…".
+    Component::flushCache();
     // Laravel's console handler would print an uncaught error and still exit 0, which CI reads as a pass.
     set_exception_handler(function (Throwable $e): void {
         echo 'FAIL setup: '.get_class($e).': '.substr($e->getMessage(), 0, 400).' ('.basename($e->getFile()).':'.$e->getLine().")\n";
