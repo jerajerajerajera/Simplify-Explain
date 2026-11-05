@@ -33,7 +33,7 @@ Explain also works on its own, without Simplify:
   beta38's error page has no place for it).
 
 With Simplify, red messages get the same link; Simplify's Health rows and error spots carry the question button
-instead of the last two.
+instead of the Health button.
 
 ## When the panel shows an error
 
