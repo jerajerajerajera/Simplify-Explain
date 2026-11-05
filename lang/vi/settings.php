@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Giải thích bảng điều khiển của máy chủ, nhật ký panel hoặc nhật ký Wings bằng lời đơn giản, kèm các bước khắc phục.',
     'service' => 'Dịch vụ AI',
+    'connection_heading' => 'Explain: dịch vụ AI',
     'service_help' => 'Explain gửi những dòng nhật ký cuối cùng đến dịch vụ AI bạn chọn, bằng khóa API của chính bạn. Địa chỉ, email, mật khẩu và token được xóa trước. Mỗi câu hỏi được tính phí vào tài khoản đó, thường chỉ vài xu hoặc ít hơn.',
     'provider' => 'Dịch vụ',
     'model' => 'Mô hình',

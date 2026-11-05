@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Explains a server\'s console, the panel log or the Wings log in plain words, with steps to fix it.',
     'service' => 'AI service',
+    'connection_heading' => 'Explain: AI service',
     'service_help' => 'Explain sends the last log lines to the AI service you choose, with your own API key. Addresses, e-mail addresses, passwords and tokens are removed first. Every question is billed to that account, usually a few cents or less.',
     'provider' => 'Service',
     'model' => 'Model',

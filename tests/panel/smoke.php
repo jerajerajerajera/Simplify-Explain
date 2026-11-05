@@ -36,6 +36,7 @@ use Simplify\Explain\Ai\Client;
 use Simplify\Explain\Ai\OpenAi;
 use Simplify\Explain\ExplainAddon;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
+use Simplify\Explain\Livewire\ExplainConnection;
 use Simplify\Explain\Livewire\ExplainPanel;
 use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Livewire\ProblemHost;
@@ -192,6 +193,39 @@ step('the add-on describes itself for Simplify', function () use ($admin) {
     must($addon->settingsForm() === ExplainSettingsForm::class, 'the add-on gives no settings form for Simplify settings');
     $tagged = array_map(fn ($a) => $a::class, iterator_to_array(app()->tagged('simplify.addons')));
     must(in_array(ExplainAddon::class, $tagged, true), 'the add-on is not tagged');
+});
+
+step('root admins find Explain\'s AI service under Connections in the account menu, others do not', function () use ($admin, $player) {
+    $addon = app(ExplainAddon::class);
+    must($addon->connections($admin) === [ExplainConnection::class], 'a root admin gets no Explain row on the Connections page');
+    must($addon->connections($player) === [], 'someone who is not a root admin gets Explain\'s row on the Connections page');
+    $rows = 'Simplify\Core\Account\Connections';
+    if (class_exists($rows)) {
+        // With the real Simplify: the core lists the row, so the page and its menu item exist for the root admin.
+        must(in_array(ExplainConnection::class, $rows::rows($admin), true), 'Simplify does not list Explain\'s row on the Connections page');
+        must(! in_array(ExplainConnection::class, $rows::rows($player), true), 'Simplify lists Explain\'s row for someone who is not a root admin');
+        $url = 'Simplify\Core\Filament\App\Pages\Connections'::getUrl(panel: 'app');
+        $html = visit($admin, $url)->getContent();
+        must(str_contains($html, e(__('simplify-explain::settings.connection_heading'))), 'the Connections page does not show Explain\'s AI service');
+    }
+    // The row is the service part of the settings: key, Test and Remove key; who may use Explain stays in the settings.
+    Filament::setCurrentPanel(Filament::getPanel('app'));
+    $before = Settings::current();
+    Livewire::actingAs($admin)->test(ExplainConnection::class)
+        ->assertSee(__('simplify-explain::settings.test'))
+        ->assertDontSee(__('simplify-explain::settings.audience'))
+        ->set('data.key', 'row-placeholder-key')
+        ->dispatch('simplify-explain-settings-save');
+    must(Settings::key($before['provider']) === 'row-placeholder-key', 'the Connections row did not save the key');
+    must(Settings::current()['audience'] === $before['audience'], 'saving the Connections row changed who may use Explain');
+    Settings::forget($before['provider']);
+    try {
+        Livewire::actingAs($player)->test(ExplainConnection::class)->assertForbidden();
+        $closed = true;
+    } catch (HttpException $e) {
+        $closed = $e->getStatusCode() === 403;
+    }
+    must($closed, 'the Connections row opens for someone who is not a root admin');
 });
 
 step('Simplify\'s setup asks for the service, key and audience and saves them', function () use ($admin, $player) {

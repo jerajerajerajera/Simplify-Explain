@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Explica o console de um servidor, o log do painel ou o log do Wings em palavras simples, com passos para resolver.',
     'service' => 'Serviço de IA',
+    'connection_heading' => 'Explain: serviço de IA',
     'service_help' => 'O Explain envia as últimas linhas do log para o serviço de IA que você escolher, com sua própria chave de API. Endereços, e-mails, senhas e tokens são removidos antes. Cada pergunta é cobrada nessa conta, geralmente alguns centavos ou menos.',
     'provider' => 'Serviço',
     'model' => 'Modelo',

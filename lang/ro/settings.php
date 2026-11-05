@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Explică pe înțeles consola unui server, jurnalul panoului sau jurnalul Wings, cu pași pentru rezolvare.',
     'service' => 'Serviciu AI',
+    'connection_heading' => 'Explain: serviciu AI',
     'service_help' => 'Explain trimite ultimele linii din jurnal serviciului AI ales, cu propria ta cheie API. Adresele, e-mailurile, parolele și tokenurile sunt eliminate înainte. Fiecare întrebare este facturată acelui cont, de obicei câțiva cenți sau mai puțin.',
     'provider' => 'Serviciu',
     'model' => 'Model',

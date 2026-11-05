@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Explica a consola de um servidor, o registo do painel ou o registo do Wings em palavras simples, com passos para resolver.',
     'service' => 'Serviço de IA',
+    'connection_heading' => 'Explain: serviço de IA',
     'service_help' => 'O Explain envia as últimas linhas do registo para o serviço de IA que escolheres, com a tua própria chave API. Endereços, e-mails, palavras-passe e tokens são removidos antes. Cada pergunta é cobrada nessa conta, normalmente alguns cêntimos ou menos.',
     'provider' => 'Serviço',
     'model' => 'Modelo',

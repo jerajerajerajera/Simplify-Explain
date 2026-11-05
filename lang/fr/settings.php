@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Explique la console d\'un serveur, le journal du panel ou le journal Wings en termes simples, avec les étapes pour corriger le problème.',
     'service' => 'Service d\'IA',
+    'connection_heading' => 'Explain : service d\'IA',
     'service_help' => 'Explain envoie les dernières lignes du journal au service d\'IA choisi, avec votre propre clé API. Les adresses, e-mails, mots de passe et tokens sont retirés avant. Chaque question est facturée sur ce compte, en général quelques centimes ou moins.',
     'provider' => 'Service',
     'model' => 'Modèle',

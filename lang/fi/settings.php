@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Selittää palvelimen konsolin, paneelin lokin tai Wings-lokin selkeästi ja kertoo, miten ongelma korjataan.',
     'service' => 'Tekoälypalvelu',
+    'connection_heading' => 'Explain: tekoälypalvelu',
     'service_help' => 'Explain lähettää viimeiset lokirivit valitsemaasi tekoälypalveluun omalla API-avaimellasi. Osoitteet, sähköpostiosoitteet, salasanat ja tokenit poistetaan ensin. Jokainen kysymys laskutetaan siltä tililtä, yleensä muutama sentti tai vähemmän.',
     'provider' => 'Palvelu',
     'model' => 'Malli',

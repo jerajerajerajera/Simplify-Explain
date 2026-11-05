@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Forklarer en servers konsoll, panelloggen eller Wings-loggen med enkle ord, med steg for å løse det.',
     'service' => 'AI-tjeneste',
+    'connection_heading' => 'Explain: AI-tjeneste',
     'service_help' => 'Explain sender de siste logglinjene til AI-tjenesten du velger, med din egen API-nøkkel. Adresser, e-postadresser, passord og tokens fjernes først. Hvert spørsmål belastes den kontoen, vanligvis noen øre eller mindre.',
     'provider' => 'Tjeneste',
     'model' => 'Modell',

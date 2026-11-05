@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Wyjaśnia prostymi słowami konsolę serwera, log panelu lub log Wings, z krokami naprawy.',
     'service' => 'Usługa AI',
+    'connection_heading' => 'Explain: usługa AI',
     'service_help' => 'Explain wysyła ostatnie linie logu do wybranej usługi AI, używając twojego własnego klucza API. Adresy, e-maile, hasła i tokeny są wcześniej usuwane. Każde pytanie jest rozliczane na tym koncie, zwykle kilka centów lub mniej.',
     'provider' => 'Usługa',
     'model' => 'Model',

@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Legt de console van een server, het paneellog of het Wings-log in gewone woorden uit, met stappen om het op te lossen.',
     'service' => 'AI-dienst',
+    'connection_heading' => 'Explain: AI-dienst',
     'service_help' => 'Explain stuurt de laatste logregels naar de AI-dienst die je kiest, met je eigen API-sleutel. Adressen, e-mailadressen, wachtwoorden en tokens worden eerst weggehaald. Elke vraag wordt bij dat account in rekening gebracht, meestal een paar cent of minder.',
     'provider' => 'Dienst',
     'model' => 'Model',
