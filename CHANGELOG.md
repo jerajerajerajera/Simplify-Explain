@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 2.0.0-beta.5
 
 - Explain's window and its emergency page use Simplify's header model: what is explained as the title, where the lines come from as the subtitle, and Check again on the right.
 - The question button after an error takes its colours from Simplify's theme, or from Pelican's without Simplify, instead of fixed ones.
