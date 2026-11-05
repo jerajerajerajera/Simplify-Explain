@@ -17,6 +17,7 @@ use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Exceptions\RegisterErrorViewPaths;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
@@ -375,16 +376,25 @@ step('without Simplify too: red messages, Pelican\'s Health page and its 500 pag
         auth()->login($player);
         must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows for someone who is not a root admin');
         app()->forgetInstance('simplify-explain.error-page');
-        // The real 500 page, rendered as Pelican does: its layout runs the hook, so the link has to be in the page.
-        Filament::setCurrentPanel(Filament::getPanel('admin'));
-        auth()->login($admin);
-        $page = view('errors::500', ['exception' => new RuntimeException('smoke 500')])->render();
-        must(str_contains($page, route('simplify-explain.emergency')), 'Pelican\'s real 500 page has no emergency link for a root admin');
-        app()->forgetInstance('simplify-explain.error-page');
-        auth()->login($player);
-        $page = view('errors::500', ['exception' => new RuntimeException('smoke 500')])->render();
-        must(! str_contains($page, route('simplify-explain.emergency')), 'Pelican\'s real 500 page shows the emergency link to someone who is not a root admin');
-        app()->forgetInstance('simplify-explain.error-page');
+        // The real 500 page, rendered as Pelican does. On rc.2 its layout is Filament's simple layout, which runs the
+        // hook, so the link has to be in the page; beta38's error layout has no hooks at all, so nothing can add it there.
+        $layout = resource_path('views/errors/layout.blade.php');
+        if (is_file($layout) && str_contains((string) file_get_contents($layout), 'layout.simple')) {
+            // Laravel registers the errors:: views only while it handles an exception; the smoke has to do it itself.
+            (new RegisterErrorViewPaths)();
+            $render = function (User $user): string {
+                auth()->login($user);
+                try {
+                    return view('errors::500', ['exception' => new RuntimeException('smoke 500')])->render();
+                } finally {
+                    app('view')->flushState();
+                    app()->forgetInstance('simplify-explain.error-page');
+                }
+            };
+            Filament::setCurrentPanel(Filament::getPanel('admin'));
+            must(str_contains($render($admin), route('simplify-explain.emergency')), 'Pelican\'s real 500 page has no emergency link for a root admin');
+            must(! str_contains($render($player), route('simplify-explain.emergency')), 'Pelican\'s real 500 page shows the emergency link to someone who is not a root admin');
+        }
     } finally {
         HealthCheck::$stored = null;
         auth()->logout();
