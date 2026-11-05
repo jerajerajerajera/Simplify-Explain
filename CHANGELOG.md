@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.0.0-beta.10
+
 - Pelican's 500 page links root admins to the emergency page with Simplify installed too. Simplify has no error page of its own, so the link was missing there.
 
 ## 2.0.0-beta.6
