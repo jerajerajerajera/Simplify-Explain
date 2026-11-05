@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Jednostavnim rečima objašnjava konzolu servera, log panela ili Wings log, sa koracima za rešavanje.',
     'service' => 'AI usluga',
+    'connection_heading' => 'Explain: AI услуга',
     'service_help' => 'Explain šalje poslednje redove loga izabranoj AI usluzi, sa tvojim API ključem. Adrese, e-mail adrese, lozinke i tokeni se prvo uklanjaju. Svako pitanje se naplaćuje tom nalogu, obično nekoliko centi ili manje.',
     'provider' => 'Usluga',
     'model' => 'Model',

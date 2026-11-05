@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => '서버 콘솔, 패널 로그 또는 Wings 로그를 쉬운 말로 설명하고 해결 단계를 알려 줍니다.',
     'service' => 'AI 서비스',
+    'connection_heading' => 'Explain: AI 서비스',
     'service_help' => 'Explain은 마지막 로그 줄을 사용자의 API 키로 선택한 AI 서비스에 보냅니다. 주소, 이메일 주소, 비밀번호, 토큰은 먼저 제거됩니다. 질문마다 해당 계정에 요금이 청구되며 보통 몇 센트 이하입니다.',
     'provider' => '서비스',
     'model' => '모델',

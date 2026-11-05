@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'サーバーのコンソール、パネルのログ、Wings のログをわかりやすく説明し、解決手順を示します。',
     'service' => 'AI サービス',
+    'connection_heading' => 'Explain: AI サービス',
     'service_help' => 'Explain は、ログの最後の行を選んだ AI サービスにあなた自身の API キーで送信します。アドレス、メールアドレス、パスワード、トークンは事前に削除されます。質問ごとにそのアカウントに課金されます。通常は数セント以下です。',
     'provider' => 'サービス',
     'model' => 'モデル',

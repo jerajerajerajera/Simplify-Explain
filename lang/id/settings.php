@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Menjelaskan konsol server, log panel, atau log Wings dengan kata-kata sederhana, beserta langkah untuk memperbaikinya.',
     'service' => 'Layanan AI',
+    'connection_heading' => 'Explain: layanan AI',
     'service_help' => 'Explain mengirim baris log terakhir ke layanan AI yang kamu pilih, dengan kunci API milikmu sendiri. Alamat, email, kata sandi, dan token dihapus terlebih dahulu. Setiap pertanyaan ditagihkan ke akun itu, biasanya beberapa sen atau kurang.',
     'provider' => 'Layanan',
     'model' => 'Model',

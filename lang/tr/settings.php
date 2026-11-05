@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Bir sunucunun konsolunu, panel günlüğünü veya Wings günlüğünü sade bir dille açıklar ve çözüm adımlarını verir.',
     'service' => 'Yapay zekâ hizmeti',
+    'connection_heading' => 'Explain: yapay zekâ hizmeti',
     'service_help' => 'Explain, son günlük satırlarını kendi API anahtarınla seçtiğin yapay zekâ hizmetine gönderir. Adresler, e-posta adresleri, şifreler ve tokenlar önce kaldırılır. Her soru o hesaba faturalanır, genellikle birkaç sent veya daha az.',
     'provider' => 'Hizmet',
     'model' => 'Model',

@@ -15,6 +15,7 @@ installed and a support link set in Simplify's settings, customers also get **Op
 
 1. Install the plugin from the Pelican Hub.
 2. Open **Simplify settings › Add-ons › Explain**, or **Admin → Simplify → Explain** without Simplify or with an older one.
+   With Simplify, root admins also find the AI service under **Connections** in the account menu.
 3. Choose Claude, GPT or Gemini and paste your own API key, or choose Ollama and fill in the address and model of
    your own Ollama server. Press **Test**.
 4. Choose who can use it: everyone who can see a console, or administrators only.

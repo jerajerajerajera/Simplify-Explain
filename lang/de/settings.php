@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Erklärt die Konsole eines Servers, das Panel-Log oder das Wings-Log in einfachen Worten, mit Schritten zur Lösung.',
     'service' => 'KI-Dienst',
+    'connection_heading' => 'Explain: KI-Dienst',
     'service_help' => 'Explain sendet die letzten Logzeilen mit deinem eigenen API-Schlüssel an den gewählten KI-Dienst. Adressen, E-Mail-Adressen, Passwörter und Tokens werden vorher entfernt. Jede Frage wird diesem Konto berechnet, meist ein paar Cent oder weniger.',
     'provider' => 'Dienst',
     'model' => 'Modell',

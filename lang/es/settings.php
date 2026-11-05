@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Explica la consola de un servidor, el registro del panel o el registro de Wings con palabras sencillas, con pasos para solucionarlo.',
     'service' => 'Servicio de IA',
+    'connection_heading' => 'Explain: servicio de IA',
     'service_help' => 'Explain envía las últimas líneas del registro al servicio de IA que elijas, con tu propia clave API. Antes se quitan direcciones, correos, contraseñas y tokens. Cada pregunta se cobra a esa cuenta, normalmente unos céntimos o menos.',
     'provider' => 'Servicio',
     'model' => 'Modelo',

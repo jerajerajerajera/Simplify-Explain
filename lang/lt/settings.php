@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Paprastais žodžiais paaiškina serverio konsolę, panelės žurnalą ar Wings žurnalą ir pateikia sprendimo žingsnius.',
     'service' => 'DI paslauga',
+    'connection_heading' => 'Explain: DI paslauga',
     'service_help' => 'Explain išsiunčia paskutines žurnalo eilutes jūsų pasirinktai DI paslaugai su jūsų API raktu. Adresai, el. pašto adresai, slaptažodžiai ir žetonai pirmiausia pašalinami. Už kiekvieną klausimą mokestis nuskaitomas iš tos paskyros, paprastai keli centai ar mažiau.',
     'provider' => 'Paslauga',
     'model' => 'Modelis',

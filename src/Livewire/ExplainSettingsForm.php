@@ -31,7 +31,7 @@ use Simplify\Explain\Services\Settings;
  *
  * @property Schema $form
  */
-final class ExplainSettingsForm extends Component implements HasActions, HasSchemas
+class ExplainSettingsForm extends Component implements HasActions, HasSchemas
 {
     use InteractsWithActions;
     use InteractsWithForms;
@@ -53,22 +53,28 @@ final class ExplainSettingsForm extends Component implements HasActions, HasSche
     public function form(Schema $schema): Schema
     {
         return $schema->statePath('data')->components([
-            Section::make(__('simplify-explain::settings.service'))
-                ->description(__('simplify-explain::settings.service_help'))
-                ->columns(2)
-                ->schema([
-                    ...self::serviceFields(),
-                    Actions::make([
-                        self::testAction(),
-                        self::removeKeyAction()
-                            ->visible(fn (Get $get) => ! self::selfHosted($get) && Settings::key((string) $get('provider')) !== null),
-                    ])->columnSpanFull(),
-                ]),
+            self::serviceSection(__('simplify-explain::settings.service')),
             Section::make(__('simplify-explain::settings.access'))
                 ->schema([
                     self::audienceField(),
                 ]),
         ]);
+    }
+
+    /** The AI service with its key, Test and Remove key; also the whole of Explain's row on Simplify's Connections page. */
+    protected static function serviceSection(string $heading): Section
+    {
+        return Section::make($heading)
+            ->description(__('simplify-explain::settings.service_help'))
+            ->columns(2)
+            ->schema([
+                ...self::serviceFields(),
+                Actions::make([
+                    self::testAction(),
+                    self::removeKeyAction()
+                        ->visible(fn (Get $get) => ! self::selfHosted($get) && Settings::key((string) $get('provider')) !== null),
+                ])->columnSpanFull(),
+            ]);
     }
 
     /**

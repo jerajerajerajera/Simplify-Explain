@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Simplify\Explain;
 
+use App\Models\User;
 use Simplify\Core\Addons\Addon;
 use Simplify\Core\Filament\Admin\Pages\Settings as SimplifySettings;
 use Simplify\Explain\Filament\Admin\Pages\ExplainSettings;
+use Simplify\Explain\Livewire\ExplainConnection;
 use Simplify\Explain\Livewire\ExplainSettingsForm;
 use Simplify\Explain\Services\Settings;
 
@@ -57,6 +59,17 @@ final class ExplainAddon extends Addon
     public function settingsForm(): string
     {
         return ExplainSettingsForm::class;
+    }
+
+    /**
+     * Explain's AI service as a row on Simplify's Connections page (add-on API 6), for root admins only: they are the
+     * ones who may change it.
+     *
+     * @return list<class-string>
+     */
+    public function connections(User $user): array
+    {
+        return $user->isRootAdmin() ? [ExplainConnection::class] : [];
     }
 
     /** Simplify's setup asks for the AI service, its key and who may use Explain, for root admins. */

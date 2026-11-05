@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => '用淺白的話解釋伺服器主控台、面板日誌或 Wings 日誌，並提供解決步驟。',
     'service' => 'AI 服務',
+    'connection_heading' => 'Explain：AI 服務',
     'service_help' => 'Explain 會用你自己的 API 金鑰，把最後幾行日誌傳送到你選擇的 AI 服務。位址、電子郵件、密碼和權杖會先被移除。每次提問都由該帳戶付費，通常只需幾美分或更少。',
     'provider' => '服務',
     'model' => '模型',

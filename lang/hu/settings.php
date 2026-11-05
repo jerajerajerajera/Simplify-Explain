@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Egyszerű szavakkal elmagyarázza egy szerver konzolját, a panel naplóját vagy a Wings naplót, a javítás lépéseivel.',
     'service' => 'AI-szolgáltatás',
+    'connection_heading' => 'Explain: MI-szolgáltatás',
     'service_help' => 'Az Explain a saját API-kulcsoddal elküldi az utolsó naplósorokat a választott AI-szolgáltatásnak. A címeket, e-mail-címeket, jelszavakat és tokeneket előbb eltávolítja. Minden kérdést arra a fiókra számláznak, általában néhány centet vagy kevesebbet.',
     'provider' => 'Szolgáltatás',
     'model' => 'Modell',

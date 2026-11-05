@@ -4,6 +4,7 @@ return [
     'title' => 'Explain',
     'description' => 'Vysvetlí konzolu servera, log panelu alebo log Wings jednoduchými slovami, s krokmi na vyriešenie.',
     'service' => 'AI služba',
+    'connection_heading' => 'Explain: služba AI',
     'service_help' => 'Explain pošle posledné riadky logu zvolenej AI službe s tvojím vlastným API kľúčom. Adresy, e-maily, heslá a tokeny sa vopred odstránia. Každá otázka sa účtuje na daný účet, zvyčajne pár centov alebo menej.',
     'provider' => 'Služba',
     'model' => 'Model',
