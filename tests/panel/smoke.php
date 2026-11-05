@@ -17,6 +17,7 @@ use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Foundation\Application;
+use Illuminate\Foundation\Exceptions\RegisterErrorViewPaths;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
@@ -28,6 +29,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\TestResponse;
+use Illuminate\View\Component;
 use Livewire\Livewire;
 use Simplify\Core\Addons\Addon;
 use Simplify\Core\Support\PanelSettings;
@@ -60,6 +62,10 @@ function boot(): Application
 {
     $app = require getcwd().'/bootstrap/app.php';
     $app->make(Kernel::class)->bootstrap();
+    // Blade keeps the view factory and the names of components rendered from a string in static properties, so it
+    // would register their "__components" folder on the previous application's factory instead of this one.
+    Component::flushCache();
+    Component::forgetFactory();
     // Laravel's console handler would print an uncaught error and still exit 0, which CI reads as a pass.
     set_exception_handler(function (Throwable $e): void {
         echo 'FAIL setup: '.get_class($e).': '.substr($e->getMessage(), 0, 400).' ('.basename($e->getFile()).':'.$e->getLine().")\n";
@@ -370,9 +376,11 @@ step('without Simplify too: red messages, Pelican\'s Health page and its 500 pag
         must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows outside the error page');
         app()->instance('simplify-explain.error-page', true);
         $link = ExplainServiceProvider::errorLink();
-        must($core ? $link === '' : str_contains($link, route('simplify-explain.emergency')), 'no emergency link on Pelican\'s 500 page for a root admin');
+        // Also with Simplify: it has no 500 page of its own, so Pelican's page is the one that needs the link.
+        must(str_contains($link, route('simplify-explain.emergency')), 'no emergency link on Pelican\'s 500 page for a root admin');
         auth()->login($player);
         must(ExplainServiceProvider::errorLink() === '', 'the emergency link shows for someone who is not a root admin');
+        app()->forgetInstance('simplify-explain.error-page');
     } finally {
         HealthCheck::$stored = null;
         auth()->logout();
@@ -570,6 +578,34 @@ step('settings and keys from PelicanSimplify are taken over', function () {
     $settings = Settings::current();
     must($settings['provider'] === 'gemini' && $settings['audience'] === 'admins' && Settings::key('gemini') === 'AIza-old', 'not taken over: '.json_encode($settings));
     $disk->delete('simplify/error-explainer.json');
+});
+// Last on purpose: rendering a whole error page compiles Filament's components outside a request, and the steps after
+// it would reuse those compiled views. view:clear afterwards leaves the panel as the smoke found it.
+step('Pelican\'s real 500 page links root admins to the emergency page, with and without Simplify', function () use ($admin, $player) {
+    try {
+        // The real 500 page, rendered as Pelican does. On rc.2 its layout is Filament's simple layout, which runs the
+        // hook, so the link has to be in the page; beta38's error layout has no hooks at all, so nothing can add it there.
+        $layout = resource_path('views/errors/layout.blade.php');
+        if (is_file($layout) && str_contains((string) file_get_contents($layout), 'layout.simple')) {
+            // Laravel registers the errors:: views only while it handles an exception; the smoke has to do it itself.
+            (new RegisterErrorViewPaths)();
+            $render = function (User $user): string {
+                auth()->login($user);
+                try {
+                    return view('errors::500', ['exception' => new RuntimeException('smoke 500')])->render();
+                } finally {
+                    app('view')->flushState();
+                    app()->forgetInstance('simplify-explain.error-page');
+                }
+            };
+            Filament::setCurrentPanel(Filament::getPanel('admin'));
+            must(str_contains($render($admin), route('simplify-explain.emergency')), 'Pelican\'s real 500 page has no emergency link for a root admin');
+            must(! str_contains($render($player), route('simplify-explain.emergency')), 'Pelican\'s real 500 page shows the emergency link to someone who is not a root admin');
+        }
+    } finally {
+        auth()->logout();
+        Artisan::call('view:clear');
+    }
 });
 echo $failed ? "Some steps failed\n" : "All steps passed\n";
 exit($failed ? 1 : 0);

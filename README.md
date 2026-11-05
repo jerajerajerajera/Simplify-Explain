@@ -29,10 +29,11 @@ Explain also works on its own, without Simplify:
   reads it from there on a click, never from the browser. On a server's page it adds that server's console, for people
   who may use the console; for root admins elsewhere the recent errors of the panel log.
 - Pelican's **Health** page gets one Explain button in its title bar while a check fails or warns (root admins).
-- Pelican's **500 page** links root admins to the emergency page below.
+- Pelican's **500 page** links root admins to the emergency page below, with or without Simplify (on Pelican rc.2;
+  beta38's error page has no place for it).
 
 With Simplify, red messages get the same link; Simplify's Health rows and error spots carry the question button
-instead of the last two.
+instead of the Health button.
 
 ## When the panel shows an error
 

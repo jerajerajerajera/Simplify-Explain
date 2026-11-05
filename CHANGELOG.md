@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Pelican's 500 page links root admins to the emergency page with Simplify installed too. Simplify has no error page of its own, so the link was missing there.
+
 ## 2.0.0-beta.6
 
 - With Simplify, root admins find Explain's AI service under **Connections** in the account menu: the service or Ollama server, its key or address, Test and Remove key, saved with the same Save as everywhere. Who may use Explain stays in the settings.
