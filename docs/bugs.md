@@ -9,6 +9,7 @@
 | Nr | Datum | Wat zag de gebruiker | Oorzaak | Fix (versie) | Regressietest | Teruggekomen | Regel |
 |---|---|---|---|---|---|---|---|
 | B9 | 1.0.5 | Instellingspagina scrolt als geheel met Simplify 1.5 | Formulier zonder `s-fit` | 1.0.5 | `tests/panel/smoke.php`: "the settings page fits the content card and does not scroll the page" (rood op 1.0.4, groen vanaf 1.0.5) | 0× (patroon met andere add-ons) | P-7 |
+| EX-B1 | 21-11 | Een wachtwoord in een adres in de log (`mysql://gebruiker:wachtwoord@localhost`) ging mee naar de AI-dienst | `LogCheck::sanitize()` kende alleen `password=`-vormen, e-mailadressen, IP's en lange tokens; het deel vóór de `@` in een adres bleef staan zodra de host geen domeinnaam was | Unreleased | `tests/logcheck.php`: "password in an address hidden" en de vier checks eronder (rood op cb960c4) | 0× | P-36 |
 
 ## Patronen
 
