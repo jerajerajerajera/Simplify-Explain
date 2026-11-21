@@ -34,5 +34,6 @@ return [
     'model_help_server' => '"ollama pull" ile indirdiğiniz modelin adı.',
     'test_no_address' => 'Önce adresi girin.',
     'test_passed_server' => ':company yanıt veriyor',
+    'test_failed_server' => 'Test başarısız oldu',
     'test_ok_server' => ':model ile çalışıyor.',
 ];

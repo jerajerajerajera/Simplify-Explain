@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- A user name and password inside an address in a log, such as `mysql://user:password@localhost`, are hidden before the lines go to the AI service. Before, they were only hidden when the host happened to be a domain name.
+- A failed **Test** of Ollama says "The test failed" instead of "The key does not work": Ollama has an address, not a key.
+- Checks: the panel smoke also runs on Pelican 1.0.0-rc.4.
+
 ## 2.0.0-beta.10
 
 - Pelican's 500 page links root admins to the emergency page with Simplify installed too. Simplify has no error page of its own, so the link was missing there.

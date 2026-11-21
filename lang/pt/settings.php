@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'O nome de um modelo que transferiu com "ollama pull".',
     'test_no_address' => 'Introduza primeiro o endereço.',
     'test_passed_server' => ':company responde',
+    'test_failed_server' => 'O teste falhou',
     'test_ok_server' => 'Funciona com :model.',
 ];

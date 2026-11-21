@@ -97,6 +97,9 @@ final class LogCheck
     public static function sanitize(iterable $lines): array
     {
         $patterns = [
+            // The user and password inside an address, such as mysql://user:password@host. First, so the e-mail pattern
+            // does not take a part of it.
+            '#\b([a-z][a-z0-9+.\-]*://)[^\s/?\#]+@#i' => '$1[hidden]@',
             '/\b(password|passwd|secret|token|api[_-]?key|authorization)(\s*[:=]\s*)\S+/i' => '$1$2[hidden]',
             '/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i' => '[hidden email]',
             '/\b(?:\d{1,3}\.){3}\d{1,3}\b/' => '[hidden ip]',

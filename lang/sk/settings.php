@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Názov modelu, ktorý ste stiahli príkazom "ollama pull".',
     'test_no_address' => 'Najprv zadajte adresu.',
     'test_passed_server' => ':company odpovedá',
+    'test_failed_server' => 'Test zlyhal',
     'test_ok_server' => 'Funguje s :model.',
 ];

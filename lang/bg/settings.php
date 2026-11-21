@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Името на модел, изтеглен с "ollama pull".',
     'test_no_address' => 'Първо въведете адреса.',
     'test_passed_server' => ':company отговаря',
+    'test_failed_server' => 'Тестът не беше успешен',
     'test_ok_server' => 'Работи с :model.',
 ];

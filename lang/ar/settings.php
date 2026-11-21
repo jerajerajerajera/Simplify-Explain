@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'اسم نموذج نزّلته باستخدام "ollama pull".',
     'test_no_address' => 'أدخل العنوان أولاً.',
     'test_passed_server' => ':company يستجيب',
+    'test_failed_server' => 'فشل الاختبار',
     'test_ok_server' => 'يعمل مع :model.',
 ];

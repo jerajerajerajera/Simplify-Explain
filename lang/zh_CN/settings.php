@@ -34,5 +34,6 @@ return [
     'model_help_server' => '用 "ollama pull" 下载的模型名称。',
     'test_no_address' => '请先输入地址。',
     'test_passed_server' => ':company 已响应',
+    'test_failed_server' => '测试失败',
     'test_ok_server' => '可与 :model 配合使用。',
 ];

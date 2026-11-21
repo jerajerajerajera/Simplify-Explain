@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Ime modela koji si preuzeo komandom "ollama pull".',
     'test_no_address' => 'Prvo unesi adresu.',
     'test_passed_server' => ':company odgovara',
+    'test_failed_server' => 'Test nije uspeo',
     'test_ok_server' => 'Radi sa :model.',
 ];

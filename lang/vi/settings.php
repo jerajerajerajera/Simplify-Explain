@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Tên một mô hình bạn đã tải bằng "ollama pull".',
     'test_no_address' => 'Hãy nhập địa chỉ trước.',
     'test_passed_server' => ':company đã trả lời',
+    'test_failed_server' => 'Kiểm tra thất bại',
     'test_ok_server' => 'Hoạt động với :model.',
 ];

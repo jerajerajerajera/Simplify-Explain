@@ -9,6 +9,8 @@
 | Nr | Datum | Wat zag de gebruiker | Oorzaak | Fix (versie) | Regressietest | Teruggekomen | Regel |
 |---|---|---|---|---|---|---|---|
 | B9 | 1.0.5 | Instellingspagina scrolt als geheel met Simplify 1.5 | Formulier zonder `s-fit` | 1.0.5 | `tests/panel/smoke.php`: "the settings page fits the content card and does not scroll the page" (rood op 1.0.4, groen vanaf 1.0.5) | 0× (patroon met andere add-ons) | P-7 |
+| EX-B1 | 21-11 | Een wachtwoord in een adres in de log (`mysql://gebruiker:wachtwoord@localhost`) ging mee naar de AI-dienst | `LogCheck::sanitize()` kende alleen `password=`-vormen, e-mailadressen, IP's en lange tokens; het deel vóór de `@` in een adres bleef staan zodra de host geen domeinnaam was | Unreleased | `tests/logcheck.php`: "password in an address hidden" en de vier checks eronder (rood op cb960c4) | 0× | P-36 |
+| EX-B2 | 21-11 | (Audit vóór stable.) Een mislukte Test bij Ollama heet "The key does not work", terwijl Ollama geen sleutel heeft maar een adres | Eén titel voor elke mislukte Test | Unreleased: bij een eigen server "The test failed" (32 talen); de uitleg eronder zegt wat er mis is | `tests/panel/smoke.php`: "Ollama on the admin's own server explains the console without a key" (regels over de titel van Test; rood op 77226a2) | 0× | P-35 |
 
 ## Patronen
 

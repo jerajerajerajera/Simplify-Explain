@@ -34,5 +34,6 @@ return [
     'model_help_server' => '"ollama pull"로 내려받은 모델 이름입니다.',
     'test_no_address' => '먼저 주소를 입력하세요.',
     'test_passed_server' => ':company 응답함',
+    'test_failed_server' => '테스트에 실패했습니다',
     'test_ok_server' => ':model에서 작동합니다.',
 ];
