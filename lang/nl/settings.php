@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'De naam van een model dat je hebt gedownload met "ollama pull".',
     'test_no_address' => 'Vul eerst het adres in.',
     'test_passed_server' => ':company antwoordt',
+    'test_failed_server' => 'De test is mislukt',
     'test_ok_server' => 'Het werkt met :model.',
 ];

@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Nama model yang Anda unduh dengan "ollama pull".',
     'test_no_address' => 'Masukkan alamat terlebih dahulu.',
     'test_passed_server' => ':company menjawab',
+    'test_failed_server' => 'Uji gagal',
     'test_ok_server' => 'Berfungsi dengan :model.',
 ];

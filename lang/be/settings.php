@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Назва мадэлі, спампаванай камандай "ollama pull".',
     'test_no_address' => 'Спачатку ўвядзіце адрас.',
     'test_passed_server' => ':company адказвае',
+    'test_failed_server' => 'Праверка не ўдалася',
     'test_ok_server' => 'Працуе з :model.',
 ];

@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Egy modell neve, amelyet az "ollama pull" paranccsal töltöttél le.',
     'test_no_address' => 'Előbb add meg a címet.',
     'test_passed_server' => 'A(z) :company válaszol',
+    'test_failed_server' => 'A teszt nem sikerült',
     'test_ok_server' => 'Működik ezzel: :model.',
 ];

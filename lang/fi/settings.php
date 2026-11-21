@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Mallin nimi, jonka latasit komennolla "ollama pull".',
     'test_no_address' => 'Anna ensin osoite.',
     'test_passed_server' => ':company vastaa',
+    'test_failed_server' => 'Testi epäonnistui',
     'test_ok_server' => 'Toimii mallilla :model.',
 ];

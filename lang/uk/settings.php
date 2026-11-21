@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Назва моделі, завантаженої командою "ollama pull".',
     'test_no_address' => 'Спершу введіть адресу.',
     'test_passed_server' => ':company відповідає',
+    'test_failed_server' => 'Перевірка не вдалася',
     'test_ok_server' => 'Працює з :model.',
 ];

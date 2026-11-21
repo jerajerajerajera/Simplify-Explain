@@ -21,6 +21,7 @@ use Illuminate\Foundation\Exceptions\RegisterErrorViewPaths;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithAuthentication;
 use Illuminate\Foundation\Testing\Concerns\InteractsWithSession;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
+use Illuminate\Http\Client\Factory;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Cache;
@@ -525,6 +526,13 @@ step('Ollama on the admin\'s own server explains the console without a key', fun
     $errors = Livewire::actingAs($admin)->test(ExplainSettingsForm::class)->set('data.key', 'file:///etc/passwd')->call('save')->errors();
     must($errors->has('data.key'), 'no error for an address that is not http(s)');
     must(Settings::key('ollama') === 'http://192.168.1.10:11434', 'an address that is not http(s) was saved');
+    // EX-B2: Ollama has no key, so a failed Test does not say "The key does not work"; a service with a key still does.
+    Http::swap(new Factory);
+    Http::fake(['192.168.1.10:11434/*' => Http::response(['error' => 'model "qwen3:8b" not found'], 404)]);
+    Livewire::actingAs($admin)->test(ExplainSettingsForm::class)->call('test')->assertHasNoErrors();
+    Http::assertSent(fn (Request $request) => str_starts_with($request->url(), 'http://192.168.1.10:11434/'));
+    must(ExplainSettingsForm::testTitle('ollama', false) === 'The test failed' && ExplainSettingsForm::testTitle('ollama', true) === 'Ollama answers', 'a failed Test of Ollama speaks of a key: '.ExplainSettingsForm::testTitle('ollama', false));
+    must(ExplainSettingsForm::testTitle('openai', false) === 'The key does not work' && ExplainSettingsForm::testTitle('openai', true) === 'The key works', 'the titles for a service with a key changed');
     Settings::save(['provider' => 'anthropic', 'model' => 'claude-haiku-5-5']);
 });
 step('the emergency page opens for root admins only', function () use ($admin, $player) {

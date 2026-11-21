@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Numele unui model descărcat cu "ollama pull".',
     'test_no_address' => 'Introdu mai întâi adresa.',
     'test_passed_server' => ':company răspunde',
+    'test_failed_server' => 'Testul a eșuat',
     'test_ok_server' => 'Funcționează cu :model.',
 ];

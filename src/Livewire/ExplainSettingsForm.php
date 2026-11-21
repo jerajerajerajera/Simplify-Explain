@@ -190,14 +190,22 @@ class ExplainSettingsForm extends Component implements HasActions, HasSchemas
         }
         $result = Client::test(Providers::get($provider), $key, Providers::model($provider, data_get($this->data, 'model')));
         Notification::make()
-            ->title(match (true) {
-                ! $result['ok'] => __('simplify-explain::settings.test_failed'),
-                Providers::get($provider)::selfHosted() => __('simplify-explain::settings.test_passed_server', ['company' => Providers::get($provider)::company()]),
-                default => __('simplify-explain::settings.test_passed'),
-            })
+            ->title(self::testTitle($provider, $result['ok']))
             ->body($result['message'])
             ->{$result['ok'] ? 'success' : 'danger'}()
             ->send();
+    }
+
+    /** The title of Test's message. A server of your own (Ollama) has an address and no key, so it does not speak of a key. */
+    public static function testTitle(string $provider, bool $ok): string
+    {
+        $server = Providers::get($provider)::selfHosted();
+
+        return match (true) {
+            ! $ok => __('simplify-explain::settings.'.($server ? 'test_failed_server' : 'test_failed')),
+            $server => __('simplify-explain::settings.test_passed_server', ['company' => Providers::get($provider)::company()]),
+            default => __('simplify-explain::settings.test_passed'),
+        };
     }
 
     private static function selfHosted(Get $get): bool

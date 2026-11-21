@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Modelio, kurį atsisiuntėte komanda "ollama pull", pavadinimas.',
     'test_no_address' => 'Pirmiausia įveskite adresą.',
     'test_passed_server' => ':company atsako',
+    'test_failed_server' => 'Patikrinti nepavyko',
     'test_ok_server' => 'Veikia su :model.',
 ];

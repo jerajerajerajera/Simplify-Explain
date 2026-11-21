@@ -34,5 +34,6 @@ return [
     'model_help_server' => 'Nazwa modelu pobranego poleceniem "ollama pull".',
     'test_no_address' => 'Najpierw podaj adres.',
     'test_passed_server' => ':company odpowiada',
+    'test_failed_server' => 'Test się nie powiódł',
     'test_ok_server' => 'Działa z :model.',
 ];
