@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 2.0.0-beta.19
+
 - With Simplify Hosting's tickets switched on, **Open a ticket** under an explanation starts a new ticket with the explanation filled in (and the server, for a console), for customers. Without tickets it still opens the support link from Simplify's settings.
 
 ## 2.0.0-beta.15
