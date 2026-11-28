@@ -60,7 +60,14 @@
             @endforeach
         @endif
 
-        @if ($result['found'] && ($support = $this->supportUrl()))
+        @if ($result['found'] && $this->ticketsReady())
+            {{-- Simplify Hosting's tickets: a new ticket with this explanation in it. --}}
+            <div>
+                <x-filament::button wire:click="openTicket" color="gray" size="sm" icon="tabler-lifebuoy">
+                    {{ __('simplify-explain::explain.ticket') }}
+                </x-filament::button>
+            </div>
+        @elseif ($result['found'] && ($support = $this->supportUrl()))
             <div>
                 <x-filament::button tag="a" :href="$support" target="_blank" rel="noopener" color="gray" size="sm" icon="tabler-lifebuoy">
                     {{ __('simplify-explain::explain.ticket') }}

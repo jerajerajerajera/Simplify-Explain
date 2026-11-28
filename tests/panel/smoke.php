@@ -463,6 +463,34 @@ step('customers get "Open a ticket" only with Simplify Hosting and a support lin
     $support(null);
     must(! str_contains($html(), __('simplify-explain::explain.ticket')), 'the ticket link shows without a support link');
 });
+step('with Simplify Hosting\'s tickets, "Open a ticket" starts a ticket with the explanation in it, on the click only', function () use ($admin, $player, &$own) {
+    $tickets = 'Simplify\Hosting\Services\Tickets';
+    if (! class_exists($tickets)) {
+        require __DIR__.'/stubs/Tickets.php';
+    }
+    if (! property_exists($tickets, 'drafts')) {
+        return; // The real Simplify Hosting is installed; its own smoke covers the draft.
+    }
+    $tickets::$on = true;
+    $tickets::$drafts = [];
+    $panel = Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->assertSet('result.found', true);
+    must(str_contains($panel->html(), 'wire:click="openTicket"'), 'no "Open a ticket" button with Simplify Hosting\'s tickets');
+    must($tickets::$drafts === [], 'a ticket draft was made before anyone pressed the button');
+    $panel->call('openTicket')->assertRedirect('https://panel.example.com/smoke-new-ticket');
+    $draft = $tickets::$drafts[0] ?? [];
+    must(($draft['server'] ?? null) === $own->id, 'the ticket is not about the server whose console was explained');
+    must(str_contains($draft['subject'] ?? '', $own->name), 'the ticket subject does not say what was explained');
+    must(str_contains($draft['text'] ?? '', 'Missing Flywheel') && str_contains($draft['text'] ?? '', '1. Add Flywheel to the mods folder'), 'the ticket does not hold the explanation: '.json_encode($draft));
+    // Admins answer tickets, they do not open them; with tickets off nothing is drafted.
+    must(! str_contains(Livewire::actingAs($admin)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check')->html(), 'wire:click="openTicket"'), 'an admin gets "Open a ticket"');
+    $tickets::$on = false;
+    $tickets::$drafts = [];
+    $off = Livewire::actingAs($player)->test(ExplainPanel::class, ['source' => 'console', 'serverId' => $own->id])->call('check');
+    must(! str_contains($off->html(), 'wire:click="openTicket"'), '"Open a ticket" shows while Hosting\'s tickets are off');
+    $off->call('openTicket');
+    must($tickets::$drafts === [], 'a ticket was drafted while Hosting\'s tickets are off');
+    $tickets::$on = true;
+});
 step('asking too often is limited per person and per panel', function () use ($admin, $server) {
     $person = 'simplify-explain.user.'.$admin->id;
     RateLimiter::clear($person);

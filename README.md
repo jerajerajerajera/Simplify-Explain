@@ -9,7 +9,8 @@ or another plugin show that something failed, a small question button right afte
 
 It works on its own. With [Simplify](https://github.com/jerajerajerajera/Simplify) installed, it also shows up in
 Simplify's add-on list, and Simplify's setup asks for the service, the key and who may use it. With Simplify Hosting
-installed and a support link set in Simplify's settings, customers also get **Open a ticket** under a problem.
+installed, customers also get **Open a ticket** under a problem: with Hosting's tickets switched on it starts a new
+ticket with the explanation filled in, otherwise it opens the support link set in Simplify's settings.
 
 ## Setup
 
