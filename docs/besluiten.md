@@ -42,7 +42,7 @@
 | V45 | 2-11 | Niet aangenomen; vervangen door V49 | kern |
 | V46 | 2-11 | Ja: People & roles van Simplify eruit; Pelicans Users en Roles in de Simplify-schil | kern, P-6, P-24 |
 | V47 | 2-11 | Ja: seizoensversiering alleen laden op de dag zelf | kern, P-23 |
-| V48 | 2-11 | Ja: Browse Hub blijft tot Pelican het zelf heeft | kern |
+| V48 | 2-11, herzien 21-11 | Browse Hub-code weggehaald (Jeroen ja 21-11; eerder: bleef tot Pelican het zelf had) | kern |
 | V49 | 2-11 | Open: hostmodus verhuist naar Hosting en wordt daarbij zonder iframes herbouwd, zodra Hosting weer verdergaat | kern, Hosting |
 | V50 | 2-11 | A: terwijl een server start of stopt, wordt de hoofdknop een rode Force stop | kern |
 | V51 | 2-11 | Ja: één Settings-pagina met tabs, Pelican als één link; opslaan volgens V57 (de autosave uit dit besluit vervalt) | kern |
@@ -54,6 +54,7 @@
 | V57 | 2-11 | Nergens autosave. Na een wijziging verschijnt "Changes made" met een Save-knop; wie de pagina verlaat met niet-opgeslagen wijzigingen kiest Save of Discard. Vervangt V54 en de autosave in V51; "Toolkit MC-instellingen zonder Discard" (30-10) vervalt | kern, alle add-ons, P-38 |
 | V58 | 2-11 | Ja: het gecombineerde V52-proefscherm wordt gebouwd: Admin-pagina, Settings met Changes made/Save/Discard (V57), één bottom nav (V55), de Filter-dropdown; de host-mode-schakelaar vervalt | kern, Hosting, P-38 |
 | V63 | 3-11 | Ja: V62 vervalt. De Hub-betasync loopt via GitHub-secret `HUB_API_KEY` in `release.yml` (alleen channel beta, nooit Submit); kern #154 (browser in de betafooter) gaat mee in 2.0.0-beta.3 | alle zes |
+| V65 | 22-11 | Announcements wordt één open model, nog in de beta (stable 2.0.0 wacht hierop en op Khions hertest). Ja op: (1) vóór stable; (2) formulier met vier vragen What / When / Where / Who, voorbeelden ("Start from an example") en een zin in gewone taal; alles open, enkele keuze als schakelaar, meervoudige keuze als pill met vinkje; Repeat hoort bij When; zeldzame filters achter More options; de balk is een eigen keuze met zijn duur; (3) Who krijgt "People with access to the server", standaard bij een servermoment (startmeldingen gingen naar iedereen op het paneel); (4) meer dan één tijd per dag; (5) momenten "server stops" en "server crashes" (crash = stop waar niemand om vroeg); (6) de Schedules-stap "Announcement" blijft bestaan | kern |
 
 ## Zonder nummer (uit projectnotities, 27-10 t/m 2-11)
 
@@ -88,3 +89,4 @@
 | 2-11 | Add-on-pagina's in het Simplify-accountmenu, niet in Pelicans profiel | P-6, kern API 4 |
 | 2-11 | Serverbanners en groepen op het overzicht houden | P-18 |
 | 2-11 | Hosting staat op pauze: eerst de kern en de add-ons goed | Hosting |
+| 22-11 | V64: 7e add-on Themes (simplify-themes); gebruikers kiezen uit admin-themes (standaard uit); repo + bouwen na stable 2.0.0 incl. kleine kern-API; werkt ook zonder kern | Themes |

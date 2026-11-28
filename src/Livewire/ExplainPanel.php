@@ -18,6 +18,9 @@ final class ExplainPanel extends Component
     /** Simplify Hosting's provider, by name: Hosting is optional, so its class may not exist. */
     private const HOSTING = 'Simplify\\Hosting\\Providers\\HostingServiceProvider';
 
+    /** Simplify Hosting's tickets (Tickets::draft), by name for the same reason. */
+    private const TICKETS = 'Simplify\\Hosting\\Services\\Tickets';
+
     /** console (of serverId), panel, wings (of nodeId) or problem (an error a plugin marked). */
     #[Locked]
     public string $source = 'console';
@@ -80,6 +83,60 @@ final class ExplainPanel extends Component
         $url = PanelSettings::get('support_url');
 
         return is_string($url) && $url !== '' ? $url : null;
+    }
+
+    /**
+     * Whether "Open a ticket" starts a ticket in Simplify Hosting with the explanation filled in: for customers, with a
+     * Hosting that has tickets and has them switched on.
+     */
+    public function ticketsReady(): bool
+    {
+        $user = user();
+        if ($user === null || $user->isAdmin() || ! class_exists(self::TICKETS) || ! method_exists(self::TICKETS, 'draft')) {
+            return false;
+        }
+
+        return ! method_exists(self::TICKETS, 'enabled') || (bool) call_user_func([self::TICKETS, 'enabled']);
+    }
+
+    /**
+     * "Open a ticket" with Hosting's tickets: the explanation goes into a new ticket (Hosting keeps it in the session,
+     * never in the address) and the customer goes to the form to check it and send it. Called on the click only, so
+     * nothing is kept for someone who never presses it.
+     */
+    public function openTicket(): void
+    {
+        if (! $this->ticketsReady() || ! ($this->result['ok'] ?? false) || ! ($this->result['found'] ?? false)) {
+            return;
+        }
+        $server = $this->source === 'console' ? Server::find($this->serverId) : null;
+        if ($server !== null && ! Explainer::mayExplainConsole(user(), $server)) {
+            $server = null;
+        }
+        $url = call_user_func([self::TICKETS, 'draft'], $server, $this->heading(), $this->ticketText());
+        if (is_string($url) && $url !== '') {
+            $this->redirect($url);
+        }
+    }
+
+    /** The explanation as plain text for the ticket: the summary, then each problem with its cause and steps. */
+    private function ticketText(): string
+    {
+        $lines = [];
+        if (filled($this->result['summary'] ?? null)) {
+            $lines[] = (string) $this->result['summary'];
+            $lines[] = '';
+        }
+        foreach ($this->result['issues'] ?? [] as $issue) {
+            $lines[] = (string) ($issue['title'] ?? '');
+            $lines[] = (string) ($issue['cause'] ?? '');
+            foreach (array_values($issue['steps'] ?? []) as $number => $step) {
+                $lines[] = ($number + 1).'. '.$step;
+            }
+            $lines[] = '';
+        }
+
+        return trim(implode("\n", $lines));
     }
 
     public function render(): View

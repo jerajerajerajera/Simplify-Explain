@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- With Simplify Hosting's tickets switched on, **Open a ticket** under an explanation starts a new ticket with the explanation filled in (and the server, for a console), for customers. Without tickets it still opens the support link from Simplify's settings.
+
 ## 2.0.0-beta.15
 
 - A user name and password inside an address in a log, such as `mysql://user:password@localhost`, are hidden before the lines go to the AI service. Before, they were only hidden when the host happened to be a domain name.
